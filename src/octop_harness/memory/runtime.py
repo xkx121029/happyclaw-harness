@@ -11,11 +11,10 @@ from __future__ import annotations
 import contextlib
 import logging
 import threading
+from functools import cache
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
-from deepagents._messages_reducer import _messages_delta_reducer
-from langgraph.channels.delta import DeltaChannel
 from octop_memory import Memory, MemoryService
 
 from octop_harness.builtin.tools.memory_tools import build_memory_tools
@@ -36,9 +35,26 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
-# Match the reducer used by DeepAgentState. DeltaChannel creates a fresh
-# instance on restore, so graph rebuilds and the maintenance timer can share it.
-_CHECKPOINT_MESSAGES_CHANNEL = DeltaChannel(lambda state, writes: _messages_delta_reducer(state, list(writes)), list)
+
+@cache
+def _checkpoint_messages_channel() -> Any:
+    """Return the shared ``messages`` reducer channel, or ``None`` if unsupported.
+
+    Match the reducer used by ``DeepAgentState``; ``DeltaChannel`` creates a
+    fresh instance on restore, so graph rebuilds and the maintenance timer
+    share this one. ``_messages_delta_reducer`` is a private deepagents symbol,
+    so it resolves on first use: a release that renames it must degrade the
+    retention snapshot instead of breaking every import of this package.
+    """
+    try:
+        from deepagents._messages_reducer import _messages_delta_reducer
+        from langgraph.channels.delta import DeltaChannel
+    except ImportError:
+        logger.warning(
+            "deepagents._messages_reducer is unavailable; checkpoint retention keeps no replayed messages",
+        )
+        return None
+    return DeltaChannel(lambda state, writes: _messages_delta_reducer(state, list(writes)), list)
 
 
 class MemoryRuntime:
@@ -169,7 +185,7 @@ class MemoryRuntime:
             "jsonl_max_bytes": cfg.session_log_max_bytes,
             "on_chat_model": on_chat_model,
             "maintenance_interval_seconds": maintenance_interval,
-            "checkpoint_messages_channel": _CHECKPOINT_MESSAGES_CHANNEL,
+            "checkpoint_messages_channel": _checkpoint_messages_channel(),
             # Start the first maintenance pass shortly after binding.
             "maintenance_initial_delay_seconds": 1.0,
         }
