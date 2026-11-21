@@ -31,10 +31,10 @@ from typing import Any
 
 from dotenv import load_dotenv
 
-from octop_harness import HarnessAgentConfig, ModelConfig, ProviderConfig
-from octop_harness.backends.utils import DEFENSIVE_OP_ERRORS
-from octop_harness.builtin.tools.web_search import load_web_search_tools
-from octop_harness.builtin.tools.web_search._registry import WEB_SEARCH_PROVIDERS
+from happyclaw_harness import HarnessAgentConfig, ModelConfig, ProviderConfig
+from happyclaw_harness.backends.utils import DEFENSIVE_OP_ERRORS
+from happyclaw_harness.builtin.tools.web_search import load_web_search_tools
+from happyclaw_harness.builtin.tools.web_search._registry import WEB_SEARCH_PROVIDERS
 
 # Mirror the registry so new providers show up without editing this demo.
 # ``you`` is keyless when named explicitly; ``YDC_API_KEY`` only gates ``auto``.

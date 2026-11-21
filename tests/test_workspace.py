@@ -8,7 +8,7 @@ from unittest.mock import patch
 
 import pytest
 
-from octop_harness.backends.workspace import (
+from happyclaw_harness.backends.workspace import (
     DEFAULT_MEMORY_FILES,
     BackendWorkspace,
 )
@@ -226,8 +226,8 @@ class TestBackendWorkspaceAsync:
         assert str(workspace_dir) not in (ws._backend_storage_key("SOUL.md") or "")
 
     def test_cloud_storage_nests_under_virtual_workspace_folder(self, tmp_path: Path) -> None:
-        from octop_harness.backends.cloud_storage_base import CloudStorageBackend
-        from octop_harness.backends.workspace import remote_workspace_virtual_root
+        from happyclaw_harness.backends.cloud_storage_base import CloudStorageBackend
+        from happyclaw_harness.backends.workspace import remote_workspace_virtual_root
 
         class _StubCloud(CloudStorageBackend):
             def _prefix(self) -> str:
@@ -344,7 +344,7 @@ class TestBackendWorkspaceMkdir:
     def test_mkdir_unsupported_backend(self) -> None:
         from deepagents.backends import StateBackend
 
-        from octop_harness.backends.utils import BackendOperationNotSupportedError
+        from happyclaw_harness.backends.utils import BackendOperationNotSupportedError
 
         ws = BackendWorkspace(StateBackend(), Path("/tmp/unused"))
         with pytest.raises(BackendOperationNotSupportedError, match="mkdir"):
@@ -419,7 +419,7 @@ class TestBackendWorkspaceDeleteMove:
     def test_delete_unsupported_backend(self) -> None:
         from deepagents.backends import StateBackend
 
-        from octop_harness.backends.utils import BackendOperationNotSupportedError
+        from happyclaw_harness.backends.utils import BackendOperationNotSupportedError
 
         ws = BackendWorkspace(StateBackend(), Path("/tmp/unused"))
         with pytest.raises(BackendOperationNotSupportedError, match="delete"):
@@ -466,7 +466,7 @@ class TestBackendWorkspaceDeleteMove:
 
 class TestRelativeVirtualPath:
     def test_relative_virtual_path(self) -> None:
-        from octop_harness.backends.utils import relative_virtual_path
+        from happyclaw_harness.backends.utils import relative_virtual_path
 
         assert relative_virtual_path("/sub/a.txt", "/sub") == "a.txt"
         assert relative_virtual_path("/sub", "/sub") == ""
@@ -770,7 +770,7 @@ class TestBackendWorkspaceVirtualMode:
         backend.root_dir = None
 
         ws = BackendWorkspace(backend, workspace)
-        with patch("octop_harness.backends.workspace.backend_file_exists", return_value=True) as exists_fn:
+        with patch("happyclaw_harness.backends.workspace.backend_file_exists", return_value=True) as exists_fn:
             assert ws.exists("AGENTS.md") is True
         exists_fn.assert_called_once()
 
@@ -852,7 +852,7 @@ class TestSystemFilesPath:
         assert not (tmp_path / ".octop" / ".octop").exists()
 
     def test_reject_parent_escape(self) -> None:
-        from octop_harness.backends.workspace import normalize_system_files_path
+        from happyclaw_harness.backends.workspace import normalize_system_files_path
 
         with pytest.raises(ValueError, match="inside the workspace"):
             normalize_system_files_path("../oops")

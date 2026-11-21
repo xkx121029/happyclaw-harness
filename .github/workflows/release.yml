@@ -107,7 +107,7 @@ jobs:
               echo "## Install"
               echo ""
               echo '```bash'
-              echo "pip install octop-harness==$version"
+              echo "pip install happyclaw-harness==$version"
               echo '```'
             } > .release-notes.md
           fi

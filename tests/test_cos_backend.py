@@ -1,4 +1,4 @@
-"""Unit tests for ``octop_harness.backends.cos.CosBackend``.
+"""Unit tests for ``happyclaw_harness.backends.cos.CosBackend``.
 
 These run **offline** by injecting a fake ``CosS3Client``-like object that
 behaves like an in-memory bucket. They exercise the protocol contract
@@ -19,7 +19,7 @@ from typing import Any
 
 import pytest
 
-from octop_harness.backends.cos_backend import CosBackend, CosConfig
+from happyclaw_harness.backends.cos_backend import CosBackend, CosConfig
 
 
 def _test_credential() -> str:
@@ -249,7 +249,7 @@ class TestBinaryUpload:
     async def test_png_roundtrip_via_workspace(
         self, backend: CosBackend, fake_client: FakeCosClient, tmp_path: Path
     ) -> None:
-        from octop_harness.backends.workspace import BackendWorkspace
+        from happyclaw_harness.backends.workspace import BackendWorkspace
 
         png = b"\x89PNG\r\n\x1a\n" + b"\x00" * 8
         ws = BackendWorkspace(backend, tmp_path)
@@ -265,7 +265,7 @@ class TestBinaryUpload:
     async def test_workspace_files_land_under_virtual_folder(
         self, backend: CosBackend, fake_client: FakeCosClient, tmp_path: Path
     ) -> None:
-        from octop_harness.backends.workspace import BackendWorkspace, remote_workspace_virtual_root
+        from happyclaw_harness.backends.workspace import BackendWorkspace, remote_workspace_virtual_root
 
         virt = remote_workspace_virtual_root(tmp_path)
         ws = BackendWorkspace(backend, tmp_path)
@@ -295,7 +295,7 @@ class TestBinaryUpload:
     async def test_workspace_reads_legacy_flattened_root_file(
         self, backend: CosBackend, fake_client: FakeCosClient, tmp_path: Path
     ) -> None:
-        from octop_harness.backends.workspace import BackendWorkspace
+        from happyclaw_harness.backends.workspace import BackendWorkspace
 
         backend.write("/SOUL.md", "legacy-root")
         ws = BackendWorkspace(backend, tmp_path)
@@ -425,11 +425,11 @@ class TestGlobAndGrep:
 
 class TestResolveBackendIntegration:
     def test_resolve_cos_string_with_kwargs(self, monkeypatch: pytest.MonkeyPatch, _patch_cos_exception: None) -> None:
-        from octop_harness.backends import resolve_backend
+        from happyclaw_harness.backends import resolve_backend
 
         # Provide a fake CosS3Client so we don't try to talk to real network.
         fake = FakeCosClient()
-        from octop_harness.backends import cos_backend as cos_module
+        from happyclaw_harness.backends import cos_backend as cos_module
 
         monkeypatch.setattr(cos_module.CosBackend, "_build_client", staticmethod(lambda _config: fake))
 
@@ -574,7 +574,7 @@ class TestRealCosCompositeMount:
         }
 
     def test_local_write_lands_on_disk(self, tmp_path: Path) -> None:
-        from octop_harness.backends import resolve_backend
+        from happyclaw_harness.backends import resolve_backend
 
         backend = resolve_backend(self._composite_spec(tmp_path, "composite-disk"), workspace_dir=tmp_path)
 
@@ -587,7 +587,7 @@ class TestRealCosCompositeMount:
         assert disk_path.read_text(encoding="utf-8") == "on disk"
 
     def test_cos_write_does_not_land_on_disk(self, tmp_path: Path) -> None:
-        from octop_harness.backends import resolve_backend
+        from happyclaw_harness.backends import resolve_backend
 
         backend = resolve_backend(self._composite_spec(tmp_path, "composite-cos"), workspace_dir=tmp_path)
 
@@ -604,7 +604,7 @@ class TestRealCosCompositeMount:
         assert (read.file_data or {}).get("content") == "in COS"
 
     def test_ls_distinguishes_routes(self, tmp_path: Path) -> None:
-        from octop_harness.backends import resolve_backend
+        from happyclaw_harness.backends import resolve_backend
 
         backend = resolve_backend(self._composite_spec(tmp_path, "composite-ls"), workspace_dir=tmp_path)
 
@@ -624,7 +624,7 @@ class TestRealCosCompositeMount:
         assert (read_back.file_data or {}).get("content") == "local"
 
     def test_unknown_kwarg_raises_clear_error(self) -> None:
-        from octop_harness.backends import resolve_backend
+        from happyclaw_harness.backends import resolve_backend
 
         with pytest.raises(TypeError):
             resolve_backend(

@@ -8,7 +8,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
 
-from octop_harness.cli.ui.file_ref import (
+from happyclaw_harness.cli.ui.file_ref import (
     _walk_files,
     list_project_files,
     parse_at_references,
@@ -39,9 +39,9 @@ class TestParseAtReferences:
         assert len(refs) == 1
 
     def test_complex_paths(self):
-        refs = parse_at_references("@src/octop_harness.cli/ui/file_ref.py")
+        refs = parse_at_references("@src/happyclaw_harness.cli/ui/file_ref.py")
         assert len(refs) == 1
-        assert refs[0].path == "src/octop_harness.cli/ui/file_ref.py"
+        assert refs[0].path == "src/happyclaw_harness.cli/ui/file_ref.py"
 
     def test_dotfile(self):
         refs = parse_at_references("edit @.gitignore")

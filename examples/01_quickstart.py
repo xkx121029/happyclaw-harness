@@ -1,7 +1,7 @@
 # pylint: disable=invalid-name
 """Quickstart: single agent via HarnessAgentManager.
 
-Demonstrates the recommended entry point for octop-harness:
+Demonstrates the recommended entry point for happyclaw-harness:
 
 - Provider config auto-detected from environment variables (no code changes needed)
 - ``AgentManager`` as the single coordination layer
@@ -27,7 +27,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-from octop_harness import (
+from happyclaw_harness import (
     ChatRequest,
     HarnessAgentConfig,
     HarnessAgentManager,

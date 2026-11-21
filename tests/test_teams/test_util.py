@@ -1,4 +1,4 @@
-from octop_harness.teams.util import clamp_peer_invoke_mode, parse_peer_invoke_mode, parse_team_peers
+from happyclaw_harness.teams.util import clamp_peer_invoke_mode, parse_peer_invoke_mode, parse_team_peers
 
 
 def test_parse_peer_invoke_mode_accepts_known_values() -> None:

@@ -1,4 +1,4 @@
-"""Tests for ``octop_harness.middleware.model_router.ModelRouterMiddleware``.
+"""Tests for ``happyclaw_harness.middleware.model_router.ModelRouterMiddleware``.
 
 These tests build a synthetic ``ModelRequest`` via direct construction so we
 can exercise the priority chain without spinning up the full LangGraph
@@ -14,9 +14,9 @@ from unittest.mock import MagicMock
 import pytest
 from langchain_core.messages import HumanMessage
 
-from octop_harness.config import HarnessAgentConfig, ModelConfig, ProviderConfig
-from octop_harness.llm.factory import ChatModelFactory
-from octop_harness.middleware.model_router import ModelRouterMiddleware
+from happyclaw_harness.config import HarnessAgentConfig, ModelConfig, ProviderConfig
+from happyclaw_harness.llm.factory import ChatModelFactory
+from happyclaw_harness.middleware.model_router import ModelRouterMiddleware
 
 # ---------------------------------------------------------------------------
 # Test scaffolding

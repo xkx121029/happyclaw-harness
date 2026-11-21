@@ -22,7 +22,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 from langchain_core.tools import tool
 
-from octop_harness import (
+from happyclaw_harness import (
     ChatRequest,
     HarnessAgentConfig,
     HarnessAgentManager,
@@ -64,7 +64,7 @@ async def main() -> None:
         backend={"type": "filesystem", "root_dir": str(root), "virtual_mode": True},
         tools=[reverse_string],
         # AGENTS.md drives deepagents' built-in MemoryMiddleware. We
-        # disable octop-harness's session logger / Memory store so the
+        # disable happyclaw-harness's session logger / Memory store so the
         # two don't collide on duplicate middleware names. (See the
         # upstream `Please remove duplicate middleware instances.`
         # assertion.)

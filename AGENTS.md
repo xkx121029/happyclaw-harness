@@ -1,8 +1,8 @@
 # AGENTS.md
 
-Working handbook for AI coding agents in the `octop-harness` repository.
+Working handbook for AI coding agents in the `happyclaw-harness` repository.
 
-> This file is **how to change this repo**. `src/octop_harness/builtin/md_files/AGENTS.md` (shipped in the library and copied into end-user workspaces) is **how to use the agent this library creates**. They are not the same document — do not mix them.
+> This file is **how to change this repo**. `src/happyclaw_harness/builtin/md_files/AGENTS.md` (shipped in the library and copied into end-user workspaces) is **how to use the agent this library creates**. They are not the same document — do not mix them.
 
 ## 1. Collaboration principles
 
@@ -47,9 +47,9 @@ Working handbook for AI coding agents in the `octop-harness` repository.
 
 ## 2. What this is
 
-`octop-harness` is a published Python library (`pip install octop-harness`). It is a moderate wrapper around [LangChain Deep Agents](https://docs.langchain.com/oss/python/deepagents/) so users can create production-grade agents with very little code.
+`happyclaw-harness` is a published Python library (`pip install happyclaw-harness`). It is a moderate wrapper around [LangChain Deep Agents](https://docs.langchain.com/oss/python/deepagents/) so users can create production-grade agents with very little code.
 
-**It is a library, not an application.** Anything that looks like application-layer functionality (cron, MBTI onboarding, vector-memory persistence, HTTP server, user login, UI) does not belong here — those belong in hosts such as `Octop`. `octop-harness` provides the agent runtime; `octop-gateway` (the IM bridge) and Octop (the self-hosted platform) assemble applications on top of it.
+**It is a library, not an application.** Anything that looks like application-layer functionality (cron, MBTI onboarding, vector-memory persistence, HTTP server, user login, UI) does not belong here — those belong in hosts such as HappyClaw. `happyclaw-harness` provides the agent runtime; `octop-gateway` (the IM bridge) and HappyClaw (the self-hosted platform) assemble applications on top of it.
 
 ## 3. Tech stack
 
@@ -66,7 +66,7 @@ Working handbook for AI coding agents in the `octop-harness` repository.
 ## 4. Package layout
 
 ```
-src/octop_harness/
+src/happyclaw_harness/
 ├── __init__.py             # Public exports + type stubs + lazy load of HarnessAgent / Workspace
 ├── _version.py             # Resolve [project].version from pyproject.toml via importlib.metadata
 ├── agent.py                # HarnessAgent (construct + invoke/stream + init())
@@ -144,7 +144,7 @@ multi_agent_demo/           # Multi-agent example configs
 | Internal L1 content (init, bootstrap, skills, media, bound send_file, catalogs, …) | `agent.workspace` / `BackendWorkspace` | **Required** |
 | LLM tools (`read_file` / `write_file`) | `agent.backend` | deepagents protocol; interpreted by the backend's `virtual_mode` / `root_dir` |
 | Local runtime persistence (memory DB, `sessions/` JSONL, `checkpoints.sqlite`) | `Path` / `open()` / DB drivers, default under `workspace_dir` | Explicit exception: real OS fds, locks, append, or rotation — not via `BackendWorkspace` |
-| Runtime diagnostic logs (`octop_harness.*`) | `Path` / logging handlers, default `~/.octop-harness/logs` | App-level `HarnessAgentManager(log_dir=…)` / `setup_logging`; shared across agents with `[agent=…]` |
+| Runtime diagnostic logs (`happyclaw_harness.*`) | `Path` / logging handlers, default `~/.octop-harness/logs` | App-level `HarnessAgentManager(log_dir=…)` / `setup_logging`; shared across agents with `[agent=…]` |
 | CLI global config (`~/.octop-harness/`) | Local FS | Not part of the agent workspace |
 
 "Agent content" here means templates, bootstrap, skills, media, send-file materialize targets, and other workspace content used by the agent / LLM. Those reads and writes go through `BackendWorkspace` only — never direct `Path` / `open()`. Do not bypass `BackendWorkspace` for L1 content with `Path(workspace_dir).read_text()` / `open()`. This ban does **not** extend to the local runtime-persistence rows in the table above.
@@ -169,7 +169,7 @@ make test                   # pytest (with coverage)
 # Environment
 make install-hooks          # once per clone: enable .githooks pre-commit
 make install                # uv sync --group dev (alias: make install-dev)
-uv sync --all-extras        # all optional extras (same as pip install 'octop-harness[cli,all]')
+uv sync --all-extras        # all optional extras (same as pip install 'happyclaw-harness[cli,all]')
 
 # Packaging
 make build                  # wheel + sdist into dist/
@@ -192,7 +192,7 @@ make version                # print current version
 
 ### Default-value philosophy
 
-- **Zero-deps first:** core `pip install octop-harness` ships no optional packages; heavy deps (`mss`, `langchain-tavily`, …) go through `[extras]`.
+- **Zero-deps first:** core `pip install happyclaw-harness` ships no optional packages; heavy deps (`mss`, `langchain-tavily`, …) go through `[extras]`.
 - **Fail-soft for UX, not for checks:** fail-soft applies to startup / call-time user experience, not mypy / lint. Missing backend extras should error clearly and tell the user what to install; tests and type checks stay strict.
 - **User edits are sacred:** `init()` does not overwrite existing files by default; `overwrite=True` force-refreshes. Wipe-and-replace of `builtin/skills` runs only when the version stamp differs.
 
@@ -286,8 +286,8 @@ agent.init_workspace()
 - **deepagents skills / memory paths:** `skill_paths()` / `memory_paths()` go to deepagents via `_backend_storage_key` (`virtual_mode` → virtual `/…` key; do not concatenate host `root_dir`). `resolve_path` is only for host I/O / materialize (see [§7](#agent-workspace-and-backendworkspace)).
 - **L1 agent storage:** agent-visible / agent-used workspace content goes through `agent.workspace` (`BackendWorkspace`); memory DB, logs, JSONL transcripts, and checkpoint SQLite are local runtime persistence and use local FS / DB drivers directly. Do not treat `root_dir` as a second workspace.
 - **shell / virtual_mode:** non-host-root + `virtual_mode` + Linux + bwrap → factory picks `BubbledLocalShellBackend` to jail `execute`; otherwise `HarnessLocalShellBackend` conservatively maps trusted virtual command/env paths and uses the workspace as cwd. Reads still have `BackendWorkspace` root→original / root→workspace failback (see [§7](#agent-workspace-and-backendworkspace)).
-- **Do not import `mss` at module top level:** import inside the function, or `import octop_harness.builtin.tools` breaks for `pip install octop-harness` without `[desktop]`.
-- **`init.py` must not `from octop_harness import __version__`:** that causes a circular import. Use `from octop_harness._version import __version__` (the single source of the version is `[project].version` in `pyproject.toml`).
+- **Do not import `mss` at module top level:** import inside the function, or `import happyclaw_harness.builtin.tools` breaks for `pip install happyclaw-harness` without `[desktop]`.
+- **`init.py` must not `from happyclaw_harness import __version__`:** that causes a circular import. Use `from happyclaw_harness._version import __version__` (the single source of the version is `[project].version` in `pyproject.toml`).
 - **`HarnessAgentManager` is the recommended entry:** `manager.create_agent(config)` eagerly builds and caches `HarnessAgent`; `manager.stream(agent_id, request)` reuses the cached instance. Direct `HarnessAgent(config)` is still supported for backend-only work (`agent.backend`, `agent.init_workspace()`), but **all LLM chat goes through the manager**.
 - **`HarnessAgentManager` is a single-process in-memory registry:** do not share one instance across processes; cross-process coordination is left to the MQ extension point (the interface is already reserved).
 - **CLI uses `CliAgentManager`, not the library `HarnessAgentManager` directly:** `cli/agents/manager.py` `CliAgentManager` owns file persistence and reaches the underlying manager via `.runtime`.
@@ -295,7 +295,7 @@ agent.init_workspace()
 
 ## 9. Test conventions
 
-- **Test files mirror `src/` modules:** `src/octop_harness/init.py` ↔ `tests/test_init.py`; subpackages have matching directories (`tests/cli/`, `tests/config/`, `tests/protocols/`, `tests/slash/`, `tests/observability/`).
+- **Test files mirror `src/` modules:** `src/happyclaw_harness/init.py` ↔ `tests/test_init.py`; subpackages have matching directories (`tests/cli/`, `tests/config/`, `tests/protocols/`, `tests/slash/`, `tests/observability/`).
 - **Mock third-party SDKs; no network:** all web-search / S3 / COS tests use mock clients; only `examples/` may use a real network.
 - **Assert behavior, not implementation:** `test_idempotent_second_call_skips` checks the `templates_skipped` list, not internal branches in `_sync.py`.
 - **Regex matches use raw strings:** `pytest.raises(RuntimeError, match=r"env var.*missing")`, otherwise `RUF043`.

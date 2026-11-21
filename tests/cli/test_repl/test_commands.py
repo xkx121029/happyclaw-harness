@@ -7,10 +7,10 @@ from io import StringIO
 
 from rich.console import Console
 
-from octop_harness.cli.repl.commands import COMMANDS, dispatch_command
-from octop_harness.cli.repl.slash_router import dispatch_slash, runtime_command_names
-from octop_harness.cli.repl.state import SessionState
-from octop_harness.cli.ui.theme import get_theme
+from happyclaw_harness.cli.repl.commands import COMMANDS, dispatch_command
+from happyclaw_harness.cli.repl.slash_router import dispatch_slash, runtime_command_names
+from happyclaw_harness.cli.repl.state import SessionState
+from happyclaw_harness.cli.ui.theme import get_theme
 
 
 def _make_state() -> SessionState:

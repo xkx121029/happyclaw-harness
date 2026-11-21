@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from octop_harness.protocols.think_splitter import ThinkSplitter
+from happyclaw_harness.protocols.think_splitter import ThinkSplitter
 
 
 def test_single_chunk_with_think_block() -> None:

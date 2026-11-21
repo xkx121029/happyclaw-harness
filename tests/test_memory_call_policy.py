@@ -9,9 +9,9 @@ import httpx
 import pytest
 from octop_memory.ports.llm import LLMClientError
 
-from octop_harness.config import HarnessAgentConfig, ModelConfig, ProviderConfig
-from octop_harness.llm.factory import ChatModelFactory
-from octop_harness.memory.llm_client import HarnessAgentLLMClient
+from happyclaw_harness.config import HarnessAgentConfig, ModelConfig, ProviderConfig
+from happyclaw_harness.llm.factory import ChatModelFactory
+from happyclaw_harness.memory.llm_client import HarnessAgentLLMClient
 
 
 def _factory() -> ChatModelFactory:
@@ -53,7 +53,7 @@ def test_timeout_attempts_do_not_multiply_sdk_retries(monkeypatch: pytest.Monkey
         return _response(request)
 
     monkeypatch.setattr(httpx.Client, "send", send)
-    monkeypatch.setattr("octop_harness.memory.llm_client.time.sleep", delays.append)
+    monkeypatch.setattr("happyclaw_harness.memory.llm_client.time.sleep", delays.append)
     factory = _factory()
     chat = factory.get_chat_model("local/Qwen3")
     client = HarnessAgentLLMClient(factory, default_model="local/Qwen3", max_retries=retries, retry_backoff_s=0.5)

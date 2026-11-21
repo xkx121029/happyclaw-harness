@@ -1,7 +1,7 @@
 # tests/test_provider_api.py
 from __future__ import annotations
 
-from octop_harness.providers import ModelPreset, ProviderPreset, serialize_model_preset, serialize_provider_preset
+from happyclaw_harness.providers import ModelPreset, ProviderPreset, serialize_model_preset, serialize_provider_preset
 
 
 def test_serialize_model_includes_input() -> None:

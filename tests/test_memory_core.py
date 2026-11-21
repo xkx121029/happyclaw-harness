@@ -28,11 +28,11 @@ class TestStore:
 
 class TestRecall:
     def test_recall_finds_stored_memory(self, memory: Memory) -> None:
-        memory.store("User works on octop-harness project")
+        memory.store("User works on happyclaw-harness project")
         memory.store("User likes sushi for lunch")
-        results = memory.recall("octop-harness")
+        results = memory.recall("happyclaw-harness")
         assert len(results) >= 1
-        assert any("octop-harness" in r.content for r in results)
+        assert any("happyclaw-harness" in r.content for r in results)
 
     def test_recall_empty_returns_empty(self, memory: Memory) -> None:
         results = memory.recall("nonexistent topic")

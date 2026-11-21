@@ -11,16 +11,16 @@ import pytest
 
 psycopg = pytest.importorskip("psycopg")
 
-LIVE_HOST = os.environ.get("OCTOP_LIVE_PG_HOST", "172.19.0.22")
+LIVE_HOST = os.environ.get("HAPPYCLAW_LIVE_PG_HOST", "172.19.0.22")
 LIVE_SPEC: dict[str, object] = {
     "type": "postgres",
     "host": LIVE_HOST,
-    "port": int(os.environ.get("OCTOP_LIVE_PG_PORT", "5432")),
-    "database": os.environ.get("OCTOP_LIVE_PG_DB", "postgres"),
-    "user": os.environ.get("OCTOP_LIVE_PG_USER", "postgres"),
-    "password": os.environ.get("OCTOP_LIVE_PG_PASSWORD", "postgres"),
+    "port": int(os.environ.get("HAPPYCLAW_LIVE_PG_PORT", "5432")),
+    "database": os.environ.get("HAPPYCLAW_LIVE_PG_DB", "postgres"),
+    "user": os.environ.get("HAPPYCLAW_LIVE_PG_USER", "postgres"),
+    "password": os.environ.get("HAPPYCLAW_LIVE_PG_PASSWORD", "postgres"),
     "schema": "public",
-    "table": "octop_harness_live_files",
+    "table": "happyclaw_harness_live_files",
     "connection_timeout": 5,
 }
 
@@ -47,7 +47,7 @@ def live_spec() -> dict[str, object]:
 
 
 def test_live_postgres_probe_roundtrip(live_spec: dict[str, object]) -> None:
-    from octop_harness.backends.probe import probe_backend
+    from happyclaw_harness.backends.probe import probe_backend
 
     result = probe_backend(live_spec)
     assert result.get("ok") is True, result
@@ -55,9 +55,9 @@ def test_live_postgres_probe_roundtrip(live_spec: dict[str, object]) -> None:
 
 
 def test_live_postgres_workspace_roundtrip(live_spec: dict[str, object], tmp_path: Path) -> None:
-    from octop_harness.backends import resolve_backend
-    from octop_harness.backends.postgres import PostgresBackend
-    from octop_harness.backends.workspace import BackendWorkspace, remote_workspace_virtual_root
+    from happyclaw_harness.backends import resolve_backend
+    from happyclaw_harness.backends.postgres import PostgresBackend
+    from happyclaw_harness.backends.workspace import BackendWorkspace, remote_workspace_virtual_root
 
     backend = resolve_backend(live_spec)
     assert isinstance(backend, PostgresBackend)

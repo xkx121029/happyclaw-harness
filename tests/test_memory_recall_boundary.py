@@ -15,9 +15,13 @@ from langchain.agents.middleware.types import ModelRequest
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage, message_to_dict, messages_from_dict
 from langchain_openai.chat_models.base import _convert_message_to_dict
 
-from octop_harness.memory.policy import render_memory_policy_prompt
-from octop_harness.middleware.memory import MemoryMiddleware
-from octop_harness.middleware.memory_recall import RECALL_SNAPSHOT_KEY, replay_recall_snapshots, stamp_recall_snapshot
+from happyclaw_harness.memory.policy import render_memory_policy_prompt
+from happyclaw_harness.middleware.memory import MemoryMiddleware
+from happyclaw_harness.middleware.memory_recall import (
+    RECALL_SNAPSHOT_KEY,
+    replay_recall_snapshots,
+    stamp_recall_snapshot,
+)
 
 
 @pytest.mark.parametrize("language", ["en", "zh"])
@@ -142,7 +146,7 @@ def test_recall_logs_complete_query_length_and_stable_fingerprint(query: str, ca
             return SimpleNamespace(rendered="historical reference")
 
     mw = MemoryMiddleware(service=Service(), capture_enabled=False, jsonl_enabled=False)  # type: ignore[arg-type]
-    with caplog.at_level(logging.DEBUG, logger="octop_harness.middleware.memory"):
+    with caplog.at_level(logging.DEBUG, logger="happyclaw_harness.middleware.memory"):
         update = mw.before_model({"messages": [HumanMessage("  " + query + "  ")]}, None)
     assert update is not None
     normalized = query.strip()

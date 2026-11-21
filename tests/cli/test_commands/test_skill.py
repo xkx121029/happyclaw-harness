@@ -4,7 +4,7 @@ from pathlib import Path
 
 from click.testing import CliRunner
 
-from octop_harness.cli.main import cli
+from happyclaw_harness.cli.main import cli
 
 
 def test_skill_list_empty(tmp_path: Path, monkeypatch: object) -> None:

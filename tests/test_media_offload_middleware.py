@@ -11,8 +11,8 @@ from unittest.mock import MagicMock, patch
 import pytest
 from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
 
-from octop_harness.backends.workspace import BackendWorkspace
-from octop_harness.middleware.media_offload import (
+from happyclaw_harness.backends.workspace import BackendWorkspace
+from happyclaw_harness.middleware.media_offload import (
     MediaOffloadMiddleware,
     _ext_for_mime,
 )
@@ -473,8 +473,8 @@ class TestConstruction:
 
 class TestAgentIntegration:
     def test_installed_by_default(self, tmp_path: Path) -> None:
-        from octop_harness.agent import HarnessAgent
-        from octop_harness.config import (
+        from happyclaw_harness.agent import HarnessAgent
+        from happyclaw_harness.config import (
             HarnessAgentConfig,
             ModelConfig,
             ProviderConfig,
@@ -509,8 +509,8 @@ class TestAgentIntegration:
         assert "MediaOffloadMiddleware" in mw_classes
 
     def test_can_be_disabled(self, tmp_path: Path) -> None:
-        from octop_harness.agent import HarnessAgent
-        from octop_harness.config import (
+        from happyclaw_harness.agent import HarnessAgent
+        from happyclaw_harness.config import (
             HarnessAgentConfig,
             ModelConfig,
             ProviderConfig,

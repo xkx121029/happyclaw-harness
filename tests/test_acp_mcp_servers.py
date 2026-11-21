@@ -8,11 +8,11 @@ from typing import Any
 
 import pytest
 
-from octop_harness.acp.managed import append_prompt_note, managed_prompt_note, managed_turn_mcp
-from octop_harness.acp.mcp_servers import acp_mcp_servers_from_specs, mcp_fingerprint
-from octop_harness.acp.models import ACPConfig, ACPSessionError
-from octop_harness.acp.service import ACPService, _Conversation
-from octop_harness.acp.session_index import resume_or_create_session
+from happyclaw_harness.acp.managed import append_prompt_note, managed_prompt_note, managed_turn_mcp
+from happyclaw_harness.acp.mcp_servers import acp_mcp_servers_from_specs, mcp_fingerprint
+from happyclaw_harness.acp.models import ACPConfig, ACPSessionError
+from happyclaw_harness.acp.service import ACPService, _Conversation
+from happyclaw_harness.acp.session_index import resume_or_create_session
 
 
 def test_specs_become_http_sse_and_stdio_servers() -> None:

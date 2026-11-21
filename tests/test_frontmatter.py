@@ -4,9 +4,9 @@ from __future__ import annotations
 
 import pytest
 
-from octop_harness.frontmatter import normalize_newlines, split_frontmatter
-from octop_harness.skills.catalog import _parse_skill_frontmatter
-from octop_harness.subagents.loader import parse_agent_frontmatter
+from happyclaw_harness.frontmatter import normalize_newlines, split_frontmatter
+from happyclaw_harness.skills.catalog import _parse_skill_frontmatter
+from happyclaw_harness.subagents.loader import parse_agent_frontmatter
 
 LF_MANIFEST = "---\nname: demo\ndescription: Demo skill\n---\n# Body\n\nText.\n"
 

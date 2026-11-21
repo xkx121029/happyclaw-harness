@@ -22,13 +22,13 @@ import pytest
 # ``octop-browser`` ships in the dev group, so the real model is available.
 from octop_browser import ActionMetrics, ToolResult
 
-import octop_harness.builtin.tools.browser_use  # noqa: F401  # pylint: disable=unused-import
-from octop_harness.builtin.tools.browser_use import browser_use
+import happyclaw_harness.builtin.tools.browser_use  # noqa: F401  # pylint: disable=unused-import
+from happyclaw_harness.builtin.tools.browser_use import browser_use
 
-# The package's ``__init__`` rebinds ``octop_harness.builtin.tools.browser_use``
+# The package's ``__init__`` rebinds ``happyclaw_harness.builtin.tools.browser_use``
 # to the StructuredTool, so reach for the underlying module via ``sys.modules``
 # to access its private test helper.
-_browser_use_pkg = sys.modules["octop_harness.builtin.tools.browser_use"]
+_browser_use_pkg = sys.modules["happyclaw_harness.builtin.tools.browser_use"]
 
 
 def _make_metrics(action: str, **overrides: Any) -> ActionMetrics:

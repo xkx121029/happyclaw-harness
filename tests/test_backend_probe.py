@@ -1,10 +1,10 @@
-"""Tests for octop_harness.backends.probe."""
+"""Tests for happyclaw_harness.backends.probe."""
 
 from __future__ import annotations
 
 from pathlib import Path
 
-from octop_harness.backends.probe import probe_backend
+from happyclaw_harness.backends.probe import probe_backend
 
 
 def test_probe_filesystem_roundtrip(tmp_path: Path) -> None:

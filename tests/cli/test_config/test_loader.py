@@ -1,9 +1,9 @@
-"""Tests for octop_harness.cli.config.loader."""
+"""Tests for happyclaw_harness.cli.config.loader."""
 
 import json
 from pathlib import Path
 
-from octop_harness.cli.config.loader import load_config
+from happyclaw_harness.cli.config.loader import load_config
 
 
 def test_load_config_no_files(tmp_path: Path, monkeypatch: object) -> None:
@@ -113,7 +113,7 @@ class TestInjectCredentialsEnvCleanup:
         from typing import Any
         from unittest.mock import patch
 
-        from octop_harness.cli.config.loader import _inject_credentials
+        from happyclaw_harness.cli.config.loader import _inject_credentials
 
         providers: dict[str, Any] = {"openai": {"base_url": "https://api.openai.com/v1", "api_key": "from-config"}}
         credentials: dict[str, Any] = {}
@@ -127,7 +127,7 @@ class TestInjectCredentialsEnvCleanup:
         """credentials.json injection must still work after cleanup."""
         from typing import Any
 
-        from octop_harness.cli.config.loader import _inject_credentials
+        from happyclaw_harness.cli.config.loader import _inject_credentials
 
         providers: dict[str, Any] = {"openai": {"base_url": "https://api.openai.com/v1", "api_key": ""}}
         credentials: dict[str, Any] = {"openai": "sk-from-creds-file"}

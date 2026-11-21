@@ -1,6 +1,6 @@
 ---
 name: Feature request
-about: Suggest an idea for octop-harness
+about: Suggest an idea for happyclaw-harness
 title: "[feat] "
 labels: enhancement
 ---

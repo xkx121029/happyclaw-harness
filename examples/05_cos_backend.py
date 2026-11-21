@@ -39,14 +39,14 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-from octop_harness import (
+from happyclaw_harness import (
     ChatRequest,
     HarnessAgent,
     HarnessAgentConfig,
     HarnessAgentManager,
 )
-from octop_harness.backends import resolve_backend
-from octop_harness.backends.utils import DEFENSIVE_OP_ERRORS
+from happyclaw_harness.backends import resolve_backend
+from happyclaw_harness.backends.utils import DEFENSIVE_OP_ERRORS
 
 # ---------------------------------------------------------------------------
 # Credentials — read strictly from the environment (``.env`` is auto-loaded
@@ -164,9 +164,9 @@ def scenario_agent_pure_cos(local_root: Path) -> None:
     print("backend type:", type(agent.backend).__name__)
     agent.init_workspace()
 
-    from octop_harness.backends.utils import backend_write_force
+    from happyclaw_harness.backends.utils import backend_write_force
 
-    backend_write_force(agent.backend, "/from-agent.md", "# Greetings from octop-harness")
+    backend_write_force(agent.backend, "/from-agent.md", "# Greetings from happyclaw-harness")
     print("agent.backend.ls('/'):")
     ls_result = agent.backend.ls("/")
     for f in getattr(ls_result, "entries", None) or []:

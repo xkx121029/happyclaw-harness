@@ -9,11 +9,11 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from octop_harness.config import HarnessAgentConfig, ProviderConfig
-from octop_harness.manager import HarnessAgentManager
-from octop_harness.teams.inbox import InboxMessage
-from octop_harness.teams.processor import ReplyEvent, default_compose_followup
-from octop_harness.teams.util import derive_peer_thread_id
+from happyclaw_harness.config import HarnessAgentConfig, ProviderConfig
+from happyclaw_harness.manager import HarnessAgentManager
+from happyclaw_harness.teams.inbox import InboxMessage
+from happyclaw_harness.teams.processor import ReplyEvent, default_compose_followup
+from happyclaw_harness.teams.util import derive_peer_thread_id
 
 
 def _config(tmp_path: Path, *, name: str = "peer-a", team_peers: tuple[str, ...] | None = None) -> HarnessAgentConfig:
@@ -36,7 +36,7 @@ def _mgr(tmp_path: Path, *, team_peers: tuple[str, ...] | None = None) -> Harnes
     mock_agent = MagicMock()
     mock_agent.init_workspace.return_value = MagicMock()
     mock_agent.call = AsyncMock(return_value={"messages": [{"role": "assistant", "content": "ok"}]})
-    with patch("octop_harness.manager.HarnessAgent", return_value=mock_agent):
+    with patch("happyclaw_harness.manager.HarnessAgent", return_value=mock_agent):
         mgr = HarnessAgentManager()
         mgr.create_agent(
             _config(tmp_path, name="main", team_peers=team_peers),
@@ -98,7 +98,7 @@ def test_resolve_peer_matches_metadata_display_name(tmp_path: Path) -> None:
     mock_agent = MagicMock()
     mock_agent.init_workspace.return_value = MagicMock()
     mock_agent.call = AsyncMock(return_value={"messages": [{"role": "assistant", "content": "ok"}]})
-    with patch("octop_harness.manager.HarnessAgent", return_value=mock_agent):
+    with patch("happyclaw_harness.manager.HarnessAgent", return_value=mock_agent):
         mgr = HarnessAgentManager()
         mgr.create_agent(
             _config(tmp_path, name="agent_clin01"),
@@ -136,7 +136,7 @@ async def test_call_peer_forwards_only_message_text(tmp_path: Path) -> None:
     mock_agent = MagicMock()
     mock_agent.init_workspace.return_value = MagicMock()
     mock_agent.call = AsyncMock(return_value={"messages": [{"role": "assistant", "content": "ok"}]})
-    with patch("octop_harness.manager.HarnessAgent", return_value=mock_agent):
+    with patch("happyclaw_harness.manager.HarnessAgent", return_value=mock_agent):
         mgr = HarnessAgentManager()
         mgr.create_agent(_config(tmp_path), agent_id="main", metadata={"user_id": 7})
         mgr.create_agent(_config(tmp_path / "b"), agent_id="peer-b", metadata={"user_id": 7})
@@ -157,7 +157,7 @@ async def test_call_peer_forwards_only_message_text(tmp_path: Path) -> None:
 async def test_submit_peer_requires_team(tmp_path: Path) -> None:
     mock_agent = MagicMock()
     mock_agent.init_workspace.return_value = MagicMock()
-    with patch("octop_harness.manager.HarnessAgent", return_value=mock_agent):
+    with patch("happyclaw_harness.manager.HarnessAgent", return_value=mock_agent):
         mgr = HarnessAgentManager()
         mgr.create_agent(_config(tmp_path), agent_id="main", metadata={"user_id": 1})
         mgr.create_agent(_config(tmp_path / "b"), agent_id="child", metadata={"user_id": 1})
@@ -188,7 +188,7 @@ async def test_submit_peer_enqueues_and_pushes(tmp_path: Path) -> None:
     mock_agent.init_workspace.return_value = MagicMock()
     mock_agent.call = AsyncMock(return_value={"messages": [{"role": "assistant", "content": "reply"}]})
 
-    with patch("octop_harness.manager.HarnessAgent", return_value=mock_agent):
+    with patch("happyclaw_harness.manager.HarnessAgent", return_value=mock_agent):
         mgr = HarnessAgentManager(team_processor=_Proc())
         mgr.create_agent(_config(tmp_path), agent_id="main", metadata={"user_id": 1})
         mgr.create_agent(_config(tmp_path / "b"), agent_id="child", metadata={"user_id": 1})
@@ -228,7 +228,7 @@ async def test_agent_list_includes_guidance_cards(tmp_path: Path) -> None:
     mgr = _mgr(tmp_path)
     tools = {tool.name: tool for tool in mgr.team.team_tools()}
     runtime = {"configurable": {"agent_id": "main", "user": 7}}
-    with patch("octop_harness.teams.tools.get_config", return_value=runtime):
+    with patch("happyclaw_harness.teams.tools.get_config", return_value=runtime):
         raw = await tools["agent_list"].ainvoke({})
     payload = json.loads(raw)
     analyst = next(item for item in payload if item["agent_id"] == "peer-b")
@@ -254,7 +254,7 @@ async def test_call_peer_uses_stable_derived_thread_id(tmp_path: Path) -> None:
     mock_agent = MagicMock()
     mock_agent.init_workspace.return_value = MagicMock()
     mock_agent.call = AsyncMock(return_value={"messages": [{"role": "assistant", "content": "ok"}]})
-    with patch("octop_harness.manager.HarnessAgent", return_value=mock_agent):
+    with patch("happyclaw_harness.manager.HarnessAgent", return_value=mock_agent):
         mgr = HarnessAgentManager()
         mgr.create_agent(_config(tmp_path), agent_id="main", metadata={"user_id": 7})
         mgr.create_agent(_config(tmp_path / "b"), agent_id="peer-b", metadata={"user_id": 7})
@@ -284,12 +284,12 @@ async def test_call_peer_uses_stable_derived_thread_id(tmp_path: Path) -> None:
 
 @pytest.mark.asyncio
 async def test_call_peer_prepare_hook_can_rewrite_session(tmp_path: Path) -> None:
-    from octop_harness.teams.util import PeerCall, PeerSession
+    from happyclaw_harness.teams.util import PeerCall, PeerSession
 
     mock_agent = MagicMock()
     mock_agent.init_workspace.return_value = MagicMock()
     mock_agent.call = AsyncMock(return_value={"messages": [{"role": "assistant", "content": "ok"}]})
-    with patch("octop_harness.manager.HarnessAgent", return_value=mock_agent):
+    with patch("happyclaw_harness.manager.HarnessAgent", return_value=mock_agent):
         mgr = HarnessAgentManager()
         mgr.create_agent(_config(tmp_path), agent_id="main", metadata={"user_id": 7})
         mgr.create_agent(_config(tmp_path / "b"), agent_id="peer-b", metadata={"user_id": 7})
@@ -314,12 +314,12 @@ async def test_call_peer_prepare_hook_can_rewrite_session(tmp_path: Path) -> Non
 
 @pytest.mark.asyncio
 async def test_call_peer_prepare_hook_can_rewrite_message(tmp_path: Path) -> None:
-    from octop_harness.teams.util import PeerCall, PeerSession
+    from happyclaw_harness.teams.util import PeerCall, PeerSession
 
     mock_agent = MagicMock()
     mock_agent.init_workspace.return_value = MagicMock()
     mock_agent.call = AsyncMock(return_value={"messages": [{"role": "assistant", "content": "ok"}]})
-    with patch("octop_harness.manager.HarnessAgent", return_value=mock_agent):
+    with patch("happyclaw_harness.manager.HarnessAgent", return_value=mock_agent):
         mgr = HarnessAgentManager()
         mgr.create_agent(_config(tmp_path), agent_id="main", metadata={"user_id": 7})
         mgr.create_agent(_config(tmp_path / "b"), agent_id="peer-b", metadata={"user_id": 7})
@@ -356,7 +356,7 @@ async def test_ask_agent_request_override_forces_sync(tmp_path: Path) -> None:
             "peer_invoke_mode": "sync",
         }
     }
-    with patch("octop_harness.teams.tools.get_config", return_value=runtime):
+    with patch("happyclaw_harness.teams.tools.get_config", return_value=runtime):
         raw = await tools["ask_agent"].ainvoke({"agent": "peer-b", "message": "hi", "mode": "background"})
     payload = json.loads(raw)
     assert payload["mode"] == "sync"
@@ -367,7 +367,7 @@ async def test_ask_agent_request_override_forces_sync(tmp_path: Path) -> None:
 async def test_ask_agent_uses_caller_config_async(tmp_path: Path) -> None:
     from dataclasses import replace
 
-    from octop_harness.teams.tools import build_team_tools
+    from happyclaw_harness.teams.tools import build_team_tools
 
     class _Proc:
         def compose_followup(self, msg: InboxMessage, *, result_text, error_text) -> str:
@@ -379,7 +379,7 @@ async def test_ask_agent_uses_caller_config_async(tmp_path: Path) -> None:
     mock_agent = MagicMock()
     mock_agent.init_workspace.return_value = MagicMock()
     mock_agent.call = AsyncMock(return_value={"messages": [{"role": "assistant", "content": "ok"}]})
-    with patch("octop_harness.manager.HarnessAgent", return_value=mock_agent):
+    with patch("happyclaw_harness.manager.HarnessAgent", return_value=mock_agent):
         mgr = HarnessAgentManager(team_processor=_Proc())
         mgr.create_agent(
             replace(_config(tmp_path, name="main"), peer_invoke_mode="async"),
@@ -390,7 +390,7 @@ async def test_ask_agent_uses_caller_config_async(tmp_path: Path) -> None:
 
     tools = {tool.name: tool for tool in build_team_tools(mgr.team)}
     runtime = {"configurable": {"agent_id": "main", "user": 7}}
-    with patch("octop_harness.teams.tools.get_config", return_value=runtime):
+    with patch("happyclaw_harness.teams.tools.get_config", return_value=runtime):
         raw = await tools["ask_agent"].ainvoke({"agent": "peer-b", "message": "hi", "mode": "sync"})
     payload = json.loads(raw)
     assert payload["mode"] == "background"
@@ -401,12 +401,12 @@ async def test_ask_agent_uses_caller_config_async(tmp_path: Path) -> None:
 async def test_ask_agent_request_cannot_escalate_sync_agent(tmp_path: Path) -> None:
     from dataclasses import replace
 
-    from octop_harness.teams.tools import build_team_tools
+    from happyclaw_harness.teams.tools import build_team_tools
 
     mock_agent = MagicMock()
     mock_agent.init_workspace.return_value = MagicMock()
     mock_agent.call = AsyncMock(return_value={"messages": [{"role": "assistant", "content": "ok"}]})
-    with patch("octop_harness.manager.HarnessAgent", return_value=mock_agent):
+    with patch("happyclaw_harness.manager.HarnessAgent", return_value=mock_agent):
         mgr = HarnessAgentManager()
         mgr.create_agent(
             replace(_config(tmp_path, name="main"), peer_invoke_mode="sync"),
@@ -423,7 +423,7 @@ async def test_ask_agent_request_cannot_escalate_sync_agent(tmp_path: Path) -> N
             "peer_invoke_mode": "async",
         }
     }
-    with patch("octop_harness.teams.tools.get_config", return_value=runtime):
+    with patch("happyclaw_harness.teams.tools.get_config", return_value=runtime):
         raw = await tools["ask_agent"].ainvoke({"agent": "peer-b", "message": "hi"})
     payload = json.loads(raw)
     assert payload["mode"] == "sync"
@@ -452,12 +452,12 @@ def test_list_peers_request_config_intersects_and_empty_hides(tmp_path: Path) ->
 async def test_prepare_hook_strips_identity_and_after_sees_rewritten_message(
     tmp_path: Path,
 ) -> None:
-    from octop_harness.teams.util import PeerCall, PeerSession
+    from happyclaw_harness.teams.util import PeerCall, PeerSession
 
     mock_agent = MagicMock()
     mock_agent.init_workspace.return_value = MagicMock()
     mock_agent.call = AsyncMock(return_value={"messages": [{"role": "assistant", "content": "ok"}]})
-    with patch("octop_harness.manager.HarnessAgent", return_value=mock_agent):
+    with patch("happyclaw_harness.manager.HarnessAgent", return_value=mock_agent):
         mgr = HarnessAgentManager()
         mgr.create_agent(_config(tmp_path), agent_id="main", metadata={"user_id": 7})
         mgr.create_agent(_config(tmp_path / "b"), agent_id="peer-b", metadata={"user_id": 7})
@@ -506,11 +506,11 @@ async def test_prepare_hook_strips_identity_and_after_sees_rewritten_message(
 def test_team_tools_uses_caller_config_schema(tmp_path: Path) -> None:
     from dataclasses import replace
 
-    from octop_harness.teams.tools import AskAgentAsyncInput, AskAgentInput
+    from happyclaw_harness.teams.tools import AskAgentAsyncInput, AskAgentInput
 
     mock_agent = MagicMock()
     mock_agent.init_workspace.return_value = MagicMock()
-    with patch("octop_harness.manager.HarnessAgent", return_value=mock_agent):
+    with patch("happyclaw_harness.manager.HarnessAgent", return_value=mock_agent):
         mgr = HarnessAgentManager()
         mgr.create_agent(
             replace(_config(tmp_path, name="main"), peer_invoke_mode="async"),

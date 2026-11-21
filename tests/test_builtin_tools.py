@@ -7,8 +7,8 @@ from unittest.mock import patch
 
 import httpx
 
-from octop_harness.builtin.tools.current_time import CurrentTimeTool, current_time
-from octop_harness.builtin.tools.web_fetch import web_fetch
+from happyclaw_harness.builtin.tools.current_time import CurrentTimeTool, current_time
+from happyclaw_harness.builtin.tools.web_fetch import web_fetch
 
 _WEEKDAYS_EN = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"}
 _WEEKDAYS_ZH = {"周一", "周二", "周三", "周四", "周五", "周六", "周日"}
@@ -101,10 +101,10 @@ class TestWebFetch:
 
         with (
             patch(
-                "octop_harness.builtin.tools.web_fetch.validate_agent_fetch_url",
+                "happyclaw_harness.builtin.tools.web_fetch.validate_agent_fetch_url",
                 side_effect=lambda u: u,
             ),
-            patch("octop_harness.builtin.tools.web_fetch.httpx.Client", FakeClient),
+            patch("happyclaw_harness.builtin.tools.web_fetch.httpx.Client", FakeClient),
         ):
             result = web_fetch.invoke({"url": "https://example.com/big"})
         assert result.startswith("Error:")
@@ -134,7 +134,7 @@ class TestWebFetch:
                 """Return canned HTML."""
                 return FakeResponse()
 
-        with patch("octop_harness.builtin.tools.web_fetch.httpx.Client", FakeClient):
+        with patch("happyclaw_harness.builtin.tools.web_fetch.httpx.Client", FakeClient):
             md = web_fetch.invoke({"url": "https://example.com"})
         # Basic markdown markers we expect from markdownify.
         assert "Title" in md
@@ -170,7 +170,7 @@ class TestWebFetch:
             def get(self, url: str) -> FakeResponse:
                 return FakeResponse()
 
-        with patch("octop_harness.builtin.tools.web_fetch.httpx.Client", FakeClient):
+        with patch("happyclaw_harness.builtin.tools.web_fetch.httpx.Client", FakeClient):
             result = web_fetch.invoke({"url": "https://example.com/missing"})
 
         assert isinstance(result, str)
@@ -194,7 +194,7 @@ class TestWebFetch:
             def get(self, url: str) -> object:
                 raise httpx.ConnectError("Name or service not known")
 
-        with patch("octop_harness.builtin.tools.web_fetch.httpx.Client", FakeClient):
+        with patch("happyclaw_harness.builtin.tools.web_fetch.httpx.Client", FakeClient):
             result = web_fetch.invoke({"url": "https://no-such-host.invalid/"})
 
         assert isinstance(result, str)

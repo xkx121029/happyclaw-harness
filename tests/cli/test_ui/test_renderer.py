@@ -1,11 +1,11 @@
-"""Tests for octop_harness.cli.ui.renderer."""
+"""Tests for happyclaw_harness.cli.ui.renderer."""
 
 from io import StringIO
 
 from rich.console import Console
 
-from octop_harness.cli.ui.renderer import StreamRenderer
-from octop_harness.cli.ui.theme import get_theme
+from happyclaw_harness.cli.ui.renderer import StreamRenderer
+from happyclaw_harness.cli.ui.theme import get_theme
 
 
 def test_renderer_accumulates_content() -> None:

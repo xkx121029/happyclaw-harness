@@ -1,4 +1,4 @@
-"""Tests for ``octop_harness.middleware.pii``."""
+"""Tests for ``happyclaw_harness.middleware.pii``."""
 
 from __future__ import annotations
 
@@ -6,7 +6,7 @@ from itertools import pairwise
 
 import pytest
 
-from octop_harness.middleware.pii import detect_pii
+from happyclaw_harness.middleware.pii import detect_pii
 
 
 class TestDetectsKnownFormats:

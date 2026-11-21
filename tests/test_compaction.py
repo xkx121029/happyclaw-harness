@@ -9,16 +9,16 @@ import pytest
 from langchain_core.language_models.fake_chat_models import FakeListChatModel
 from langchain_core.messages import AIMessage, HumanMessage
 
-from octop_harness.backends import resolve_backend
-from octop_harness.compaction import (
+from happyclaw_harness.backends import resolve_backend
+from happyclaw_harness.compaction import (
     FORCE_KEEP_MESSAGES,
     MIN_EFFECTIVE_MESSAGES,
     CompactResult,
     display_offload_path,
     force_compact_thread,
 )
-from octop_harness.context_usage import conversation_tokens_from_messages, estimate_tokens
-from octop_harness.middleware.memory_recall import replay_recall_snapshots, stamp_recall_snapshot
+from happyclaw_harness.context_usage import conversation_tokens_from_messages, estimate_tokens
+from happyclaw_harness.middleware.memory_recall import replay_recall_snapshots, stamp_recall_snapshot
 
 
 def _long_thread(n: int = 12) -> list:
@@ -65,7 +65,7 @@ async def test_force_compact_updates_summarization_event(recall: str) -> None:
     backend.write = MagicMock(return_value=SimpleNamespace(error=None))
     backend.edit = MagicMock(return_value=SimpleNamespace(error=None))
 
-    with patch("octop_harness.compaction._build_force_summarization_middleware") as build_mw:
+    with patch("happyclaw_harness.compaction._build_force_summarization_middleware") as build_mw:
         mw = MagicMock()
         mw._apply_event_to_messages = MagicMock(side_effect=lambda msgs, _ev: list(msgs))
         # Keep last 6 → cutoff leaves many to summarize
@@ -139,7 +139,7 @@ async def test_force_compact_uses_graph_backend_but_turn_model() -> None:
     turn_model = MagicMock(name="kimi")
     turn_model.profile = {"max_input_tokens": 131_072}
 
-    with patch("octop_harness.compaction._build_force_summarization_middleware") as build_mw:
+    with patch("happyclaw_harness.compaction._build_force_summarization_middleware") as build_mw:
         force_mw = MagicMock()
         cutoff = len(messages) - FORCE_KEEP_MESSAGES
         force_mw._determine_cutoff_index = MagicMock(return_value=cutoff)
@@ -199,7 +199,7 @@ async def test_force_compact_runs_offload_and_summary_concurrently() -> None:
         await offload_started.wait()
         return "S"
 
-    with patch("octop_harness.compaction._build_force_summarization_middleware") as build_mw:
+    with patch("happyclaw_harness.compaction._build_force_summarization_middleware") as build_mw:
         mw = MagicMock()
         cutoff = len(messages) - FORCE_KEEP_MESSAGES
         mw._apply_event_to_messages = MagicMock(side_effect=lambda msgs, _ev: list(msgs))
@@ -241,7 +241,7 @@ async def test_force_compact_skips_missing_inline_media_helper() -> None:
     graph.aget_state = AsyncMock(return_value=SimpleNamespace(values={"messages": messages}))
     graph.aupdate_state = AsyncMock()
 
-    with patch("octop_harness.compaction._build_force_summarization_middleware") as build_mw:
+    with patch("happyclaw_harness.compaction._build_force_summarization_middleware") as build_mw:
         mw = MagicMock(
             spec=[
                 "_apply_event_to_messages",
@@ -288,7 +288,7 @@ async def test_force_compact_rejects_single_message_slice() -> None:
     graph = MagicMock()
     graph.aget_state = AsyncMock(return_value=SimpleNamespace(values={"messages": messages}))
 
-    with patch("octop_harness.compaction._build_force_summarization_middleware") as build_mw:
+    with patch("happyclaw_harness.compaction._build_force_summarization_middleware") as build_mw:
         mw = MagicMock()
         mw._apply_event_to_messages = MagicMock(side_effect=lambda msgs, _ev: list(msgs))
         mw._determine_cutoff_index = MagicMock(return_value=1)
@@ -326,7 +326,7 @@ async def test_force_compact_passes_session_id_to_offload() -> None:
         seen.append(session_id)
         return f"/ws/conversation_history/{session_id}.md"
 
-    with patch("octop_harness.compaction._build_force_summarization_middleware") as build_mw:
+    with patch("happyclaw_harness.compaction._build_force_summarization_middleware") as build_mw:
         mw = MagicMock()
         cutoff = len(messages) - FORCE_KEEP_MESSAGES
         mw._get_session_id = MagicMock(return_value="session_existing")
@@ -510,7 +510,7 @@ async def test_force_compact_offload_none_does_not_update_state() -> None:
     graph.aget_state = AsyncMock(return_value=SimpleNamespace(values={"messages": messages}))
     graph.aupdate_state = AsyncMock()
 
-    with patch("octop_harness.compaction._build_force_summarization_middleware") as build_mw:
+    with patch("happyclaw_harness.compaction._build_force_summarization_middleware") as build_mw:
         mw = MagicMock()
         cutoff = len(messages) - FORCE_KEEP_MESSAGES
         mw._apply_event_to_messages = MagicMock(side_effect=lambda msgs, _ev: list(msgs))
@@ -556,7 +556,7 @@ async def test_force_compact_reuses_graph_mw_and_restores_keep(tmp_path) -> None
     graph.aget_state = AsyncMock(return_value=SimpleNamespace(values={"messages": messages}))
     graph.aupdate_state = AsyncMock()
 
-    with patch("octop_harness.compaction._build_force_summarization_middleware") as build_mw:
+    with patch("happyclaw_harness.compaction._build_force_summarization_middleware") as build_mw:
         result = await force_compact_thread(
             graph=graph,
             backend=backend,

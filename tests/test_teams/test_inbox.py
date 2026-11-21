@@ -7,9 +7,9 @@ from typing import Any
 
 import pytest
 
-from octop_harness.request import ChatRequest
-from octop_harness.teams.inbox import HarnessAgentInboxManager, InboxMessage
-from octop_harness.teams.processor import ReplyEvent, default_compose_followup
+from happyclaw_harness.request import ChatRequest
+from happyclaw_harness.teams.inbox import HarnessAgentInboxManager, InboxMessage
+from happyclaw_harness.teams.processor import ReplyEvent, default_compose_followup
 
 
 async def _wait_until(predicate: Callable[[], bool], timeout: float = 1.0) -> None:
@@ -393,7 +393,7 @@ def test_inbox_rejects_non_positive_concurrency() -> None:
 
 @pytest.mark.asyncio
 async def test_inbox_marks_model_retry_failure_prompt_as_failed() -> None:
-    from octop_harness.messages import MODEL_RETRY_FAILURE_MARK
+    from happyclaw_harness.messages import MODEL_RETRY_FAILURE_MARK
 
     proc = _Processor()
     prompt = f"{MODEL_RETRY_FAILURE_MARK}\nThe model API request failed.\nTechnical detail: boom"

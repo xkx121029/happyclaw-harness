@@ -8,9 +8,9 @@ from pathlib import Path
 
 from rich.console import Console
 
-from octop_harness.cli.repl.commands import dispatch_command
-from octop_harness.cli.repl.state import SessionState
-from octop_harness.cli.ui.theme import get_theme
+from happyclaw_harness.cli.repl.commands import dispatch_command
+from happyclaw_harness.cli.repl.state import SessionState
+from happyclaw_harness.cli.ui.theme import get_theme
 
 
 def _make_state() -> SessionState:
@@ -144,7 +144,7 @@ def test_env_reload(tmp_path: Path, monkeypatch: object) -> None:
         return tmp_path / ".env"
 
     monkeypatch.setattr(  # type: ignore[attr-defined]
-        "octop_harness.cli.load_dotenv_files", fake_load
+        "happyclaw_harness.cli.load_dotenv_files", fake_load
     )
     # Also patch Path.cwd() so we know what project_dir gets passed
     monkeypatch.setattr(Path, "cwd", classmethod(lambda cls: tmp_path))  # type: ignore[attr-defined]

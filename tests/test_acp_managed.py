@@ -9,8 +9,8 @@ from langchain_core.messages import AIMessageChunk, HumanMessage
 from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.types import Command
 
-from octop_harness.acp.managed import _hitl_payload, build_managed_graph, option_id_for_decision
-from octop_harness.acp.models import SuspendedPermission
+from happyclaw_harness.acp.managed import _hitl_payload, build_managed_graph, option_id_for_decision
+from happyclaw_harness.acp.models import SuspendedPermission
 
 
 class _Service:
@@ -226,8 +226,8 @@ async def test_managed_graph_accepts_turn_without_text() -> None:
 def test_protocol_forwards_managed_tool_result() -> None:
     from langchain_core.messages import AIMessageChunk
 
-    from octop_harness.protocols.langgraph import LangGraphProtocol
-    from octop_harness.protocols.think_splitter import ThinkSplitter
+    from happyclaw_harness.protocols.langgraph import LangGraphProtocol
+    from happyclaw_harness.protocols.think_splitter import ThinkSplitter
 
     protocol = LangGraphProtocol.__new__(LangGraphProtocol)
     events = protocol._project_messages_chunk(
@@ -318,7 +318,7 @@ async def test_managed_graph_keeps_text_when_permission_pauses() -> None:
 def test_protocol_keeps_stored_managed_tools_off_the_live_channel() -> None:
     from langchain_core.messages import AIMessage, ToolMessage
 
-    from octop_harness.protocols.langgraph import LangGraphProtocol
+    from happyclaw_harness.protocols.langgraph import LangGraphProtocol
 
     protocol = LangGraphProtocol.__new__(LangGraphProtocol)
     events = protocol._project_updates_chunk(

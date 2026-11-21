@@ -10,8 +10,8 @@ from pathlib import Path
 
 import pytest
 
-from octop_harness.backends import resolve_backend
-from octop_harness.backends.bwrap_shell import BubbledLocalShellBackend
+from happyclaw_harness.backends import resolve_backend
+from happyclaw_harness.backends.bwrap_shell import BubbledLocalShellBackend
 
 _BWRAP = shutil.which("bwrap")
 

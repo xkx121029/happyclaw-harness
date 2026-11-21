@@ -10,12 +10,12 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from octop_harness.agent import HarnessAgent
-from octop_harness.config import HarnessAgentConfig, ModelConfig, ProviderConfig
-from octop_harness.init import InitResult
-from octop_harness.manager import AgentEntry, HarnessAgentManager
-from octop_harness.middleware.bootstrap import BOOTSTRAP_FILENAME
-from octop_harness.request import ChatRequest
+from happyclaw_harness.agent import HarnessAgent
+from happyclaw_harness.config import HarnessAgentConfig, ModelConfig, ProviderConfig
+from happyclaw_harness.init import InitResult
+from happyclaw_harness.manager import AgentEntry, HarnessAgentManager
+from happyclaw_harness.middleware.bootstrap import BOOTSTRAP_FILENAME
+from happyclaw_harness.request import ChatRequest
 
 
 def _config(tmp_path: Path) -> HarnessAgentConfig:
@@ -73,7 +73,7 @@ class TestAgentEntry:
 
 class TestAgentManagerCRUD:
     def test_create_passes_agent_id(self, tmp_path: Path) -> None:
-        with patch("octop_harness.manager.HarnessAgent") as mock_cls:
+        with patch("happyclaw_harness.manager.HarnessAgent") as mock_cls:
             mock_cls.return_value = _mock_agent()
             mgr = HarnessAgentManager()
             mgr.create_agent(_config(tmp_path), agent_id="abc123")
@@ -86,7 +86,7 @@ class TestAgentManagerCRUD:
         assert log_dir.is_dir()
 
     def test_file_logging_disabled_does_not_open_a_log_file(self, tmp_path: Path) -> None:
-        from octop_harness.observability.logging import teardown_logging
+        from happyclaw_harness.observability.logging import teardown_logging
 
         log_dir = tmp_path / "app-logs"
         try:
@@ -94,7 +94,7 @@ class TestAgentManagerCRUD:
             assert mgr._log_file is None
             assert mgr._log_dir is None
             assert not log_dir.exists()
-            assert logging.getLogger("octop_harness").handlers == []
+            assert logging.getLogger("happyclaw_harness").handlers == []
         finally:
             teardown_logging()
 
@@ -103,7 +103,7 @@ class TestAgentManagerCRUD:
         assert mgr._log_dir == (Path.home() / ".octop-harness" / "logs" / "nested").resolve()
 
     def test_create_auto_id(self, tmp_path: Path) -> None:
-        with patch("octop_harness.manager.HarnessAgent") as mock_cls:
+        with patch("happyclaw_harness.manager.HarnessAgent") as mock_cls:
             mock_cls.return_value = _mock_agent()
             mgr = HarnessAgentManager()
             entry = mgr.create_agent(_config(tmp_path))
@@ -113,21 +113,21 @@ class TestAgentManagerCRUD:
         assert entry.tags == []
 
     def test_create_auto_id_unique(self, tmp_path: Path) -> None:
-        with patch("octop_harness.manager.HarnessAgent") as mock_cls:
+        with patch("happyclaw_harness.manager.HarnessAgent") as mock_cls:
             mock_cls.return_value = _mock_agent()
             mgr = HarnessAgentManager()
             ids = {mgr.create_agent(_config(tmp_path)).agent_id for _ in range(20)}
         assert len(ids) == 20
 
     def test_create_custom_id(self, tmp_path: Path) -> None:
-        with patch("octop_harness.manager.HarnessAgent") as mock_cls:
+        with patch("happyclaw_harness.manager.HarnessAgent") as mock_cls:
             mock_cls.return_value = _mock_agent()
             mgr = HarnessAgentManager()
             entry = mgr.create_agent(_config(tmp_path), agent_id="my-agent")
         assert entry.agent_id == "my-agent"
 
     def test_create_with_metadata_and_tags(self, tmp_path: Path) -> None:
-        with patch("octop_harness.manager.HarnessAgent") as mock_cls:
+        with patch("happyclaw_harness.manager.HarnessAgent") as mock_cls:
             mock_cls.return_value = _mock_agent()
             mgr = HarnessAgentManager()
             entry = mgr.create_agent(
@@ -140,7 +140,7 @@ class TestAgentManagerCRUD:
 
     def test_create_builds_agent_immediately(self, tmp_path: Path) -> None:
         """HarnessAgent is constructed in create_agent(), not lazily."""
-        with patch("octop_harness.manager.HarnessAgent") as mock_cls:
+        with patch("happyclaw_harness.manager.HarnessAgent") as mock_cls:
             mock_cls.return_value = _mock_agent()
             mgr = HarnessAgentManager()
             entry = mgr.create_agent(_config(tmp_path))
@@ -149,14 +149,14 @@ class TestAgentManagerCRUD:
 
     def test_create_calls_init_workspace_by_default(self, tmp_path: Path) -> None:
         mock_agent = _mock_agent()
-        with patch("octop_harness.manager.HarnessAgent", return_value=mock_agent):
+        with patch("happyclaw_harness.manager.HarnessAgent", return_value=mock_agent):
             mgr = HarnessAgentManager()
             mgr.create_agent(_config(tmp_path))
         mock_agent.init_workspace.assert_called_once()
 
     def test_create_skips_init_workspace_when_disabled(self, tmp_path: Path) -> None:
         mock_agent = _mock_agent()
-        with patch("octop_harness.manager.HarnessAgent", return_value=mock_agent):
+        with patch("happyclaw_harness.manager.HarnessAgent", return_value=mock_agent):
             mgr = HarnessAgentManager()
             mgr.create_agent(_config(tmp_path), init_workspace=False)
         mock_agent.init_workspace.assert_not_called()
@@ -169,7 +169,7 @@ class TestAgentManagerCRUD:
             templates_created=[f"{tmp_path}/AGENTS.md"],
             skills_synced=True,
         )
-        with patch("octop_harness.manager.HarnessAgent", return_value=mock_agent):
+        with patch("happyclaw_harness.manager.HarnessAgent", return_value=mock_agent):
             mgr = HarnessAgentManager()
             mgr.create_agent(_config(tmp_path))
         mock_agent._init_graph.assert_called_once()
@@ -181,13 +181,13 @@ class TestAgentManagerCRUD:
             workspace_path=str(tmp_path),
             templates_skipped=[f"{tmp_path}/AGENTS.md"],
         )
-        with patch("octop_harness.manager.HarnessAgent", return_value=mock_agent):
+        with patch("happyclaw_harness.manager.HarnessAgent", return_value=mock_agent):
             mgr = HarnessAgentManager()
             mgr.create_agent(_config(tmp_path))
         mock_agent._init_graph.assert_not_called()
 
     def test_create_duplicate_id_raises(self, tmp_path: Path) -> None:
-        with patch("octop_harness.manager.HarnessAgent") as mock_cls:
+        with patch("happyclaw_harness.manager.HarnessAgent") as mock_cls:
             mock_cls.return_value = _mock_agent()
             mgr = HarnessAgentManager()
             mgr.create_agent(_config(tmp_path), agent_id="dup")
@@ -195,7 +195,7 @@ class TestAgentManagerCRUD:
                 mgr.create_agent(_config(tmp_path), agent_id="dup")
 
     def test_get_existing(self, tmp_path: Path) -> None:
-        with patch("octop_harness.manager.HarnessAgent") as mock_cls:
+        with patch("happyclaw_harness.manager.HarnessAgent") as mock_cls:
             mock_cls.return_value = _mock_agent()
             mgr = HarnessAgentManager()
             created = mgr.create_agent(_config(tmp_path), agent_id="a1")
@@ -208,7 +208,7 @@ class TestAgentManagerCRUD:
 
     def test_remove_closes_agent(self, tmp_path: Path) -> None:
         mock_agent = _mock_agent()
-        with patch("octop_harness.manager.HarnessAgent", return_value=mock_agent):
+        with patch("happyclaw_harness.manager.HarnessAgent", return_value=mock_agent):
             mgr = HarnessAgentManager()
             mgr.create_agent(_config(tmp_path), agent_id="del-me")
         mgr.remove_agent("del-me")
@@ -223,7 +223,7 @@ class TestAgentManagerCRUD:
 
     def test_close_closes_all_agents(self, tmp_path: Path) -> None:
         agents = [_mock_agent(), _mock_agent()]
-        with patch("octop_harness.manager.HarnessAgent") as mock_cls:
+        with patch("happyclaw_harness.manager.HarnessAgent") as mock_cls:
             mock_cls.side_effect = agents
             mgr = HarnessAgentManager()
             mgr.create_agent(_config(tmp_path), agent_id="a1")
@@ -236,7 +236,7 @@ class TestAgentManagerCRUD:
 
     def test_close_is_idempotent(self, tmp_path: Path) -> None:
         mock_agent = _mock_agent()
-        with patch("octop_harness.manager.HarnessAgent", return_value=mock_agent):
+        with patch("happyclaw_harness.manager.HarnessAgent", return_value=mock_agent):
             mgr = HarnessAgentManager()
             mgr.create_agent(_config(tmp_path))
         mgr.close()
@@ -244,7 +244,7 @@ class TestAgentManagerCRUD:
 
     def test_context_manager_closes_on_exit(self, tmp_path: Path) -> None:
         mock_agent = _mock_agent()
-        with patch("octop_harness.manager.HarnessAgent", return_value=mock_agent), HarnessAgentManager() as mgr:
+        with patch("happyclaw_harness.manager.HarnessAgent", return_value=mock_agent), HarnessAgentManager() as mgr:
             mgr.create_agent(_config(tmp_path))
         mock_agent.close.assert_called_once()
 
@@ -254,7 +254,7 @@ class TestAgentManagerCRUD:
         mock_agent = _mock_agent()
 
         async def run() -> None:
-            with patch("octop_harness.manager.HarnessAgent", return_value=mock_agent):
+            with patch("happyclaw_harness.manager.HarnessAgent", return_value=mock_agent):
                 async with HarnessAgentManager() as mgr:
                     mgr.create_agent(_config(tmp_path))
 
@@ -264,7 +264,7 @@ class TestAgentManagerCRUD:
 
 class TestAgentManagerList:
     def _setup(self, tmp_path: Path) -> HarnessAgentManager:
-        with patch("octop_harness.manager.HarnessAgent") as mock_cls:
+        with patch("happyclaw_harness.manager.HarnessAgent") as mock_cls:
             mock_cls.return_value = _mock_agent()
             mgr = HarnessAgentManager()
             mgr.create_agent(_config(tmp_path), agent_id="a1", metadata={"env": "prod"}, tags=["fast"])
@@ -317,7 +317,7 @@ class TestAgentManagerCall:
         mock_agent = _mock_agent()
         mock_agent.call = AsyncMock(return_value={"messages": []})
 
-        with patch("octop_harness.manager.HarnessAgent", return_value=mock_agent):
+        with patch("happyclaw_harness.manager.HarnessAgent", return_value=mock_agent):
             mgr = HarnessAgentManager()
             mgr.create_agent(_config(tmp_path), agent_id="c1")
 
@@ -348,7 +348,7 @@ class TestAgentManagerStream:
         mock_agent = _mock_agent()
         mock_agent.stream = fake_stream
 
-        with patch("octop_harness.manager.HarnessAgent", return_value=mock_agent):
+        with patch("happyclaw_harness.manager.HarnessAgent", return_value=mock_agent):
             mgr = HarnessAgentManager()
             entry = mgr.create_agent(_config(tmp_path), agent_id="s1")
 
@@ -371,7 +371,7 @@ class TestAgentManagerStream:
         mock_agent = _mock_agent()
         mock_agent.stream = fake_stream
 
-        with patch("octop_harness.manager.HarnessAgent", return_value=mock_agent):
+        with patch("happyclaw_harness.manager.HarnessAgent", return_value=mock_agent):
             mgr = HarnessAgentManager()
             mgr.create_agent(_config(tmp_path), agent_id="s1")
 
@@ -411,7 +411,7 @@ class TestAgentManagerStream:
         mock_agent.stream = slow_stream
         mock_agent.cancel = lambda _thread_id: cancel_event.set()
 
-        with patch("octop_harness.manager.HarnessAgent", return_value=mock_agent):
+        with patch("happyclaw_harness.manager.HarnessAgent", return_value=mock_agent):
             mgr = HarnessAgentManager()
             mgr.create_agent(_config(tmp_path), agent_id="c1")
 
@@ -440,7 +440,7 @@ class TestAgentManagerStream:
 
 class TestPublicExports:
     def test_importable_from_top_level(self) -> None:
-        from octop_harness import AgentEntry, HarnessAgentManager
+        from happyclaw_harness import AgentEntry, HarnessAgentManager
 
         assert HarnessAgentManager is not None
         assert AgentEntry is not None
@@ -448,7 +448,7 @@ class TestPublicExports:
 
 class TestAgentManagerListProviderTemplates:
     def test_returns_builtin_presets_by_default(self) -> None:
-        from octop_harness.providers import ProviderPreset
+        from happyclaw_harness.providers import ProviderPreset
 
         manager = HarnessAgentManager()
         presets = manager.list_provider_templates()
@@ -462,7 +462,7 @@ class TestAgentManagerListProviderTemplates:
     def test_returns_custom_presets_from_path(self, tmp_path: Path) -> None:
         import json
 
-        from octop_harness.providers import ProviderPreset
+        from happyclaw_harness.providers import ProviderPreset
 
         custom = tmp_path / "custom.json"
         custom.write_text(
@@ -505,7 +505,7 @@ class TestAgentManagerSharedFactory:
         ]
 
     def test_shared_factory_created_when_providers_given(self) -> None:
-        from octop_harness.llm.factory import ChatModelFactory
+        from happyclaw_harness.llm.factory import ChatModelFactory
 
         mgr = HarnessAgentManager(providers=self._providers())
         assert isinstance(mgr.shared_factory, ChatModelFactory)
@@ -516,7 +516,7 @@ class TestAgentManagerSharedFactory:
 
     def test_create_passes_shared_factory_to_agent(self, tmp_path: Path) -> None:
         """HarnessAgentManager.create_agent must pass shared_factory to HarnessAgent."""
-        from octop_harness.llm.factory import ChatModelFactory
+        from happyclaw_harness.llm.factory import ChatModelFactory
 
         providers = self._providers()
         cfg = HarnessAgentConfig(
@@ -524,7 +524,7 @@ class TestAgentManagerSharedFactory:
             providers=providers,
         )
 
-        with patch("octop_harness.manager.HarnessAgent") as mock_cls:
+        with patch("happyclaw_harness.manager.HarnessAgent") as mock_cls:
             mock_cls.return_value = _mock_agent()
             mgr = HarnessAgentManager(providers=providers)
             mgr.create_agent(cfg)
@@ -546,7 +546,7 @@ class TestAgentManagerSharedFactory:
             "agent": {"transport": "http", "url": "http://override"},
         }
 
-        with patch("octop_harness.manager.HarnessAgent") as mock_cls:
+        with patch("happyclaw_harness.manager.HarnessAgent") as mock_cls:
             mock_cls.return_value = _mock_agent()
             mgr = HarnessAgentManager(mcp_server_configs=shared)
             mgr.create_agent(cfg)
@@ -564,7 +564,7 @@ class TestAgentManagerSharedFactory:
         )
         shared = {"shared": {"transport": "http", "url": "http://shared"}}
 
-        with patch("octop_harness.manager.HarnessAgent") as mock_cls:
+        with patch("happyclaw_harness.manager.HarnessAgent") as mock_cls:
             mock_cls.return_value = _mock_agent()
             mgr = HarnessAgentManager(mcp_server_configs=shared)
             entry = mgr.create_agent(cfg)
@@ -597,7 +597,7 @@ class TestAgentManagerMcpIntegration:
         return HarnessAgentConfig(**base)  # type: ignore[arg-type]
 
     def test_shared_mcp_tools_loaded_into_agent(self, tmp_path: Path) -> None:
-        from octop_harness.middleware.mcp_tools import MCPToolMiddleware
+        from happyclaw_harness.middleware.mcp_tools import MCPToolMiddleware
 
         fake_tool = MagicMock()
         fake_tool.name = "context7_search"
@@ -625,7 +625,7 @@ class TestAgentManagerMcpIntegration:
         with (
             patch("langchain_openai.ChatOpenAI", return_value=MagicMock(name="seed-model")),
             patch("deepagents.create_deep_agent", side_effect=fake_create),
-            patch("octop_harness.agent.load_mcp_tools", side_effect=fake_load),
+            patch("happyclaw_harness.agent.load_mcp_tools", side_effect=fake_load),
         ):
             entry = mgr.create_agent(cfg, init_workspace=False)
 
@@ -660,7 +660,7 @@ class TestAgentManagerMcpIntegration:
         with (
             patch("langchain_openai.ChatOpenAI", return_value=MagicMock(name="seed-model")),
             patch("deepagents.create_deep_agent", return_value=MagicMock(name="fake-graph")),
-            patch("octop_harness.agent.load_mcp_tools", side_effect=fake_load),
+            patch("happyclaw_harness.agent.load_mcp_tools", side_effect=fake_load),
         ):
             entry = mgr.create_agent(cfg, init_workspace=False)
 
@@ -685,7 +685,7 @@ class TestAgentManagerMcpIntegration:
         with (
             patch("langchain_openai.ChatOpenAI", return_value=MagicMock(name="seed-model")),
             patch("deepagents.create_deep_agent", return_value=MagicMock(name="fake-graph")),
-            patch("octop_harness.agent.load_mcp_tools", side_effect=fake_load),
+            patch("happyclaw_harness.agent.load_mcp_tools", side_effect=fake_load),
         ):
             entry = mgr.create_agent(cfg, init_workspace=False)
 
@@ -704,7 +704,7 @@ class TestAgentManagerMcpIntegration:
                 tool.name = f"{self._name}_echo"
                 return [tool]
 
-        monkeypatch.setattr("octop_harness.mcp.MultiServerMCPClient", _Client)
+        monkeypatch.setattr("happyclaw_harness.mcp.MultiServerMCPClient", _Client)
         graph_kwargs: dict[str, object] = {}
 
         def fake_create(**kwargs: object) -> MagicMock:
@@ -732,7 +732,7 @@ class TestAgentManagerMcpIntegration:
 
 class TestBootstrapOnCreate:
     def test_create_agent_includes_bootstrap_middleware_after_init(self, tmp_path: Path) -> None:
-        from octop_harness.middleware.bootstrap import BootstrapMiddleware
+        from happyclaw_harness.middleware.bootstrap import BootstrapMiddleware
 
         providers = [
             ProviderConfig(
@@ -811,7 +811,7 @@ class TestARemoveAgentReleasesOnThisLoop:
     It used to be ``asyncio.to_thread(self.remove_agent, ...)``. aiosqlite is
     bound to the calling loop, and the sync-close fallback drives it with
     ``asyncio.run`` from the worker — so the worker waits on a loop that is
-    itself blocked waiting for the worker. Octop hit that hang when a chat
+    itself blocked waiting for the worker. HappyClaw hit that hang when a chat
     reloaded its MCP servers mid-turn.
     """
 

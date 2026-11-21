@@ -16,8 +16,8 @@ from langchain_core.messages import AIMessage, HumanMessage
 from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.graph import END, START, MessagesState, StateGraph
 
-from octop_harness.memory import checkpoint_activity
-from octop_harness.protocols.langgraph import LangGraphProtocol
+from happyclaw_harness.memory import checkpoint_activity
+from happyclaw_harness.protocols.langgraph import LangGraphProtocol
 
 pytestmark = pytest.mark.filterwarnings("ignore:The v3 streaming protocol on Pregel is experimental")
 
@@ -163,7 +163,7 @@ async def test_legacy_checkpointer_is_compatible() -> None:
 
 
 async def test_host_guard_and_history_state_operations() -> None:
-    from octop_harness.agent import HarnessAgent
+    from happyclaw_harness.agent import HarnessAgent
 
     saver = ActivitySaver()
     graph = _graph(saver, lambda state: {"messages": [AIMessage(content="finished")]})

@@ -1,8 +1,8 @@
-"""Tests for octop_harness.cli.config.paths."""
+"""Tests for happyclaw_harness.cli.config.paths."""
 
 from pathlib import Path
 
-from octop_harness.cli.config.paths import CliPaths
+from happyclaw_harness.cli.config.paths import CliPaths
 
 
 def test_global_dir_uses_home(tmp_path: Path, monkeypatch: object) -> None:

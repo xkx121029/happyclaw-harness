@@ -5,7 +5,7 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
-from octop_harness.runtime_env import (
+from happyclaw_harness.runtime_env import (
     is_protected_env_key,
     merge_host_stdio_env,
     overlay_env,
@@ -23,8 +23,8 @@ def test_parse_env_text_ignores_comments() -> None:
 
 def test_protected_keys() -> None:
     assert is_protected_env_key("HOME")
-    assert is_protected_env_key("OCTOP_HOME")
-    assert is_protected_env_key("OCTOP_DATABASE_URL")
+    assert is_protected_env_key("HAPPYCLAW_HOME")
+    assert is_protected_env_key("HAPPYCLAW_DATABASE_URL")
     assert not is_protected_env_key("TAVILY_API_KEY")
 
 

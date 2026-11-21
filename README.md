@@ -1,6 +1,6 @@
 <div align="center">
-  <img src="assets/images/banner.jpeg" alt="octop-harness" width="600" />
-  <h1>Octop Harness</h1>
+  <img src="assets/images/banner.jpeg" alt="happyclaw-harness" width="600" />
+  <h1>HappyClaw Harness</h1>
 </div>
 
 <p align="center">
@@ -13,14 +13,14 @@
 
 <p align="center">
   <a href="https://www.python.org/downloads/"><img alt="Python 3.12+" src="https://img.shields.io/badge/python-3.12%2B-blue?logo=python&logoColor=white" /></a>
-  <a href="https://github.com/xkx121029/octop-harness/blob/main/LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-green" /></a>
-  <a href="https://pypi.org/project/octop-harness/"><img src="https://img.shields.io/pypi/v/octop-harness" alt="PyPI" /></a>
+  <a href="https://github.com/xkx121029/happyclaw-harness/blob/main/LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-green" /></a>
+  <a href="https://pypi.org/project/happyclaw-harness/"><img src="https://img.shields.io/pypi/v/happyclaw-harness" alt="PyPI" /></a>
   <a href="https://github.com/astral-sh/ruff"><img alt="Code Style: Ruff" src="https://img.shields.io/badge/code%20style-ruff-000000?logo=ruff&logoColor=white" /></a>
 </p>
 
 <p align="center">
-  <a href="#what-is-octop-harness">What is Octop Harness?</a> ·
-  <a href="#why-octop-harness">Why Octop Harness?</a> ·
+  <a href="#what-is-happyclaw-harness">What is HappyClaw Harness?</a> ·
+  <a href="#why-happyclaw-harness">Why HappyClaw Harness?</a> ·
   <a href="#how-to-use">How to Use</a> ·
   <a href="#documentation">Documentation</a>
 </p>
@@ -31,11 +31,11 @@
 
 ---
 
-**octop-harness** is a production-grade agent runtime built on the harness engineering theory. At its core it is a thin, battle-tested **encapsulation and engineering layer around [deepagents](https://github.com/langchain-ai/deepagents)** — we take the elegant `create_deep_agent` primitive from deepagents and package it with everything you need to run agents in production: multi-provider model routing, persistent memory, browser/search tools, a multi-agent registry, pluggable storage backends, and a terminal CLI.
+**happyclaw-harness** is a production-grade agent runtime built on the harness engineering theory. At its core it is a thin, battle-tested **encapsulation and engineering layer around [deepagents](https://github.com/langchain-ai/deepagents)** — we take the elegant `create_deep_agent` primitive from deepagents and package it with everything you need to run agents in production: multi-provider model routing, persistent memory, browser/search tools, a multi-agent registry, pluggable storage backends, and a terminal CLI.
 
-> 💜 **A tribute to deepagents.** octop-harness stands on the shoulders of [deepagents](https://github.com/langchain-ai/deepagents) (by the LangChain team). Our `HarnessAgent` ultimately delegates to `deepagents.create_deep_agent`, and everything else — model routing, backends, tiered memory, the agent registry, CLI, and ACP — is the engineering we added on top. deepagents gives us the agentic foundation; Harness gives it a home for production.
+> 💜 **A tribute to deepagents.** happyclaw-harness stands on the shoulders of [deepagents](https://github.com/langchain-ai/deepagents) (by the LangChain team). Our `HarnessAgent` ultimately delegates to `deepagents.create_deep_agent`, and everything else — model routing, backends, tiered memory, the agent registry, CLI, and ACP — is the engineering we added on top. deepagents gives us the agentic foundation; Harness gives it a home for production.
 
-## What is Octop Harness?
+## What is HappyClaw Harness?
 
 | | Feature | Description |
 |---|---------|-------------|
@@ -50,9 +50,9 @@
 | 💬 | **Teams** | Peer inbox; `peer_invoke_mode` selects sync / async / both |
 | ⌨️ | **Terminal CLI** | Interactive chat, provider/skill config, and agent management |
 
-## Why Octop Harness?
+## Why HappyClaw Harness?
 
-octop-harness is a library (not an app) that turns deepagents into a deployable runtime. A single `HarnessAgentManager` owns a registry of agents; each agent wires together a model, a set of tools/skills, a memory backend, and a LangGraph checkpoint — all assembled through the `harness` layering discipline (L0 I/O helpers → L1 workspace facade → L2 business logic → L3 assembly).
+happyclaw-harness is a library (not an app) that turns deepagents into a deployable runtime. A single `HarnessAgentManager` owns a registry of agents; each agent wires together a model, a set of tools/skills, a memory backend, and a LangGraph checkpoint — all assembled through the `harness` layering discipline (L0 I/O helpers → L1 workspace facade → L2 business logic → L3 assembly).
 
 > Harness Agent's design goal: let you build a production-grade agent from deepagents in a few lines of code, while keeping model choice, memory, storage, and safety swappable without rewriting your agent.
 
@@ -121,7 +121,7 @@ octop-harness is a library (not an app) that turns deepagents into a deployable 
   The system prompt stays stable across turns and old v1 snapshots replay exactly;
   history and capture retain the original user text. Tool continuations and later
   turns reuse each historical snapshot instead of refreshing earlier recall.
-- For recall diagnostics, enable DEBUG on `octop_harness.middleware.memory`.
+- For recall diagnostics, enable DEBUG on `happyclaw_harness.middleware.memory`.
   `recall_inject` logs `query_chars` and `query_sha256` (the first 16 hex digits of
   SHA-256 over the complete UTF-8 query passed to recall, after stripping outer
   whitespace). Compute the same fingerprint from a suspected query to search and
@@ -175,7 +175,7 @@ Ordinary memory runtime shutdown stops accepting background work immediately and
 Enable provider-neutral `generate_image` and `generate_video` tools with Volcengine Ark:
 
 ```python
-from octop_harness import HarnessAgentConfig, MediaGenerationConfig
+from happyclaw_harness import HarnessAgentConfig, MediaGenerationConfig
 
 config = HarnessAgentConfig(
     # ...providers/default_model...
@@ -192,7 +192,7 @@ For separate image and video routes, configure named providers. Built-in adapter
 (Seedream/Seedance), Alibaba Cloud Model Studio (Wan), and MiniMax (image-01/H3):
 
 ```python
-from octop_harness import HarnessAgentConfig, MediaGenerationConfig, MediaProviderConfig
+from happyclaw_harness import HarnessAgentConfig, MediaGenerationConfig, MediaProviderConfig
 
 config = HarnessAgentConfig(
     # ...providers/default_model...
@@ -232,7 +232,7 @@ custom adapter without adding arbitrary protocol or authentication fields to dec
 - PII detection covers provider API keys, mainland China mobile numbers (common 13-19 prefixes, optional `+86` / `0086`), and 18-character resident IDs with a known province code, 1900-2099 date, and checksum. Existing `pii_strategy` and `pii_surfaces` apply; legacy 15-digit IDs and other countries' numbers are out of scope.
 
 #### CLI
-`octop-harness` provides: `init`, `chat`, `agent`, `config` (e.g. `config provider add`), `skill`, and `update`.
+`happyclaw-harness` provides: `init`, `chat`, `agent`, `config` (e.g. `config provider add`), `skill`, and `update`.
 
 ## How to Use
 
@@ -246,21 +246,21 @@ Current release: **1.0.11**. See the [release notes](CHANGELOG.md).
 
 ```bash
 # Core SDK — agent runtime, model routing, tools, skills, backends
-pip install octop-harness
+pip install happyclaw-harness
 
 # With the terminal CLI — interactive chat, config, skill management
-pip install octop-harness[cli]
+pip install happyclaw-harness[cli]
 
 # Multiple extras — comma-separated inside one pair of brackets (quote for the shell):
-pip install 'octop-harness[object-storage,desktop]'
-pip install 'octop-harness[cli,all]'
+pip install 'happyclaw-harness[object-storage,desktop]'
+pip install 'happyclaw-harness[cli,all]'
 ```
 
 Optional dependency extras (install only what you need; missing extras fail at use-time with an install hint):
 
 | Extra | What it adds |
 |-------|----------------|
-| `cli` | Terminal CLI (`octop-harness`) |
+| `cli` | Terminal CLI (`happyclaw-harness`) |
 | `bedrock` | AWS Bedrock provider |
 | `object-storage` | Tencent COS + Alibaba OSS + Huawei OBS SDKs (not in `all`) |
 | `desktop` | Desktop screenshot / input (`mss`, `pynput`, `pillow`) |
@@ -273,20 +273,20 @@ Optional dependency extras (install only what you need; missing extras fail at u
 ### 2. Initialize & configure
 
 ```bash
-octop-harness init
-octop-harness config provider add   # choose a provider and paste your key
+happyclaw-harness init
+happyclaw-harness config provider add   # choose a provider and paste your key
 ```
 
 ### 3. Chat
 
 ```bash
-octop-harness chat
+happyclaw-harness chat
 ```
 
 ### Programmatic use
 
 ```python
-from octop_harness import HarnessAgentManager, HarnessAgentConfig, ProviderConfig, ChatRequest
+from happyclaw_harness import HarnessAgentManager, HarnessAgentConfig, ProviderConfig, ChatRequest
 
 manager = HarnessAgentManager()
 agent: HarnessAgentConfig = manager.create_agent(
@@ -312,7 +312,7 @@ tool is still called by its real name through the normal DeepAgents ToolNode,
 security guard, and interrupt policy.
 
 ```python
-from octop_harness import HarnessAgentConfig, ProviderConfig
+from happyclaw_harness import HarnessAgentConfig, ProviderConfig
 
 provider = ProviderConfig(
     id="openai",
@@ -366,12 +366,12 @@ late saver tasks are rejected. The v3 stream keeps its scope across pull tasks
 until it finishes or is aborted. Hosts
 using `agent.graph` directly must guard the entire operation with
 `async with agent.checkpoint_activity(thread_id)`; the equivalent helper is
-`octop_harness.memory.checkpoint_activity(checkpointer, thread_id)`. This also
+`happyclaw_harness.memory.checkpoint_activity(checkpointer, thread_id)`. This also
 applies to history forks and their source reads. All runtimes sharing those
 threads must participate before a host enables coordinated PostgreSQL retention.
 Older Memory versions remain compatible, but provide no coordination guarantee.
 
-With checkpoint retention enabled, `OCTOP_CHECKPOINT_BACKUP_BEFORE_PRUNE`
+With checkpoint retention enabled, `HAPPYCLAW_CHECKPOINT_BACKUP_BEFORE_PRUNE`
 defaults to `first`. The first cleanup with eligible checkpoints attempts to
 write `memory.sqlite.pre-prune.bak`. If the database plus WAL and 10% headroom
 do not fit, or if the copy fails, maintenance warns and continues pruning.
@@ -383,13 +383,13 @@ Set the mode to `always` to replace the backup before every cleanup and defer
 checkpoint pruning if the backup cannot be written. Legacy values `1`,
 `true`, `on`, and `yes` also select `always`. Set `off` (or `0`, `false`,
 or `no`) to disable backups. Maintenance expires the backup after 7 days
-by default. Set `OCTOP_CHECKPOINT_BACKUP_KEEP_DAYS=0` to keep it indefinitely.
+by default. Set `HAPPYCLAW_CHECKPOINT_BACKUP_KEEP_DAYS=0` to keep it indefinitely.
 Expiration leaves the marker in place.
 
 ## Documentation
 
-- [What is Octop Harness?](#what-is-octop-harness)
-- [Why Octop Harness?](#why-octop-harness)
+- [What is HappyClaw Harness?](#what-is-happyclaw-harness)
+- [Why HappyClaw Harness?](#why-happyclaw-harness)
 - [How to Use](#how-to-use)
 - **Reference**
   - [CLI reference](#cli-reference)
@@ -404,17 +404,17 @@ Expiration leaves the marker in place.
 
 | Command | Description |
 |---------|-------------|
-| `octop-harness init` | Bootstrap a workspace and config |
-| `octop-harness chat` | Interactive chat with an agent |
-| `octop-harness agent` | Create, list, and manage agents |
-| `octop-harness config` | Provider / model configuration (`config provider add`) |
-| `octop-harness skill` | Enable / disable per-agent skills |
-| `octop-harness update` | Check for and install updates |
+| `happyclaw-harness init` | Bootstrap a workspace and config |
+| `happyclaw-harness chat` | Interactive chat with an agent |
+| `happyclaw-harness agent` | Create, list, and manage agents |
+| `happyclaw-harness config` | Provider / model configuration (`config provider add`) |
+| `happyclaw-harness skill` | Enable / disable per-agent skills |
+| `happyclaw-harness update` | Check for and install updates |
 
 ### Project layout
 
 ```
-src/octop_harness/
+src/happyclaw_harness/
   agent.py          facade over deepagents.create_deep_agent
   manager.py        AgentManager — multi-agent registry
   config/           configs, provider & model presets
@@ -457,7 +457,11 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for branching, PR, and release details (`
 | [octop-memory](https://github.com/xkx121029/octop-memory) | Memory system behind the tiered recall |
 | [octop-browser](https://github.com/xkx121029/octop-browser) | CDP browser automation used by the agent |
 | [octop-gateway](https://github.com/xkx121029/octop-gateway) | Multi-platform IM channel bridge |
-| [Octop](https://github.com/xkx121029/HappyClaw) | The self-hosted assistant that composes the Harness stack |
+| [HappyClaw](https://github.com/xkx121029/HappyClaw) | The self-hosted assistant that composes the HappyClaw Harness stack |
+
+## 🙏 Attribution
+
+HappyClaw Harness is based on Octop Harness (`TencentCloud/octop-harness`), Copyright (c) 2026 Octop, licensed under the MIT License. HappyClaw maintains an independent fork; see [ATTRIBUTION.md](ATTRIBUTION.md) for details.
 
 ## 📄 License
 
@@ -467,8 +471,8 @@ This project is licensed under the [MIT License](LICENSE).
 
 Thanks to all contributors:
 
-<a href="https://github.com/xkx121029/octop-harness/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=xkx121029/octop-harness" />
+<a href="https://github.com/xkx121029/happyclaw-harness/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=xkx121029/happyclaw-harness" />
 </a>
 
 ### Channel plugins
@@ -490,7 +494,7 @@ The client owns its transport in one task and serializes concurrent callers.
 It returns original MCP SDK results, including structured content and errors.
 
 ```python
-from octop_harness import ManagedMCPClient
+from happyclaw_harness import ManagedMCPClient
 
 async with ManagedMCPClient({"transport": "stdio", "command": "my-mcp", "args": []}) as client:
     definitions = await client.get_tools()

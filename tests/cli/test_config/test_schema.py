@@ -1,6 +1,6 @@
-"""Tests for octop_harness.cli.config.schema."""
+"""Tests for happyclaw_harness.cli.config.schema."""
 
-from octop_harness.cli.config.schema import CliConfig
+from happyclaw_harness.cli.config.schema import CliConfig
 
 
 def test_default_values() -> None:

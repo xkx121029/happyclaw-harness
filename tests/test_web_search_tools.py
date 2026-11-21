@@ -1,4 +1,4 @@
-"""Tests for ``octop_harness.builtin.tools.web_search``."""
+"""Tests for ``happyclaw_harness.builtin.tools.web_search``."""
 
 from __future__ import annotations
 
@@ -10,19 +10,19 @@ from unittest.mock import patch
 
 import pytest
 
-from octop_harness.builtin.tools.web_search import load_web_search_tools
-from octop_harness.builtin.tools.web_search._registry import (
+from happyclaw_harness.builtin.tools.web_search import load_web_search_tools
+from happyclaw_harness.builtin.tools.web_search._registry import (
     WEB_SEARCH_PROVIDERS,
     _missing_env,
     _provider_available,
 )
-from octop_harness.builtin.tools.web_search.brave import brave_search
-from octop_harness.builtin.tools.web_search.deepseek import deepseek_search
-from octop_harness.builtin.tools.web_search.google import google_search
-from octop_harness.builtin.tools.web_search.kimi import kimi_search
-from octop_harness.builtin.tools.web_search.searchfree import searchfree_search
-from octop_harness.builtin.tools.web_search.tavily import tavily_search
-from octop_harness.builtin.tools.web_search.yuanbao import yuanbao_search
+from happyclaw_harness.builtin.tools.web_search.brave import brave_search
+from happyclaw_harness.builtin.tools.web_search.deepseek import deepseek_search
+from happyclaw_harness.builtin.tools.web_search.google import google_search
+from happyclaw_harness.builtin.tools.web_search.kimi import kimi_search
+from happyclaw_harness.builtin.tools.web_search.searchfree import searchfree_search
+from happyclaw_harness.builtin.tools.web_search.tavily import tavily_search
+from happyclaw_harness.builtin.tools.web_search.yuanbao import yuanbao_search
 
 # ---------------------------------------------------------------------------
 # Registry — provider lookup, env-var gating, policy dispatch
@@ -303,7 +303,7 @@ class TestDeepSeekSearch:
                 captured["payload"] = json
                 return _Response()
 
-        from octop_harness.builtin.tools.web_search import deepseek as mod
+        from happyclaw_harness.builtin.tools.web_search import deepseek as mod
 
         with patch.object(mod.httpx, "AsyncClient", _Client):
             result = await deepseek_search.ainvoke({"query": "agent search", "count": 3})
@@ -366,7 +366,7 @@ class TestDeepSeekSearch:
             async def post(self, *args: Any, **kwargs: Any) -> _Response:
                 return _Response()
 
-        from octop_harness.builtin.tools.web_search import deepseek as mod
+        from happyclaw_harness.builtin.tools.web_search import deepseek as mod
 
         with patch.object(mod.httpx, "AsyncClient", _Client):
             result = await deepseek_search.ainvoke({"query": "x"})
@@ -529,7 +529,7 @@ class TestYuanbaoSearch:
                 captured["json"] = json
                 return _Resp()
 
-        from octop_harness.builtin.tools.web_search import yuanbao as mod
+        from happyclaw_harness.builtin.tools.web_search import yuanbao as mod
 
         with patch.object(mod.httpx, "AsyncClient", _FakeClient):
             result = await yuanbao_search.ainvoke({"query": "三星堆", "max_results": 5})
@@ -570,7 +570,7 @@ class TestYuanbaoSearch:
             async def post(self, url: str, headers: dict[str, str], json: dict[str, Any]) -> _Resp:
                 return _Resp()
 
-        from octop_harness.builtin.tools.web_search import yuanbao as mod
+        from happyclaw_harness.builtin.tools.web_search import yuanbao as mod
 
         with patch.object(mod.httpx, "AsyncClient", _FakeClient):
             result = await yuanbao_search.ainvoke({"query": "hi"})
@@ -599,7 +599,7 @@ class TestYuanbaoSearch:
             async def post(self, url: str, headers: dict[str, str], json: dict[str, Any]) -> _Resp:
                 return _Resp()
 
-        from octop_harness.builtin.tools.web_search import yuanbao as mod
+        from happyclaw_harness.builtin.tools.web_search import yuanbao as mod
 
         with patch.object(mod.httpx, "AsyncClient", _FakeClient):
             result = await yuanbao_search.ainvoke({"query": "hi"})
@@ -635,7 +635,7 @@ class TestSearchFreeSearch:
                 assert json["query"] == "hello"
                 return _Resp()
 
-        from octop_harness.builtin.tools.web_search import searchfree as mod
+        from happyclaw_harness.builtin.tools.web_search import searchfree as mod
 
         with patch.object(mod.httpx, "AsyncClient", _FakeClient):
             result = await searchfree_search.ainvoke({"query": "hello"})
@@ -663,7 +663,7 @@ class TestSearchFreeSearch:
             async def post(self, url: str, json: dict[str, Any]) -> _Resp:
                 return _Resp()
 
-        from octop_harness.builtin.tools.web_search import searchfree as mod
+        from happyclaw_harness.builtin.tools.web_search import searchfree as mod
 
         with patch.object(mod.httpx, "AsyncClient", _FakeClient):
             result = await searchfree_search.ainvoke({"query": "hello"})
@@ -691,7 +691,7 @@ class TestSearchFreeSearch:
             async def post(self, url: str, json: dict[str, Any]) -> _Resp:
                 return _Resp()
 
-        from octop_harness.builtin.tools.web_search import searchfree as mod
+        from happyclaw_harness.builtin.tools.web_search import searchfree as mod
 
         with patch.object(mod.httpx, "AsyncClient", _FakeClient):
             result = await searchfree_search.ainvoke({"query": "hi"})
@@ -699,7 +699,7 @@ class TestSearchFreeSearch:
 
     @pytest.mark.asyncio
     async def test_network_failure_returns_plain_text(self) -> None:
-        from octop_harness.builtin.tools.web_search import searchfree as mod
+        from happyclaw_harness.builtin.tools.web_search import searchfree as mod
 
         class _FakeClient:
             def __init__(self, *args: Any, **kwargs: Any) -> None:
@@ -726,7 +726,7 @@ class TestSearchFreeSearch:
 
 class TestConfigIntegration:
     def test_default_is_auto(self) -> None:
-        from octop_harness import HarnessAgentConfig, ModelConfig, ProviderConfig
+        from happyclaw_harness import HarnessAgentConfig, ModelConfig, ProviderConfig
 
         cfg = HarnessAgentConfig(
             providers=[
@@ -741,7 +741,7 @@ class TestConfigIntegration:
         assert cfg.web_search_tools == "auto"
 
     def test_round_trips_through_to_dict(self) -> None:
-        from octop_harness import HarnessAgentConfig, ModelConfig, ProviderConfig
+        from happyclaw_harness import HarnessAgentConfig, ModelConfig, ProviderConfig
 
         cfg = HarnessAgentConfig(
             providers=[
@@ -760,7 +760,7 @@ class TestConfigIntegration:
         assert restored.web_search_tools == ["tavily", "kimi"]
 
     def test_round_trip_auto(self) -> None:
-        from octop_harness import HarnessAgentConfig, ModelConfig, ProviderConfig
+        from happyclaw_harness import HarnessAgentConfig, ModelConfig, ProviderConfig
 
         cfg = HarnessAgentConfig(
             providers=[
@@ -850,7 +850,7 @@ class TestYouSearch:
 
     @pytest.mark.asyncio
     async def test_keyless_uses_free_endpoint(self) -> None:
-        from octop_harness.builtin.tools.web_search import you as mod
+        from happyclaw_harness.builtin.tools.web_search import you as mod
 
         calls: list[dict[str, Any]] = []
         with patch.object(mod.httpx, "AsyncClient", _you_client(_YouResp(body=_YOU_BODY), calls)):
@@ -858,7 +858,7 @@ class TestYouSearch:
         assert calls[0]["method"] == "GET"
         assert calls[0]["url"] == mod.FREE_ENDPOINT
         assert calls[0]["params"] == {"query": "hello", "count": 3}
-        assert calls[0]["headers"]["User-Agent"] == "youdotcom-integration/tencentcloud-octop-harness"
+        assert calls[0]["headers"]["User-Agent"] == "youdotcom-integration/tencentcloud-happyclaw-harness"
         assert "X-API-Key" not in calls[0]["headers"]
         assert json.loads(result) == [
             {
@@ -872,7 +872,7 @@ class TestYouSearch:
 
     @pytest.mark.asyncio
     async def test_key_uses_keyed_endpoint(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        from octop_harness.builtin.tools.web_search import you as mod
+        from happyclaw_harness.builtin.tools.web_search import you as mod
 
         monkeypatch.setenv("YDC_API_KEY", "ydc-test")
         calls: list[dict[str, Any]] = []
@@ -885,7 +885,7 @@ class TestYouSearch:
 
     @pytest.mark.asyncio
     async def test_rate_limit_returns_plain_text(self) -> None:
-        from octop_harness.builtin.tools.web_search import you as mod
+        from happyclaw_harness.builtin.tools.web_search import you as mod
 
         resp = _YouResp(status_code=429, headers={"Retry-After": "30"})
         with patch.object(mod.httpx, "AsyncClient", _you_client(resp, [])):
@@ -896,7 +896,7 @@ class TestYouSearch:
 
     @pytest.mark.asyncio
     async def test_bad_key_returns_plain_text(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        from octop_harness.builtin.tools.web_search import you as mod
+        from happyclaw_harness.builtin.tools.web_search import you as mod
 
         monkeypatch.setenv("YDC_API_KEY", "bad")
         with patch.object(mod.httpx, "AsyncClient", _you_client(_YouResp(status_code=401), [])):
@@ -905,7 +905,7 @@ class TestYouSearch:
 
     @pytest.mark.asyncio
     async def test_empty_results(self) -> None:
-        from octop_harness.builtin.tools.web_search import you as mod
+        from happyclaw_harness.builtin.tools.web_search import you as mod
 
         with patch.object(mod.httpx, "AsyncClient", _you_client(_YouResp(body={"results": {"web": []}}), [])):
             result = await mod.you_search.ainvoke({"query": "hi"})

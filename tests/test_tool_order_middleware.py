@@ -8,7 +8,7 @@ from unittest.mock import MagicMock
 import pytest
 from langchain_core.tools import StructuredTool
 
-from octop_harness.middleware.tool_order import TaskToolLastMiddleware, move_tools_to_end
+from happyclaw_harness.middleware.tool_order import TaskToolLastMiddleware, move_tools_to_end
 
 
 def _tool(name: str) -> SimpleNamespace:

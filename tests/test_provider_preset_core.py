@@ -7,9 +7,9 @@ from pathlib import Path
 
 import pytest
 
-from octop_harness.providers import ModelPreset, ProviderPreset, load_provider_templates
+from happyclaw_harness.providers import ModelPreset, ProviderPreset, load_provider_templates
 
-_BUNDLED_TEMPLATE = resources.files("octop_harness.providers").joinpath("provider_template.json")
+_BUNDLED_TEMPLATE = resources.files("happyclaw_harness.providers").joinpath("provider_template.json")
 
 
 class TestCoreProviderPresets:
@@ -68,7 +68,7 @@ class TestCoreProviderPresets:
         models = {m.id: m for m in token.models}
         assert models["xopkimik26"].is_multimodal is True
         assert models["spark-x2.5"].is_multimodal is False
-        logo = resources.files("octop_harness.providers.logos").joinpath(token.logo)
+        logo = resources.files("happyclaw_harness.providers.logos").joinpath(token.logo)
         assert logo.is_file()
 
     def test_load_custom_path(self, tmp_path: Path) -> None:
@@ -414,19 +414,19 @@ class TestCoreProviderPresets:
 
 class TestProviderPresetPublicExport:
     def test_model_preset_importable_from_root(self) -> None:
-        from octop_harness import ModelPreset as RootModelPreset
-        from octop_harness.providers import ModelPreset as CoreModelPreset
+        from happyclaw_harness import ModelPreset as RootModelPreset
+        from happyclaw_harness.providers import ModelPreset as CoreModelPreset
 
         assert RootModelPreset is CoreModelPreset
 
     def test_provider_preset_importable_from_root(self) -> None:
-        from octop_harness import ProviderPreset as RootProviderPreset
-        from octop_harness.providers import ProviderPreset as CoreProviderPreset
+        from happyclaw_harness import ProviderPreset as RootProviderPreset
+        from happyclaw_harness.providers import ProviderPreset as CoreProviderPreset
 
         assert RootProviderPreset is CoreProviderPreset
 
     def test_in_all(self) -> None:
-        import octop_harness
+        import happyclaw_harness
 
-        assert "ModelPreset" in octop_harness.__all__
-        assert "ProviderPreset" in octop_harness.__all__
+        assert "ModelPreset" in happyclaw_harness.__all__
+        assert "ProviderPreset" in happyclaw_harness.__all__

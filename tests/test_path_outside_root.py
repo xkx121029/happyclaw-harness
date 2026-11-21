@@ -9,7 +9,7 @@ from unittest.mock import MagicMock
 import pytest
 from langchain_core.messages import ToolMessage
 
-from octop_harness.middleware.filesystem_guard import (
+from happyclaw_harness.middleware.filesystem_guard import (
     FilesystemGuardMiddleware,
     is_path_outside_root_error,
     path_outside_root_tool_message,
@@ -156,7 +156,7 @@ async def test_windows_path_rewrite_logs_once_at_debug(tmp_path, caplog: pytest.
     async def handler(req: Any) -> ToolMessage:
         return ToolMessage(content="ok", name="read_file", tool_call_id="call_1")
 
-    with caplog.at_level(logging.DEBUG, logger="octop_harness.middleware.filesystem_guard"):
+    with caplog.at_level(logging.DEBUG, logger="happyclaw_harness.middleware.filesystem_guard"):
         await mw.awrap_tool_call(_request(), handler)
         await mw.awrap_tool_call(_request(), handler)
     logged = [rec for rec in caplog.records if "rewrote leftover Windows path" in rec.message]

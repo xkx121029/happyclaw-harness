@@ -17,7 +17,7 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-from octop_harness.backends.local_shell import (
+from happyclaw_harness.backends.local_shell import (
     HarnessLocalShellBackend,
     decode_child_output,
 )

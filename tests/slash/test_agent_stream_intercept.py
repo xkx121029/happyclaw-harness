@@ -7,9 +7,9 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from octop_harness.agent import HarnessAgent
-from octop_harness.config import HarnessAgentConfig, ModelConfig, ProviderConfig
-from octop_harness.request import ChatRequest
+from happyclaw_harness.agent import HarnessAgent
+from happyclaw_harness.config import HarnessAgentConfig, ModelConfig, ProviderConfig
+from happyclaw_harness.request import ChatRequest
 
 
 def _config(tmp_path: Path) -> HarnessAgentConfig:
@@ -29,7 +29,7 @@ def _config(tmp_path: Path) -> HarnessAgentConfig:
 
 @pytest.fixture
 def agent(tmp_path: Path) -> HarnessAgent:
-    with patch("octop_harness.agent.deepagents.create_deep_agent", return_value=MagicMock()):
+    with patch("happyclaw_harness.agent.deepagents.create_deep_agent", return_value=MagicMock()):
         return HarnessAgent(_config(tmp_path))
 
 

@@ -8,8 +8,8 @@ import pytest
 from langchain_core.messages import ToolMessage
 from langgraph.prebuilt.tool_node import ToolCallRequest
 
-from octop_harness.middleware.tool_guard import ToolGuardMiddleware
-from octop_harness.security.tool_guard import ToolGuardEngine
+from happyclaw_harness.middleware.tool_guard import ToolGuardMiddleware
+from happyclaw_harness.security.tool_guard import ToolGuardEngine
 
 
 def _request(tool_name: str = "bash", command: str = "rm -rf /") -> ToolCallRequest:
@@ -26,7 +26,7 @@ def _request(tool_name: str = "bash", command: str = "rm -rf /") -> ToolCallRequ
 @pytest.mark.asyncio
 async def test_require_approval_interrupt_then_approve_executes_tool(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(
-        "octop_harness.middleware.tool_guard.interrupt",
+        "happyclaw_harness.middleware.tool_guard.interrupt",
         lambda _req: {"decisions": [{"type": "approve"}]},
     )
     middleware = ToolGuardMiddleware(enabled=True, mode="require_approval")
@@ -42,7 +42,7 @@ async def test_require_approval_interrupt_then_approve_executes_tool(monkeypatch
 @pytest.mark.asyncio
 async def test_require_approval_interrupt_then_reject_returns_error(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(
-        "octop_harness.middleware.tool_guard.interrupt",
+        "happyclaw_harness.middleware.tool_guard.interrupt",
         lambda _req: {"decisions": [{"type": "reject", "message": "too risky"}]},
     )
     middleware = ToolGuardMiddleware(enabled=True, mode="require_approval")
@@ -65,7 +65,7 @@ async def test_block_mode_does_not_interrupt(monkeypatch: pytest.MonkeyPatch) ->
         called = True
         return {"decisions": [{"type": "approve"}]}
 
-    monkeypatch.setattr("octop_harness.middleware.tool_guard.interrupt", _fail_interrupt)
+    monkeypatch.setattr("happyclaw_harness.middleware.tool_guard.interrupt", _fail_interrupt)
     middleware = ToolGuardMiddleware(enabled=True, mode="block")
     handler = AsyncMock()
 
@@ -85,7 +85,7 @@ async def test_require_approval_passes_hitl_request_to_interrupt(monkeypatch: py
         captured.append(req)
         return {"decisions": [{"type": "approve"}]}
 
-    monkeypatch.setattr("octop_harness.middleware.tool_guard.interrupt", _capture)
+    monkeypatch.setattr("happyclaw_harness.middleware.tool_guard.interrupt", _capture)
     middleware = ToolGuardMiddleware(enabled=True, mode="require_approval")
     handler = AsyncMock(return_value=ToolMessage(content="ok", tool_call_id="call-1"))
 

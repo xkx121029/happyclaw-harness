@@ -19,7 +19,7 @@ from langchain_core.messages import ToolMessage
 from langchain_core.tools import StructuredTool
 from langgraph.prebuilt.tool_node import ToolCallRequest
 
-from octop_harness.middleware.filesystem_guard import (
+from happyclaw_harness.middleware.filesystem_guard import (
     FilesystemGuardMiddleware,
     filesystem_guard_block_reason,
     unbounded_glob_block_reason,

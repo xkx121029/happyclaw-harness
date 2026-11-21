@@ -10,13 +10,13 @@ from unittest.mock import MagicMock, patch
 import pytest
 from deepagents.backends import FilesystemBackend
 
-from octop_harness.agent import HarnessAgent
-from octop_harness.backends.workspace import BackendWorkspace
-from octop_harness.config import HarnessAgentConfig, ModelConfig, ProviderConfig
-from octop_harness.middleware.context_usage import ContextUsageMiddleware
-from octop_harness.middleware.tool_order import TaskToolLastMiddleware
-from octop_harness.subagents.catalog import DEFAULT_SUBAGENT_EMOJI, list_subagent_summaries
-from octop_harness.subagents.loader import (
+from happyclaw_harness.agent import HarnessAgent
+from happyclaw_harness.backends.workspace import BackendWorkspace
+from happyclaw_harness.config import HarnessAgentConfig, ModelConfig, ProviderConfig
+from happyclaw_harness.middleware.context_usage import ContextUsageMiddleware
+from happyclaw_harness.middleware.tool_order import TaskToolLastMiddleware
+from happyclaw_harness.subagents.catalog import DEFAULT_SUBAGENT_EMOJI, list_subagent_summaries
+from happyclaw_harness.subagents.loader import (
     collect_agent_markdown_paths,
     load_subagents_from_workspace,
     merge_subagents,

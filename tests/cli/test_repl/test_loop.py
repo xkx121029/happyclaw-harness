@@ -8,9 +8,9 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 from rich.console import Console
 
-from octop_harness.cli.repl.loop import print_welcome, run
-from octop_harness.cli.repl.state import SessionState
-from octop_harness.cli.ui.theme import get_theme
+from happyclaw_harness.cli.repl.loop import print_welcome, run
+from happyclaw_harness.cli.repl.state import SessionState
+from happyclaw_harness.cli.ui.theme import get_theme
 
 
 def test_print_welcome() -> None:
@@ -41,8 +41,8 @@ def test_run_exits_on_eof() -> None:
     cli_cfg = {"theme": "dark", "context_window_tokens": 128_000}
 
     with (
-        patch("octop_harness.cli.repl.loop.create_prompt_session", return_value=mock_session),
-        patch("octop_harness.cli.repl.loop._create_agent", return_value=MagicMock()),
+        patch("happyclaw_harness.cli.repl.loop.create_prompt_session", return_value=mock_session),
+        patch("happyclaw_harness.cli.repl.loop._create_agent", return_value=MagicMock()),
     ):
         # Should not raise
         asyncio.run(run(agent_cfg, cli_cfg, model="openai/gpt-4", session_id="test123"))
@@ -66,9 +66,9 @@ def test_run_dispatches_slash_command() -> None:
     cli_cfg = {"theme": "dark", "context_window_tokens": 128_000}
 
     with (
-        patch("octop_harness.cli.repl.loop.create_prompt_session", return_value=mock_session),
-        patch("octop_harness.cli.repl.loop._create_agent", return_value=MagicMock()),
-        patch("octop_harness.cli.repl.loop.dispatch_slash") as mock_dispatch,
+        patch("happyclaw_harness.cli.repl.loop.create_prompt_session", return_value=mock_session),
+        patch("happyclaw_harness.cli.repl.loop._create_agent", return_value=MagicMock()),
+        patch("happyclaw_harness.cli.repl.loop.dispatch_slash") as mock_dispatch,
     ):
         asyncio.run(run(agent_cfg, cli_cfg, model="openai/gpt-4", session_id="test123"))
         mock_dispatch.assert_called_once()

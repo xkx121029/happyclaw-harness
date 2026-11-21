@@ -28,7 +28,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-from octop_harness import (
+from happyclaw_harness import (
     ChatRequest,
     HarnessAgentConfig,
     HarnessAgentManager,

@@ -9,9 +9,9 @@ from typing import Any
 
 from rich.console import Console
 
-from octop_harness.cli.repl.handler import StreamEventHandler
-from octop_harness.cli.repl.state import SessionState
-from octop_harness.cli.ui.theme import get_theme
+from happyclaw_harness.cli.repl.handler import StreamEventHandler
+from happyclaw_harness.cli.repl.state import SessionState
+from happyclaw_harness.cli.ui.theme import get_theme
 
 
 async def _events_from(events: list[dict[str, Any]]) -> AsyncGenerator[dict[str, Any], None]:

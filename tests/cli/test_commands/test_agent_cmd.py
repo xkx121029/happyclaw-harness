@@ -1,4 +1,4 @@
-"""Tests for octop-harness agent commands."""
+"""Tests for happyclaw-harness agent commands."""
 
 from __future__ import annotations
 
@@ -7,7 +7,7 @@ from pathlib import Path
 
 from click.testing import CliRunner
 
-from octop_harness.cli.main import cli
+from happyclaw_harness.cli.main import cli
 
 
 def _write_config(tmp_path: Path) -> Path:

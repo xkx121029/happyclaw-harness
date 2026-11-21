@@ -74,7 +74,7 @@ sessions/
 *.db-wal
 *.db-shm
 
-# Per-project octop-harness runtime (contains secrets, DB, JSONL logs).
+# Per-project happyclaw-harness runtime (contains secrets, DB, JSONL logs).
 # NOTE: to make !exceptions work, the parent dir must NOT be blanket-ignored.
 # So we ignore individual sensitive files inside .octop-harness/ instead of
 # ignoring the whole directory.

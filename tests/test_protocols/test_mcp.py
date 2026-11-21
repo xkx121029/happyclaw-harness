@@ -1,4 +1,4 @@
-"""Tests for ``octop_harness.protocols.mcp.MCPProtocol``."""
+"""Tests for ``happyclaw_harness.protocols.mcp.MCPProtocol``."""
 
 from __future__ import annotations
 
@@ -19,7 +19,7 @@ from tests.test_protocols._fakes import (
     public_model_stream_parts,
 )
 
-from octop_harness.protocols.mcp import MCPProtocol, MCPStreamWrapper
+from happyclaw_harness.protocols.mcp import MCPProtocol, MCPStreamWrapper
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -50,7 +50,7 @@ class TestCall:
 
         assert result["role"] == "assistant"
         assert result["content"] == {"type": "text", "text": "Hello there!"}
-        assert result["model"] == "octop-harness"
+        assert result["model"] == "happyclaw-harness"
         assert result["stopReason"] == "endTurn"
 
     @pytest.mark.asyncio
@@ -91,7 +91,7 @@ class TestStream:
         assert len(chunks) == 2
         for c in chunks:
             assert c["role"] == "assistant"
-            assert c["model"] == "octop-harness"
+            assert c["model"] == "happyclaw-harness"
             assert c["content"]["type"] == "text"
         assert chunks[0]["content"]["text"] == "Hello"
         assert chunks[1]["content"]["text"] == " world"
@@ -125,7 +125,7 @@ class TestStreamEvents:
         assert len(chunks) == 2
         for c in chunks:
             assert c["role"] == "assistant"
-            assert c["model"] == "octop-harness"
+            assert c["model"] == "happyclaw-harness"
             assert c["content"]["type"] == "text"
             # SamplingMessage does NOT have stopReason
             assert "stopReason" not in c
@@ -174,7 +174,7 @@ class TestCreateMessage:
 
         assert result["role"] == "assistant"
         assert result["content"] == {"type": "text", "text": "response"}
-        assert result["model"] == "octop-harness"
+        assert result["model"] == "happyclaw-harness"
         assert result["stopReason"] == "endTurn"
 
 
@@ -210,7 +210,7 @@ class TestCreateMessageStream:
         assert len(chunks) == 1
         assert chunks[0]["role"] == "assistant"
         assert chunks[0]["content"] == {"type": "text", "text": "streamed"}
-        assert chunks[0]["model"] == "octop-harness"
+        assert chunks[0]["model"] == "happyclaw-harness"
 
 
 # ---------------------------------------------------------------------------

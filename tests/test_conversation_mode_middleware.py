@@ -12,13 +12,13 @@ from langchain_core.tools import StructuredTool
 from langgraph.config import var_child_runnable_config
 from langgraph.prebuilt.tool_node import ToolCallRequest
 
-from octop_harness.middleware.conversation_mode import (
+from happyclaw_harness.middleware.conversation_mode import (
     ConversationModeMiddleware,
     apply_conversation_mode_to_request,
     is_allowed_plan_path,
     parse_conversation_mode,
 )
-from octop_harness.request import ChatRequest
+from happyclaw_harness.request import ChatRequest
 
 
 @contextmanager
@@ -233,7 +233,7 @@ def test_apply_uses_runtime_config_when_get_config_empty() -> None:
     )
     runtime = {"configurable": {"conversation_mode": "ask"}}
     with patch(
-        "octop_harness.middleware.conversation_mode.runtime_config",
+        "happyclaw_harness.middleware.conversation_mode.runtime_config",
         return_value=runtime,
     ):
         out = apply_conversation_mode_to_request(request)

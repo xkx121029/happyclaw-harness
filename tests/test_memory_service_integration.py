@@ -28,11 +28,11 @@ from langchain_core.messages import AIMessage, HumanMessage
 from octop_memory import Memory, MemoryService
 from octop_memory.ports.llm import LLMClient, LLMClientError
 
-from octop_harness.builtin.tools.memory_tools import build_memory_tools
-from octop_harness.config import HarnessAgentConfig, ModelConfig, ProviderConfig
-from octop_harness.memory.llm_client import HarnessAgentLLMClient
-from octop_harness.memory.runtime import MemoryRuntime
-from octop_harness.middleware.memory import MemoryMiddleware
+from happyclaw_harness.builtin.tools.memory_tools import build_memory_tools
+from happyclaw_harness.config import HarnessAgentConfig, ModelConfig, ProviderConfig
+from happyclaw_harness.memory.llm_client import HarnessAgentLLMClient
+from happyclaw_harness.memory.runtime import MemoryRuntime
+from happyclaw_harness.middleware.memory import MemoryMiddleware
 
 # ---------------------------------------------------------------------------
 # Fixtures
@@ -47,7 +47,7 @@ def memory(tmp_path: Path) -> Iterator[Memory]:
 
 @pytest.fixture
 def service(memory: Memory) -> MemoryService:
-    return MemoryService(memory, host="octop-harness-tests")
+    return MemoryService(memory, host="happyclaw-harness-tests")
 
 
 # ---------------------------------------------------------------------------
@@ -778,7 +778,7 @@ class TestNamespaceDefault:
     def test_memory_namespace_falls_back_to_name(self, tmp_path: Path) -> None:
         from unittest.mock import patch
 
-        from octop_harness.config import HarnessAgentConfig, ModelConfig, ProviderConfig
+        from happyclaw_harness.config import HarnessAgentConfig, ModelConfig, ProviderConfig
 
         cfg = HarnessAgentConfig(
             name="agent-alpha",
@@ -792,7 +792,7 @@ class TestNamespaceDefault:
         )
         # No explicit memory_namespace → expected to default to ``name``.
         assert cfg.memory_namespace is None
-        from octop_harness.agent import HarnessAgent
+        from happyclaw_harness.agent import HarnessAgent
 
         with (
             patch("langchain_openai.ChatOpenAI", return_value=MagicMock()),

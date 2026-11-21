@@ -10,7 +10,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from octop_harness.middleware.memory import MemoryMiddleware
+from happyclaw_harness.middleware.memory import MemoryMiddleware
 
 
 class _SpyService:
@@ -454,8 +454,8 @@ class TestIdleMaintenance:
         assert mw._maintenance_blocks_io() is True
 
     def test_runtime_enables_hourly_maintenance(self, tmp_path: Path) -> None:
-        from octop_harness.config import HarnessAgentConfig
-        from octop_harness.memory.runtime import MemoryRuntime
+        from happyclaw_harness.config import HarnessAgentConfig
+        from happyclaw_harness.memory.runtime import MemoryRuntime
 
         cfg = HarnessAgentConfig(
             name="t",
@@ -534,9 +534,9 @@ class TestIdleMaintenance:
 
     def test_background_submit_keeps_log_agent_only(self) -> None:
         """Background work inherits the log agent id, not the HTTP session scope."""
-        from octop_harness.llm.session_header import current_session_id, session_header_scope
-        from octop_harness.middleware.memory import _BackgroundExecutor
-        from octop_harness.observability.logging import current_log_agent_id, logging_scope
+        from happyclaw_harness.llm.session_header import current_session_id, session_header_scope
+        from happyclaw_harness.middleware.memory import _BackgroundExecutor
+        from happyclaw_harness.observability.logging import current_log_agent_id, logging_scope
 
         seen: dict[str, object] = {}
         done = threading.Event()
@@ -589,25 +589,25 @@ class TestIdleMaintenance:
         fake.maybe_bootstrap_incremental = _fail  # type: ignore[attr-defined]
         fake.compact_vacuum = _fail  # type: ignore[attr-defined]
         monkeypatch.setitem(sys.modules, "octop_memory.pipeline.lifecycle", fake)
-        monkeypatch.setenv("OCTOP_CHECKPOINT_RETENTION", "0")
-        monkeypatch.delenv("OCTOP_CHECKPOINT_KEEP_LAST", raising=False)
-        monkeypatch.delenv("OCTOP_CHECKPOINT_KEEP_DAYS", raising=False)
+        monkeypatch.setenv("HAPPYCLAW_CHECKPOINT_RETENTION", "0")
+        monkeypatch.delenv("HAPPYCLAW_CHECKPOINT_KEEP_LAST", raising=False)
+        monkeypatch.delenv("HAPPYCLAW_CHECKPOINT_KEEP_DAYS", raising=False)
         mw = MemoryMiddleware(service=service, jsonl_enabled=False)  # type: ignore[arg-type]
         try:
             mw._run_maintenance_tick(service)
             assert calls == ["run_gc", "nudge_vacuum"]
-            from octop_harness.middleware.memory import _MAINTENANCE_VACUUM_PAGES
+            from happyclaw_harness.middleware.memory import _MAINTENANCE_VACUUM_PAGES
 
             assert seen_pages == [_MAINTENANCE_VACUUM_PAGES]
         finally:
             mw.shutdown()
 
     def test_checkpoint_retention_defaults_to_newest_20(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        from octop_harness.middleware.memory import _checkpoint_retention_from_env
+        from happyclaw_harness.middleware.memory import _checkpoint_retention_from_env
 
-        monkeypatch.delenv("OCTOP_CHECKPOINT_RETENTION", raising=False)
-        monkeypatch.delenv("OCTOP_CHECKPOINT_KEEP_LAST", raising=False)
-        monkeypatch.delenv("OCTOP_CHECKPOINT_KEEP_DAYS", raising=False)
+        monkeypatch.delenv("HAPPYCLAW_CHECKPOINT_RETENTION", raising=False)
+        monkeypatch.delenv("HAPPYCLAW_CHECKPOINT_KEEP_LAST", raising=False)
+        monkeypatch.delenv("HAPPYCLAW_CHECKPOINT_KEEP_DAYS", raising=False)
         assert _checkpoint_retention_from_env() == (20, None)
 
     def test_maintenance_prunes_completed_sqlite_threads_on_timer(
@@ -618,7 +618,7 @@ class TestIdleMaintenance:
         from octop_memory.pipeline import lifecycle
 
         for suffix in ("RETENTION", "KEEP_LAST", "KEEP_DAYS", "BACKUP_BEFORE_PRUNE", "VACUUM"):
-            monkeypatch.delenv(f"OCTOP_CHECKPOINT_{suffix}", raising=False)
+            monkeypatch.delenv(f"HAPPYCLAW_CHECKPOINT_{suffix}", raising=False)
         path = tmp_path / "memory.sqlite"
         memory = Memory("test", backend_config={"db_path": str(path)})
         service.memory = memory  # type: ignore[attr-defined]
@@ -666,16 +666,16 @@ class TestIdleMaintenance:
         from octop_memory import Memory
         from octop_memory.pipeline.lifecycle.checkpoint_gc import _cutoff_checkpoint_id
 
-        from octop_harness.middleware.memory import _prune_checkpoints_if_configured
+        from happyclaw_harness.middleware.memory import _prune_checkpoints_if_configured
 
         path = tmp_path / "memory.sqlite"
         memory = Memory("test", backend_config={"db_path": str(path)})
         backup = path.with_name("memory.sqlite.pre-prune.bak")
-        monkeypatch.setenv("OCTOP_CHECKPOINT_RETENTION", "1")
-        monkeypatch.setenv("OCTOP_CHECKPOINT_KEEP_LAST", "0")
-        monkeypatch.setenv("OCTOP_CHECKPOINT_KEEP_DAYS", "7")
-        monkeypatch.setenv("OCTOP_CHECKPOINT_BACKUP_BEFORE_PRUNE", "1")
-        monkeypatch.setenv("OCTOP_CHECKPOINT_VACUUM", "0")
+        monkeypatch.setenv("HAPPYCLAW_CHECKPOINT_RETENTION", "1")
+        monkeypatch.setenv("HAPPYCLAW_CHECKPOINT_KEEP_LAST", "0")
+        monkeypatch.setenv("HAPPYCLAW_CHECKPOINT_KEEP_DAYS", "7")
+        monkeypatch.setenv("HAPPYCLAW_CHECKPOINT_BACKUP_BEFORE_PRUNE", "1")
+        monkeypatch.setenv("HAPPYCLAW_CHECKPOINT_VACUUM", "0")
         now = datetime.now(UTC)
         config: dict[str, Any] = {"configurable": {"thread_id": "thread", "checkpoint_ns": ""}}
         try:
@@ -729,8 +729,8 @@ class TestIdleMaintenance:
         fake.nudge_vacuum = _fake_nudge  # type: ignore[attr-defined]
         monkeypatch.setitem(sys.modules, "octop_memory.pipeline.lifecycle", fake)
         monkeypatch.setattr(gc_mod, "prune_checkpoints", _prune)
-        monkeypatch.setenv("OCTOP_CHECKPOINT_KEEP_LAST", "20")
-        monkeypatch.delenv("OCTOP_CHECKPOINT_KEEP_DAYS", raising=False)
+        monkeypatch.setenv("HAPPYCLAW_CHECKPOINT_KEEP_LAST", "20")
+        monkeypatch.delenv("HAPPYCLAW_CHECKPOINT_KEEP_DAYS", raising=False)
         mw = MemoryMiddleware(service=service, jsonl_enabled=False)  # type: ignore[arg-type]
         try:
             mw._run_maintenance_tick(service)
@@ -782,8 +782,8 @@ class TestRebuildKeepsOneMaintenanceBeat:
     """A graph recompile must not arm a second (leaked) maintenance timer."""
 
     def _runtime(self, tmp_path: Path) -> Any:
-        from octop_harness.config import HarnessAgentConfig
-        from octop_harness.memory.runtime import MemoryRuntime
+        from happyclaw_harness.config import HarnessAgentConfig
+        from happyclaw_harness.memory.runtime import MemoryRuntime
 
         cfg = HarnessAgentConfig(
             name="t",
@@ -835,7 +835,7 @@ class TestMaintenanceLogVolume:
 
     def _run(self, caplog: pytest.LogCaptureFixture, *, deleted: int, pages: int) -> list[Any]:
         gc_stats, vacuum = self._stats(deleted, pages)
-        with caplog.at_level("DEBUG", logger="octop_harness.middleware.memory"):
+        with caplog.at_level("DEBUG", logger="happyclaw_harness.middleware.memory"):
             MemoryMiddleware._run_reclaim_pass(
                 object(),
                 run_gc=lambda _m: gc_stats,
@@ -860,7 +860,7 @@ class TestMaintenanceLogVolume:
             raise UndefinedTable('relation "agent_x_atoms" does not exist')
 
         _gc, vacuum = self._stats(0, 0)
-        with caplog.at_level("DEBUG", logger="octop_harness.middleware.memory"):
+        with caplog.at_level("DEBUG", logger="happyclaw_harness.middleware.memory"):
             MemoryMiddleware._run_reclaim_pass(
                 object(),
                 run_gc=_boom,
@@ -875,7 +875,7 @@ class TestMaintenanceLogVolume:
             raise RuntimeError("disk on fire")
 
         _gc, vacuum = self._stats(0, 0)
-        with caplog.at_level("DEBUG", logger="octop_harness.middleware.memory"):
+        with caplog.at_level("DEBUG", logger="happyclaw_harness.middleware.memory"):
             MemoryMiddleware._run_reclaim_pass(
                 object(),
                 run_gc=_boom,
@@ -890,7 +890,7 @@ class TestSharedStoreCoalescing:
     """Agents bound to one shared Memory reclaim it once, not once each."""
 
     def test_second_agent_skips_a_just_reclaimed_store(self) -> None:
-        from octop_harness.middleware import memory as memory_mod
+        from happyclaw_harness.middleware import memory as memory_mod
 
         shared = _SpyService()
         shared.memory = MagicMock()  # type: ignore[attr-defined]
@@ -918,7 +918,7 @@ class TestSharedStoreCoalescing:
                 mw.shutdown()
 
     def test_distinct_stores_each_get_a_pass(self) -> None:
-        from octop_harness.middleware import memory as memory_mod
+        from happyclaw_harness.middleware import memory as memory_mod
 
         calls: list[Any] = []
 

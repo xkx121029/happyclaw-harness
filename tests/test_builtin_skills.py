@@ -15,10 +15,10 @@ from unittest.mock import patch
 
 import pytest
 
-from octop_harness import HarnessAgent
-from octop_harness.builtin.templates import iter_builtin_skills
+from happyclaw_harness import HarnessAgent
+from happyclaw_harness.builtin.templates import iter_builtin_skills
 
-_SKILLS_PACKAGE = "octop_harness.builtin.skills"
+_SKILLS_PACKAGE = "happyclaw_harness.builtin.skills"
 _EN_SKILLS_DIR = "en"
 
 MIGRATED_HERMES_SKILLS = (
@@ -118,7 +118,7 @@ class TestInitSyncsNewSkills:
     def test_init_copies_all_skills(self, tmp_path: Path) -> None:
         from unittest.mock import MagicMock
 
-        from octop_harness.config import HarnessAgentConfig, ModelConfig, ProviderConfig
+        from happyclaw_harness.config import HarnessAgentConfig, ModelConfig, ProviderConfig
 
         cfg = HarnessAgentConfig(
             workspace_dir=tmp_path,

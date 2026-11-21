@@ -8,7 +8,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from octop_harness.config import (
+from happyclaw_harness.config import (
     DEFAULT_CONFIG_FILENAME,
     HarnessAgentConfig,
     MediaGenerationConfig,
@@ -487,7 +487,7 @@ class TestFileRoundTrip:
         tmp_path: Path,
         monkeypatch: pytest.MonkeyPatch,
     ) -> None:
-        # Set up a config file at ``./octop-harness.json`` relative to CWD.
+        # Set up a config file at ``./happyclaw-harness.json`` relative to CWD.
         cfg = _full_config(tmp_path)
         monkeypatch.chdir(tmp_path)
         (tmp_path / DEFAULT_CONFIG_FILENAME).write_text(
@@ -695,7 +695,7 @@ class TestLegacyLogFieldsIgnored:
     def test_constructor_accepts_legacy_log_kwargs(self, tmp_path: Path) -> None:
         cfg = HarnessAgentConfig(
             workspace_dir=tmp_path,
-            log_dir=str(tmp_path / "octop-logs"),
+            log_dir=str(tmp_path / "happyclaw-logs"),
             log_agent_id="aid1",
             log_level="DEBUG",
             log_max_bytes=1024,

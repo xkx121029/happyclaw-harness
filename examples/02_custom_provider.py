@@ -26,7 +26,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-from octop_harness import (
+from happyclaw_harness import (
     ChatRequest,
     HarnessAgentConfig,
     HarnessAgentManager,
@@ -89,7 +89,7 @@ async def main() -> None:
     # demos against models prone to look up unknown brand names online.
     print("\n--- Text query ---")
     request = ChatRequest(
-        messages="From your own training, in one sentence: what is octop-harness (no web search)?",
+        messages="From your own training, in one sentence: what is happyclaw-harness (no web search)?",
         thread_id="custom-provider-demo",
     )
     async for chunk in manager.stream(entry.agent_id, request):

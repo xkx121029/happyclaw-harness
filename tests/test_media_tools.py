@@ -9,13 +9,13 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from octop_harness.backends.workspace import BackendWorkspace
-from octop_harness.builtin.tools.desktop_screenshot import (
+from happyclaw_harness.backends.workspace import BackendWorkspace
+from happyclaw_harness.builtin.tools.desktop_screenshot import (
     DEFAULT_SCREENSHOTS_DIR,
     build_desktop_screenshot_tool,
     desktop_screenshot,
 )
-from octop_harness.builtin.tools.send_file import send_file_to_user
+from happyclaw_harness.builtin.tools.send_file import send_file_to_user
 
 
 class TestSendFileToUser:
@@ -66,7 +66,7 @@ class TestSendFileToUser:
         from langchain_core.messages import ToolMessage
         from langgraph.prebuilt.tool_node import ToolCallRequest, ToolNode
 
-        from octop_harness.builtin.tools.send_file import build_send_file_to_user_tool
+        from happyclaw_harness.builtin.tools.send_file import build_send_file_to_user_tool
 
         backend = FilesystemBackend(root_dir=str(tmp_path), virtual_mode=True)
         tool = build_send_file_to_user_tool(BackendWorkspace(backend, tmp_path))
@@ -95,7 +95,7 @@ class TestSendFileToUser:
     def test_workspace_relative_via_bound_tool(self, tmp_path: Path) -> None:
         from deepagents.backends import FilesystemBackend
 
-        from octop_harness.builtin.tools.send_file import build_send_file_to_user_tool
+        from happyclaw_harness.builtin.tools.send_file import build_send_file_to_user_tool
 
         backend = FilesystemBackend(root_dir=str(tmp_path), virtual_mode=True)
         ws = BackendWorkspace(backend, tmp_path)
@@ -114,7 +114,7 @@ class TestSendFileToUser:
     ) -> None:
         from deepagents.backends import FilesystemBackend
 
-        from octop_harness.builtin.tools.send_file import build_send_file_to_user_tool
+        from happyclaw_harness.builtin.tools.send_file import build_send_file_to_user_tool
 
         root = tmp_path / "root"
         workspace = tmp_path / "workspace"
@@ -137,14 +137,14 @@ class TestSendFileToUser:
         tmp_path: Path,
         monkeypatch: pytest.MonkeyPatch,
     ) -> None:
-        """Relative paths must not resolve against the Octop process cwd."""
+        """Relative paths must not resolve against the HappyClaw process cwd."""
         from deepagents.backends import FilesystemBackend
 
-        from octop_harness.builtin.tools.send_file import build_send_file_to_user_tool
+        from happyclaw_harness.builtin.tools.send_file import build_send_file_to_user_tool
 
         root = tmp_path / "root"
         workspace = tmp_path / "agent_ws"
-        proc_cwd = tmp_path / "octop_repo"
+        proc_cwd = tmp_path / "happyclaw_repo"
         root.mkdir()
         workspace.mkdir()
         proc_cwd.mkdir()
@@ -174,11 +174,11 @@ class TestSendFileToUser:
     ) -> None:
         from deepagents.backends import FilesystemBackend
 
-        from octop_harness.builtin.tools.send_file import build_send_file_to_user_tool
+        from happyclaw_harness.builtin.tools.send_file import build_send_file_to_user_tool
 
         root = tmp_path / "root"
         workspace = tmp_path / "agent_ws"
-        proc_cwd = tmp_path / "octop_repo"
+        proc_cwd = tmp_path / "happyclaw_repo"
         root.mkdir()
         workspace.mkdir()
         proc_cwd.mkdir()
@@ -194,7 +194,7 @@ class TestSendFileToUser:
     def test_host_fallback_when_file_only_on_real_disk(self, tmp_path: Path) -> None:
         from deepagents.backends import FilesystemBackend
 
-        from octop_harness.builtin.tools.send_file import build_send_file_to_user_tool
+        from happyclaw_harness.builtin.tools.send_file import build_send_file_to_user_tool
 
         root = tmp_path / "root"
         workspace = tmp_path / "workspace"
@@ -214,7 +214,7 @@ class TestSendFileToUser:
         """Emit caller's path even when bytes live under virtual nest."""
         from deepagents.backends import FilesystemBackend
 
-        from octop_harness.builtin.tools.send_file import build_send_file_to_user_tool
+        from happyclaw_harness.builtin.tools.send_file import build_send_file_to_user_tool
 
         root = tmp_path / "root"
         workspace = tmp_path / "workspace"
@@ -268,11 +268,11 @@ class TestDesktopScreenshot:
         with (
             patch.dict("sys.modules", {"mss": self._fake_mss_module()}),
             patch(
-                "octop_harness.builtin.tools.desktop_screenshot.shutil.which",
+                "happyclaw_harness.builtin.tools.desktop_screenshot.shutil.which",
                 return_value=None,
             ),
             patch(
-                "octop_harness.builtin.tools.desktop_screenshot._resolve_display",
+                "happyclaw_harness.builtin.tools.desktop_screenshot._resolve_display",
                 return_value=None,
             ),
         ):
@@ -287,11 +287,11 @@ class TestDesktopScreenshot:
         with (
             patch.dict("sys.modules", {"mss": self._fake_mss_module()}),
             patch(
-                "octop_harness.builtin.tools.desktop_screenshot.shutil.which",
+                "happyclaw_harness.builtin.tools.desktop_screenshot.shutil.which",
                 return_value=None,
             ),
             patch(
-                "octop_harness.builtin.tools.desktop_screenshot._resolve_display",
+                "happyclaw_harness.builtin.tools.desktop_screenshot._resolve_display",
                 return_value=None,
             ),
         ):
@@ -311,11 +311,11 @@ class TestDesktopScreenshot:
         with (
             patch.dict("sys.modules", {"mss": self._fake_mss_module(_shot)}),
             patch(
-                "octop_harness.builtin.tools.desktop_screenshot.shutil.which",
+                "happyclaw_harness.builtin.tools.desktop_screenshot.shutil.which",
                 return_value=None,
             ),
             patch(
-                "octop_harness.builtin.tools.desktop_screenshot._resolve_display",
+                "happyclaw_harness.builtin.tools.desktop_screenshot._resolve_display",
                 return_value=None,
             ),
         ):
@@ -329,11 +329,11 @@ class TestDesktopScreenshot:
         with (
             patch.dict("sys.modules", {"mss": self._fake_mss_module()}),
             patch(
-                "octop_harness.builtin.tools.desktop_screenshot.shutil.which",
+                "happyclaw_harness.builtin.tools.desktop_screenshot.shutil.which",
                 return_value=None,
             ),
             patch(
-                "octop_harness.builtin.tools.desktop_screenshot._resolve_display",
+                "happyclaw_harness.builtin.tools.desktop_screenshot._resolve_display",
                 return_value=None,
             ),
         ):
@@ -351,11 +351,11 @@ class TestDesktopScreenshot:
         with (
             patch.dict("sys.modules", {"mss": self._fake_mss_module()}),
             patch(
-                "octop_harness.builtin.tools.desktop_screenshot.shutil.which",
+                "happyclaw_harness.builtin.tools.desktop_screenshot.shutil.which",
                 return_value=None,
             ),
             patch(
-                "octop_harness.builtin.tools.desktop_screenshot._resolve_display",
+                "happyclaw_harness.builtin.tools.desktop_screenshot._resolve_display",
                 return_value=None,
             ),
         ):
@@ -369,24 +369,24 @@ class TestDesktopScreenshot:
     def test_workspace_remaps_external_absolute_path(self, tmp_path: Path) -> None:
         ws = self._workspace(tmp_path)
         tool = build_desktop_screenshot_tool(ws)
-        outside = Path("/tmp/octop_desktop_shot_outside.png")
+        outside = Path("/tmp/happyclaw_desktop_shot_outside.png")
 
         with (
             patch.dict("sys.modules", {"mss": self._fake_mss_module()}),
             patch(
-                "octop_harness.builtin.tools.desktop_screenshot.shutil.which",
+                "happyclaw_harness.builtin.tools.desktop_screenshot.shutil.which",
                 return_value=None,
             ),
             patch(
-                "octop_harness.builtin.tools.desktop_screenshot._resolve_display",
+                "happyclaw_harness.builtin.tools.desktop_screenshot._resolve_display",
                 return_value=None,
             ),
         ):
             block = tool.invoke({"path": str(outside)})
 
-        expected = tmp_path / DEFAULT_SCREENSHOTS_DIR / "octop_desktop_shot_outside.png"
+        expected = tmp_path / DEFAULT_SCREENSHOTS_DIR / "happyclaw_desktop_shot_outside.png"
         assert expected.is_file()
-        assert block["path"] == f"{DEFAULT_SCREENSHOTS_DIR}/octop_desktop_shot_outside.png"
+        assert block["path"] == f"{DEFAULT_SCREENSHOTS_DIR}/happyclaw_desktop_shot_outside.png"
 
     def test_workspace_filename_lands_in_outbound_screenshots(self, tmp_path: Path) -> None:
         ws = self._workspace(tmp_path)
@@ -395,11 +395,11 @@ class TestDesktopScreenshot:
         with (
             patch.dict("sys.modules", {"mss": self._fake_mss_module()}),
             patch(
-                "octop_harness.builtin.tools.desktop_screenshot.shutil.which",
+                "happyclaw_harness.builtin.tools.desktop_screenshot.shutil.which",
                 return_value=None,
             ),
             patch(
-                "octop_harness.builtin.tools.desktop_screenshot._resolve_display",
+                "happyclaw_harness.builtin.tools.desktop_screenshot._resolve_display",
                 return_value=None,
             ),
         ):
@@ -417,11 +417,11 @@ class TestDesktopScreenshot:
         with (
             patch.dict("sys.modules", {"mss": None}),
             patch(
-                "octop_harness.builtin.tools.desktop_screenshot.shutil.which",
+                "happyclaw_harness.builtin.tools.desktop_screenshot.shutil.which",
                 return_value=None,
             ),
             patch(
-                "octop_harness.builtin.tools.desktop_screenshot._resolve_display",
+                "happyclaw_harness.builtin.tools.desktop_screenshot._resolve_display",
                 return_value=None,
             ),
         ):
@@ -450,15 +450,15 @@ class TestDesktopScreenshot:
 
         with (
             patch(
-                "octop_harness.builtin.tools.desktop_screenshot.shutil.which",
+                "happyclaw_harness.builtin.tools.desktop_screenshot.shutil.which",
                 return_value="/usr/bin/import",
             ),
             patch(
-                "octop_harness.builtin.tools.desktop_screenshot.subprocess.run",
+                "happyclaw_harness.builtin.tools.desktop_screenshot.subprocess.run",
                 side_effect=_fake_run,
             ),
             patch(
-                "octop_harness.builtin.tools.desktop_screenshot.platform.system",
+                "happyclaw_harness.builtin.tools.desktop_screenshot.platform.system",
                 return_value="Linux",
             ),
         ):
@@ -470,8 +470,8 @@ class TestDesktopScreenshot:
         import importlib
 
         # Prefer importlib: ``import …desktop_screenshot as mod`` can resolve to the
-        # StructuredTool re-exported on ``octop_harness.builtin.tools``.
-        mod = importlib.import_module("octop_harness.builtin.tools.desktop_screenshot")
+        # StructuredTool re-exported on ``happyclaw_harness.builtin.tools``.
+        mod = importlib.import_module("happyclaw_harness.builtin.tools.desktop_screenshot")
 
         target = tmp_path / "shot.png"
         seen_backends: list[str] = []
@@ -514,7 +514,7 @@ class TestDesktopScreenshot:
             return result
 
         with patch(
-            "octop_harness.builtin.tools.desktop_screenshot.subprocess.run",
+            "happyclaw_harness.builtin.tools.desktop_screenshot.subprocess.run",
             side_effect=_fake_run,
         ):
             block = desktop_screenshot.invoke({"path": str(target), "capture_window": True})

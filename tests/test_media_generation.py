@@ -13,20 +13,20 @@ import pytest
 from deepagents.backends import FilesystemBackend
 from langchain_core.messages import ToolMessage
 
-from octop_harness.agent import HarnessAgent
-from octop_harness.backends.workspace import BackendWorkspace
-from octop_harness.builtin.tools.media_generation import build_media_generation_tools
-from octop_harness.config import (
+from happyclaw_harness.agent import HarnessAgent
+from happyclaw_harness.backends.workspace import BackendWorkspace
+from happyclaw_harness.builtin.tools.media_generation import build_media_generation_tools
+from happyclaw_harness.config import (
     HarnessAgentConfig,
     MediaGenerationConfig,
     MediaProviderConfig,
     ModelConfig,
     ProviderConfig,
 )
-from octop_harness.media.base import BaseMediaProvider
-from octop_harness.media.errors import MediaGenerationError
-from octop_harness.media.manager import MediaManager
-from octop_harness.media.models import (
+from happyclaw_harness.media.base import BaseMediaProvider
+from happyclaw_harness.media.errors import MediaGenerationError
+from happyclaw_harness.media.manager import MediaManager
+from happyclaw_harness.media.models import (
     GeneratedMedia,
     ImageGenerationRequest,
     MediaCapabilities,
@@ -37,10 +37,10 @@ from octop_harness.media.models import (
     RemoteArtifact,
     VideoGenerationRequest,
 )
-from octop_harness.media.providers.dashscope import DashScopeMediaProvider
-from octop_harness.media.providers.minimax import MiniMaxMediaProvider
-from octop_harness.media.providers.volcengine import VolcengineMediaProvider
-from octop_harness.media.registry import create_media_manager, create_media_provider
+from happyclaw_harness.media.providers.dashscope import DashScopeMediaProvider
+from happyclaw_harness.media.providers.minimax import MiniMaxMediaProvider
+from happyclaw_harness.media.providers.volcengine import VolcengineMediaProvider
+from happyclaw_harness.media.registry import create_media_manager, create_media_provider
 
 _PNG = b"\x89PNG\r\n\x1a\nimage-bytes"
 _MP4 = b"\x00\x00\x00\x18ftypmp42video-bytes"

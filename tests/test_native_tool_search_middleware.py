@@ -8,9 +8,9 @@ import pytest
 from langchain.agents.middleware import ModelRequest, ModelResponse
 from langchain_core.tools import StructuredTool
 
-from octop_harness.config import ModelConfig, ProviderConfig
-from octop_harness.llm.factory import build_chat_model
-from octop_harness.middleware.native_tool_search import NativeToolSearchMiddleware
+from happyclaw_harness.config import ModelConfig, ProviderConfig
+from happyclaw_harness.llm.factory import build_chat_model
+from happyclaw_harness.middleware.native_tool_search import NativeToolSearchMiddleware
 
 
 def _tool(name: str, *, deferred: bool = False) -> StructuredTool:

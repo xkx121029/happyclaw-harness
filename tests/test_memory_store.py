@@ -8,11 +8,11 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from octop_harness.agent import HarnessAgent
-from octop_harness.config import HarnessAgentConfig, ModelConfig, ProviderConfig
-from octop_harness.manager import HarnessAgentManager
-from octop_harness.memory.runtime import MemoryRuntime
-from octop_harness.memory.store import hold_shared_memory, memory_identity, shared_memory_store
+from happyclaw_harness.agent import HarnessAgent
+from happyclaw_harness.config import HarnessAgentConfig, ModelConfig, ProviderConfig
+from happyclaw_harness.manager import HarnessAgentManager
+from happyclaw_harness.memory.runtime import MemoryRuntime
+from happyclaw_harness.memory.store import hold_shared_memory, memory_identity, shared_memory_store
 
 
 def _cfg(tmp_path: Path, *, namespace: str = "ns", name: str = "agent") -> HarnessAgentConfig:

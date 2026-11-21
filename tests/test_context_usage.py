@@ -10,7 +10,7 @@ import pytest
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 from langchain_core.tools import StructuredTool
 
-from octop_harness.context_usage import (
+from happyclaw_harness.context_usage import (
     CONTEXT_USAGE_KEY,
     ContextUsage,
     breakdown_from_model_request,
@@ -25,7 +25,7 @@ from octop_harness.context_usage import (
     shrink_context_usage,
     tool_schema_tokens,
 )
-from octop_harness.middleware.context_usage import ContextUsageMiddleware, resolve_context_usage
+from happyclaw_harness.middleware.context_usage import ContextUsageMiddleware, resolve_context_usage
 
 
 def test_estimate_tokens_empty() -> None:
@@ -34,7 +34,7 @@ def test_estimate_tokens_empty() -> None:
 
 
 def test_tool_schema_tokens_caches_by_name(monkeypatch: pytest.MonkeyPatch) -> None:
-    from octop_harness import context_usage as cu
+    from happyclaw_harness import context_usage as cu
 
     monkeypatch.setattr(cu, "_TOOL_SCHEMA_TOKEN_CACHE", {})
     tool = MagicMock()
@@ -56,7 +56,7 @@ def test_tool_schema_tokens_caches_by_name(monkeypatch: pytest.MonkeyPatch) -> N
 
 
 def test_deferred_tool_estimate_omits_parameter_schema(monkeypatch: pytest.MonkeyPatch) -> None:
-    from octop_harness import context_usage as cu
+    from happyclaw_harness import context_usage as cu
 
     monkeypatch.setattr(cu, "_TOOL_SCHEMA_TOKEN_CACHE", {})
 
@@ -70,7 +70,7 @@ def test_deferred_tool_estimate_omits_parameter_schema(monkeypatch: pytest.Monke
 
 
 def test_partition_system_prompt_segments() -> None:
-    from octop_harness.context_usage import partition_system_prompt_segments
+    from happyclaw_harness.context_usage import partition_system_prompt_segments
 
     text = (
         "You are helpful.\n\n"

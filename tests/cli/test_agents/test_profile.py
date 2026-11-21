@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from octop_harness.cli.agents.profile import AgentProfile
+from happyclaw_harness.cli.agents.profile import AgentProfile
 
 
 def test_profile_basic_creation() -> None:

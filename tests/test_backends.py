@@ -1,4 +1,4 @@
-"""Tests for ``octop_harness.backends.resolve_backend``."""
+"""Tests for ``happyclaw_harness.backends.resolve_backend``."""
 
 from __future__ import annotations
 
@@ -10,13 +10,13 @@ import pytest
 from deepagents.backends import CompositeBackend, LocalShellBackend
 from deepagents.middleware.filesystem import supports_execution
 
-from octop_harness.backends import (
+from happyclaw_harness.backends import (
     DEFAULT_BACKEND_SPEC,
     MountedCompositeBackend,
     resolve_backend,
     spec_supports_execution,
 )
-from octop_harness.backends.workspace import BackendWorkspace
+from happyclaw_harness.backends.workspace import BackendWorkspace
 
 
 class TestDefaultSpec:
@@ -185,7 +185,7 @@ class TestDictForms:
         """Default root is '/', which DOES trigger the warning."""
         from deepagents.backends import LocalShellBackend
 
-        from octop_harness.backends import _HOST_ROOT_WARNED
+        from happyclaw_harness.backends import _HOST_ROOT_WARNED
 
         # The warning is once per workspace for the process. An earlier test
         # may already have built a host-root shell with no workspace.
@@ -203,7 +203,7 @@ class TestDictForms:
         tmp_path: Path,
     ) -> None:
         """Explicitly setting root_dir='/' triggers the warning (includes workspace)."""
-        from octop_harness.backends import _HOST_ROOT_WARNED
+        from happyclaw_harness.backends import _HOST_ROOT_WARNED
 
         _HOST_ROOT_WARNED.clear()
         with caplog.at_level(logging.WARNING):
@@ -226,7 +226,7 @@ class TestDictForms:
     ) -> None:
         from deepagents.backends import LocalShellBackend
 
-        from octop_harness.backends.bwrap_shell import (
+        from happyclaw_harness.backends.bwrap_shell import (
             BubbledLocalShellBackend,
             HarnessLocalShellBackend,
             can_use_bubbled_shell,
@@ -332,7 +332,7 @@ class TestRemoteBackendsImportError:
 
     def test_s3_uses_bundled_backend_without_extra(self, monkeypatch: pytest.MonkeyPatch) -> None:
         pytest.importorskip("boto3", reason="boto3 not installed; skipping S3Backend test")
-        from octop_harness.backends.s3_backend import S3CompatBackend
+        from happyclaw_harness.backends.s3_backend import S3CompatBackend
 
         monkeypatch.setitem(sys.modules, "deepagents_backends", None)
         backend = resolve_backend(
@@ -347,7 +347,7 @@ class TestRemoteBackendsImportError:
 
     def test_s3_uses_bundled_backend_when_deepagents_backends_present(self) -> None:
         pytest.importorskip("boto3", reason="boto3 not installed; skipping S3Backend test")
-        from octop_harness.backends.s3_backend import S3Backend
+        from happyclaw_harness.backends.s3_backend import S3Backend
 
         backend = resolve_backend(
             {
@@ -385,7 +385,7 @@ class TestRemoteBackendsImportError:
 
     def test_postgres_uses_bundled_backend(self) -> None:
         pytest.importorskip("psycopg")
-        from octop_harness.backends.postgres import PostgresBackend
+        from happyclaw_harness.backends.postgres import PostgresBackend
 
         backend = resolve_backend(
             {

@@ -10,12 +10,12 @@ import pytest
 from deepagents.middleware.memory import MemoryMiddleware as DeepAgentsMemoryMiddleware
 from langchain_core.messages import ToolMessage
 
-from octop_harness.agent import HarnessAgent, InitResult
-from octop_harness.backends.workspace import DEFAULT_MEMORY_FILES
-from octop_harness.builtin.templates import iter_md_template_files
-from octop_harness.config import HarnessAgentConfig, ModelConfig, ProviderConfig
-from octop_harness.memory.policy import memory_system_prompt, render_reply_language_prompt
-from octop_harness.middleware.bootstrap import BOOTSTRAP_FILENAME, BOOTSTRAPPED_MARKER
+from happyclaw_harness.agent import HarnessAgent, InitResult
+from happyclaw_harness.backends.workspace import DEFAULT_MEMORY_FILES
+from happyclaw_harness.builtin.templates import iter_md_template_files
+from happyclaw_harness.config import HarnessAgentConfig, ModelConfig, ProviderConfig
+from happyclaw_harness.memory.policy import memory_system_prompt, render_reply_language_prompt
+from happyclaw_harness.middleware.bootstrap import BOOTSTRAP_FILENAME, BOOTSTRAPPED_MARKER
 
 # Expected templates in zh/ directory (SOUL.md is memory-only, not seeded by init).
 _EXPECTED_ZH_TEMPLATES = {
@@ -253,7 +253,7 @@ class TestInitResultDataclass:
 
 
 class TestInitWorkspaceTopLevel:
-    """Top-level :func:`octop_harness.init_workspace` — used by CLI bootstrap
+    """Top-level :func:`happyclaw_harness.init_workspace` — used by CLI bootstrap
     where no provider/agent has been configured yet.
 
     The argument is the absolute workspace directory itself; templates and
@@ -262,7 +262,7 @@ class TestInitWorkspaceTopLevel:
     """
 
     def test_creates_templates_and_skills_on_disk(self, tmp_path: Path) -> None:
-        from octop_harness import init_workspace
+        from happyclaw_harness import init_workspace
 
         ws = tmp_path / "workspace"
         result = init_workspace(ws, language="zh")
@@ -281,7 +281,7 @@ class TestInitWorkspaceTopLevel:
         assert skill_dirs, "expected at least one builtin skill directory"
 
     def test_idempotent_second_call(self, tmp_path: Path) -> None:
-        from octop_harness import init_workspace
+        from happyclaw_harness import init_workspace
 
         ws = tmp_path / "workspace"
         first = init_workspace(ws, language="zh")
@@ -293,7 +293,7 @@ class TestInitWorkspaceTopLevel:
         assert second.skills_synced is False  # version stamp matched
 
     def test_overwrite_replaces_user_edits(self, tmp_path: Path) -> None:
-        from octop_harness import init_workspace
+        from happyclaw_harness import init_workspace
 
         ws = tmp_path / "workspace"
         init_workspace(ws, language="zh")
@@ -305,7 +305,7 @@ class TestInitWorkspaceTopLevel:
         assert str(ws / "AGENTS.md") in result.templates_overwritten
 
     def test_include_md_files_false_skips_templates(self, tmp_path: Path) -> None:
-        from octop_harness import init_workspace
+        from happyclaw_harness import init_workspace
 
         ws = tmp_path / "workspace"
         result = init_workspace(ws, include_md_files=False)
@@ -315,7 +315,7 @@ class TestInitWorkspaceTopLevel:
         assert result.skills_synced is True
 
     def test_include_skills_false_skips_skills(self, tmp_path: Path) -> None:
-        from octop_harness import init_workspace
+        from happyclaw_harness import init_workspace
 
         ws = tmp_path / "workspace"
         result = init_workspace(ws, include_skills=False)
@@ -323,13 +323,13 @@ class TestInitWorkspaceTopLevel:
         assert not (ws / "_builtin_skills").exists()
 
     def test_relative_workspace_dir_rejected(self, tmp_path: Path) -> None:
-        from octop_harness import init_workspace
+        from happyclaw_harness import init_workspace
 
         with pytest.raises(ValueError, match="absolute"):
             init_workspace("workspace")  # relative path now invalid
 
     def test_invalid_language_raises(self, tmp_path: Path) -> None:
-        from octop_harness import init_workspace
+        from happyclaw_harness import init_workspace
 
         with pytest.raises(FileNotFoundError, match="language"):
             init_workspace(tmp_path, language="fr")
@@ -337,12 +337,12 @@ class TestInitWorkspaceTopLevel:
 
 class TestProvidersTemplateInit:
     def test_init_writes_providers_template(self, tmp_path: Path) -> None:
-        from octop_harness.init import init_workspace
+        from happyclaw_harness.init import init_workspace
 
         user_dir = tmp_path / "user-home"
         user_dir.mkdir()
 
-        with patch("octop_harness.init._PROVIDERS_USER_DIR", user_dir):
+        with patch("happyclaw_harness.init._PROVIDERS_USER_DIR", user_dir):
             init_workspace(tmp_path / "workspace")
 
         out = user_dir / "providers_template.json"
@@ -352,27 +352,27 @@ class TestProvidersTemplateInit:
         assert len(data) >= 17
 
     def test_init_does_not_overwrite_existing(self, tmp_path: Path) -> None:
-        from octop_harness.init import init_workspace
+        from happyclaw_harness.init import init_workspace
 
         user_dir = tmp_path / "user-home"
         user_dir.mkdir()
         existing = user_dir / "providers_template.json"
         existing.write_text('["custom"]', encoding="utf-8")
 
-        with patch("octop_harness.init._PROVIDERS_USER_DIR", user_dir):
+        with patch("happyclaw_harness.init._PROVIDERS_USER_DIR", user_dir):
             init_workspace(tmp_path / "workspace")
 
         assert existing.read_text() == '["custom"]'
 
     def test_init_overwrite_true_replaces(self, tmp_path: Path) -> None:
-        from octop_harness.init import init_workspace
+        from happyclaw_harness.init import init_workspace
 
         user_dir = tmp_path / "user-home"
         user_dir.mkdir()
         existing = user_dir / "providers_template.json"
         existing.write_text('["old"]', encoding="utf-8")
 
-        with patch("octop_harness.init._PROVIDERS_USER_DIR", user_dir):
+        with patch("happyclaw_harness.init._PROVIDERS_USER_DIR", user_dir):
             init_workspace(tmp_path / "workspace", overwrite=True)
 
         data = json.loads(existing.read_text())

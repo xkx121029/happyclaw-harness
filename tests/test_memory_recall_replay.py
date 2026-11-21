@@ -32,8 +32,8 @@ from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.graph.message import add_messages
 from octop_memory import Memory, MemoryService
 
-from octop_harness.middleware.memory import MemoryMiddleware
-from octop_harness.middleware.memory_recall import RECALL_SNAPSHOT_KEY, count_tokens_with_recall
+from happyclaw_harness.middleware.memory import MemoryMiddleware
+from happyclaw_harness.middleware.memory_recall import RECALL_SNAPSHOT_KEY, count_tokens_with_recall
 
 
 class RecallService:
@@ -123,7 +123,7 @@ def test_multimodal_replay_and_message_rewrite_do_not_restore_removed_content() 
         {"type": "image_url", "image_url": {"url": "https://example.com/a.png"}},
     ]
     history = prepare(mw, [HumanMessage(content=deepcopy(blocks), id="u1")])
-    # Same message_to_dict / messages_from_dict path used by Octop archive/fork.
+    # Same message_to_dict / messages_from_dict path used by HappyClaw archive/fork.
     restored = messages_from_dict([message_to_dict(m) for m in history])
     sent = send(mw, restored).messages[0]
     assert sent.content[:2] == blocks
@@ -212,9 +212,9 @@ def test_compaction_counts_recall_and_preserves_only_surviving_snapshots() -> No
 
 
 def test_harness_wires_recall_budget_into_auto_and_manual_compaction(tmp_path: Path) -> None:
-    from octop_harness.agent import HarnessAgent
-    from octop_harness.compaction import _build_force_summarization_middleware
-    from octop_harness.config import HarnessAgentConfig, ModelConfig, ProviderConfig
+    from happyclaw_harness.agent import HarnessAgent
+    from happyclaw_harness.compaction import _build_force_summarization_middleware
+    from happyclaw_harness.config import HarnessAgentConfig, ModelConfig, ProviderConfig
 
     model = RecordingModel(responses=[AIMessage("done")], profile={"max_input_tokens": 100_000})
     factory = MagicMock()

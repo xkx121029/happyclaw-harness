@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from octop_harness.backends.probe import probe_backend
-from octop_harness.backends.storage_errors import (
+from happyclaw_harness.backends.probe import probe_backend
+from happyclaw_harness.backends.storage_errors import (
     classify_storage_error,
     format_storage_error,
     wrap_io_error,
@@ -88,7 +88,7 @@ def test_probe_write_failure_uses_message_key(monkeypatch) -> None:  # type: ign
             return None
 
     monkeypatch.setattr(
-        "octop_harness.backends.probe._resolve_probe_backend",
+        "happyclaw_harness.backends.probe._resolve_probe_backend",
         lambda spec, workspace_dir=None: _Backend(),
     )
     result = probe_backend(

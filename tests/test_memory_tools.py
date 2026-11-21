@@ -8,7 +8,7 @@ from unittest.mock import patch
 import pytest
 from pydantic import ValidationError
 
-from octop_harness.builtin.tools.memory_tools import build_memory_tools
+from happyclaw_harness.builtin.tools.memory_tools import build_memory_tools
 
 
 class _FakeService:

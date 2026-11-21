@@ -18,11 +18,11 @@ from langchain_core.messages import AIMessage, HumanMessage, SystemMessage, Tool
 from langgraph.checkpoint.memory import InMemorySaver
 from octop_memory import Memory, MemoryService
 
-from octop_harness.backends.workspace import DEFAULT_MEMORY_FILES, BackendWorkspace
-from octop_harness.builtin.templates import iter_md_template_files
-from octop_harness.builtin.tools.memory_tools import build_memory_tools
-from octop_harness.middleware.filesystem_guard import FilesystemGuardMiddleware
-from octop_harness.middleware.memory import MemoryMiddleware as CaptureMemoryMiddleware
+from happyclaw_harness.backends.workspace import DEFAULT_MEMORY_FILES, BackendWorkspace
+from happyclaw_harness.builtin.templates import iter_md_template_files
+from happyclaw_harness.builtin.tools.memory_tools import build_memory_tools
+from happyclaw_harness.middleware.filesystem_guard import FilesystemGuardMiddleware
+from happyclaw_harness.middleware.memory import MemoryMiddleware as CaptureMemoryMiddleware
 
 
 class RecordingModel(FakeMessagesListChatModel):

@@ -1,11 +1,11 @@
-"""Tests for ``octop_harness.request.ChatRequest``."""
+"""Tests for ``happyclaw_harness.request.ChatRequest``."""
 
 from __future__ import annotations
 
 import pytest
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage, ToolMessage
 
-from octop_harness.request import ChatRequest
+from happyclaw_harness.request import ChatRequest
 
 
 class TestThreadId:

@@ -10,7 +10,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
 
 from prompt_toolkit.document import Document
 
-from octop_harness.cli.ui.completer import (
+from happyclaw_harness.cli.ui.completer import (
     FileRefCompleter,
     MergedCompleter,
     SlashCompleter,
@@ -107,14 +107,14 @@ class TestSlashCommandsSync:
 
     def _get_commands(self) -> list[str]:
         """Get the dynamic command list via _build_slash_commands()."""
-        from octop_harness.cli.ui.completer import _build_slash_commands
+        from happyclaw_harness.cli.ui.completer import _build_slash_commands
 
         return _build_slash_commands()
 
     def test_contains_all_registered_commands(self) -> None:
         """Slash command list includes host COMMANDS and runtime slash names."""
-        from octop_harness.cli.repl.commands import COMMANDS
-        from octop_harness.cli.repl.slash_router import runtime_command_names
+        from happyclaw_harness.cli.repl.commands import COMMANDS
+        from happyclaw_harness.cli.repl.slash_router import runtime_command_names
 
         cmds = self._get_commands()
         for name in COMMANDS:
@@ -130,8 +130,8 @@ class TestSlashCommandsSync:
 
     def test_does_not_contain_phantom_commands(self) -> None:
         """Slash command list must not contain unregistered host or runtime names."""
-        from octop_harness.cli.repl.commands import _ALIASES, COMMANDS
-        from octop_harness.cli.repl.slash_router import runtime_command_names
+        from happyclaw_harness.cli.repl.commands import _ALIASES, COMMANDS
+        from happyclaw_harness.cli.repl.slash_router import runtime_command_names
 
         cmds = self._get_commands()
         valid = (

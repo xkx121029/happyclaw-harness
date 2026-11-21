@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from octop_harness.cli.providers.registry import (
+from happyclaw_harness.cli.providers.registry import (
     PROVIDER_PRESETS,
     ModelPreset,
     ProviderPreset,
@@ -58,14 +58,14 @@ def test_anthropic_uses_anthropic_protocol() -> None:
 
 
 def test_cli_provider_preset_is_core_type() -> None:
-    from octop_harness.cli.providers.registry import ProviderPreset as CliPreset
-    from octop_harness.providers import ProviderPreset as CorePreset
+    from happyclaw_harness.cli.providers.registry import ProviderPreset as CliPreset
+    from happyclaw_harness.providers import ProviderPreset as CorePreset
 
     assert CliPreset is CorePreset
 
 
 def test_cli_model_preset_is_core_type() -> None:
-    from octop_harness.cli.providers.registry import ModelPreset as CliPreset
-    from octop_harness.providers import ModelPreset as CorePreset
+    from happyclaw_harness.cli.providers.registry import ModelPreset as CliPreset
+    from happyclaw_harness.providers import ModelPreset as CorePreset
 
     assert CliPreset is CorePreset

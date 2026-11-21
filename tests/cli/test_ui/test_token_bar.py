@@ -7,7 +7,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
 
-from octop_harness.cli.ui.token_bar import _format_k, format_token_bar, format_token_bar_minimal
+from happyclaw_harness.cli.ui.token_bar import _format_k, format_token_bar, format_token_bar_minimal
 
 
 class TestFormatK:

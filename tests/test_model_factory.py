@@ -1,4 +1,4 @@
-"""Tests for ``octop_harness.llm.factory``."""
+"""Tests for ``happyclaw_harness.llm.factory``."""
 
 from __future__ import annotations
 
@@ -7,8 +7,8 @@ from unittest.mock import patch
 
 import pytest
 
-from octop_harness.config import ModelConfig, ProviderConfig
-from octop_harness.llm.factory import (
+from happyclaw_harness.config import ModelConfig, ProviderConfig
+from happyclaw_harness.llm.factory import (
     ChatModelFactory,
     _get_reasoning_aware_chat_openai,
     _is_responses_api_unsupported_error,
@@ -1004,7 +1004,7 @@ class TestRetainFinalStreamUsage:
         from langchain_core.messages import AIMessageChunk
         from langchain_core.outputs import ChatGenerationChunk
 
-        from octop_harness.llm.factory import _chunk_without_usage
+        from happyclaw_harness.llm.factory import _chunk_without_usage
 
         chunk = ChatGenerationChunk(
             message=AIMessageChunk(

@@ -1,6 +1,6 @@
 import json
 
-from octop_harness.plugins import PluginContext, get_tool_config
+from happyclaw_harness.plugins import PluginContext, get_tool_config
 
 
 async def echo_message(message: str) -> str:

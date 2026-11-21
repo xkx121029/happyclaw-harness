@@ -12,10 +12,10 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from octop_harness.agent import HarnessAgent, _sync_close_sqlite_connection
-from octop_harness.config import HarnessAgentConfig, ModelConfig, ProviderConfig
-from octop_harness.memory.runtime import MemoryRuntime
-from octop_harness.providers import _parse_model_input
+from happyclaw_harness.agent import HarnessAgent, _sync_close_sqlite_connection
+from happyclaw_harness.config import HarnessAgentConfig, ModelConfig, ProviderConfig
+from happyclaw_harness.memory.runtime import MemoryRuntime
+from happyclaw_harness.providers import _parse_model_input
 
 
 def _close_memory(memory: object) -> None:

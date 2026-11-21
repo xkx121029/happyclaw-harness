@@ -14,14 +14,14 @@ import pytest
 from deepagents.backends import LocalShellBackend
 from deepagents.backends.protocol import ExecuteResponse
 
-from octop_harness.backends import resolve_backend
-from octop_harness.backends.bwrap_shell import (
+from happyclaw_harness.backends import resolve_backend
+from happyclaw_harness.backends.bwrap_shell import (
     BubbledLocalShellBackend,
     build_bwrap_argv,
     can_use_bubbled_shell,
     resolve_bubbled_bwrap,
 )
-from octop_harness.backends.local_shell import (
+from happyclaw_harness.backends.local_shell import (
     HarnessLocalShellBackend,
     is_host_root,
     map_virtual_abs_path,
@@ -116,7 +116,7 @@ def test_environment_host_root_does_not_enable_bwrap(monkeypatch: pytest.MonkeyP
 
 def test_resolve_backend_uses_bubbled_only_when_jail_available(tmp_path: Path) -> None:
     with patch(
-        "octop_harness.backends.bwrap_shell.resolve_bubbled_bwrap",
+        "happyclaw_harness.backends.bwrap_shell.resolve_bubbled_bwrap",
         return_value=_BWRAP,
     ):
         bubbled = resolve_backend({"type": "local_shell", "root_dir": str(tmp_path), "virtual_mode": True})
@@ -124,7 +124,7 @@ def test_resolve_backend_uses_bubbled_only_when_jail_available(tmp_path: Path) -
     assert bubbled._bwrap_path == _BWRAP
 
     with patch(
-        "octop_harness.backends.bwrap_shell.resolve_bubbled_bwrap",
+        "happyclaw_harness.backends.bwrap_shell.resolve_bubbled_bwrap",
         return_value=None,
     ):
         plain = resolve_backend({"type": "local_shell", "root_dir": str(tmp_path), "virtual_mode": True})
@@ -134,7 +134,7 @@ def test_resolve_backend_uses_bubbled_only_when_jail_available(tmp_path: Path) -
 
 def test_resolve_backend_host_root_is_harness_not_bubbled() -> None:
     with patch(
-        "octop_harness.backends.bwrap_shell.resolve_bubbled_bwrap",
+        "happyclaw_harness.backends.bwrap_shell.resolve_bubbled_bwrap",
         return_value=None,
     ):
         backend = resolve_backend({"type": "local_shell", "root_dir": "/", "virtual_mode": True})
@@ -199,7 +199,7 @@ def test_execute_uses_bwrap_on_linux(tmp_path: Path) -> None:
     fake.returncode = 0
     fake.stdout = "ok\n"
     fake.stderr = ""
-    with patch("octop_harness.backends.bwrap_shell.subprocess.run", return_value=fake) as run:
+    with patch("happyclaw_harness.backends.bwrap_shell.subprocess.run", return_value=fake) as run:
         result = backend.execute("echo ok")
     assert result.exit_code == 0
     assert "ok" in result.output
@@ -222,7 +222,7 @@ def test_execute_injects_process_env_and_workspace_dotenv(tmp_path: Path, monkey
     fake.returncode = 0
     fake.stdout = "ok\n"
     fake.stderr = ""
-    with patch("octop_harness.backends.bwrap_shell.subprocess.run", return_value=fake) as run:
+    with patch("happyclaw_harness.backends.bwrap_shell.subprocess.run", return_value=fake) as run:
         backend.execute("echo ok")
     env = run.call_args.kwargs["env"]
     assert env["FROM_ADMIN"] == "yes"
@@ -235,9 +235,9 @@ async def test_write_env_file_reaches_execute_when_host_dotenv_missing(tmp_path:
     """write_env_file via BackendWorkspace must feed execute even if host .env is absent."""
     from deepagents.backends import FilesystemBackend
 
-    from octop_harness.backends.workspace import BackendWorkspace
-    from octop_harness.builtin.tools.env_file import build_env_file_tools
-    from octop_harness.runtime_env import backend_workspace_dotenv_reader
+    from happyclaw_harness.backends.workspace import BackendWorkspace
+    from happyclaw_harness.builtin.tools.env_file import build_env_file_tools
+    from happyclaw_harness.runtime_env import backend_workspace_dotenv_reader
 
     host_ws = tmp_path / "host"
     remote = tmp_path / "remote"
@@ -278,7 +278,7 @@ def test_execute_falls_back_when_bwrap_missing_binary(tmp_path: Path) -> None:
     )
     with (
         patch(
-            "octop_harness.backends.bwrap_shell.subprocess.run",
+            "happyclaw_harness.backends.bwrap_shell.subprocess.run",
             side_effect=FileNotFoundError("bwrap"),
         ),
         patch.object(
@@ -315,7 +315,7 @@ def test_bwrap_start_failure_executes_translated_host_command(tmp_path: Path) ->
             raise FileNotFoundError("bwrap")
         return cast(subprocess.CompletedProcess[str], real_run(command, **kwargs))
 
-    with patch("octop_harness.backends.bwrap_shell.subprocess.run", side_effect=fail_bwrap_only):
+    with patch("happyclaw_harness.backends.bwrap_shell.subprocess.run", side_effect=fail_bwrap_only):
         result = backend.execute("sh /.octop/workspaces/FALLBACK1/probe.sh")
     assert result.exit_code == 0
     assert "fallback-ok" in result.output
@@ -433,26 +433,26 @@ def test_map_virtual_paths_in_env_maps_path_lists_only_when_credible(tmp_path: P
 
     mapped = map_virtual_paths_in_env(
         {
-            "OCTOP_SKILLS_DIR": "/.octop/workspaces/QH53B8/.octop/skills",
+            "HAPPYCLAW_SKILLS_DIR": "/.octop/workspaces/QH53B8/.octop/skills",
             "PYTHONPATH": f"/.octop/workspaces/QH53B8/lib{os.pathsep}/usr/lib",
             "PATH": f"/usr/bin{os.pathsep}/.octop/workspaces/QH53B8/bin",
             "URL": "https://example.com/a",
-            "OCTOP_HOME": str(root),
+            "HAPPYCLAW_HOME": str(root),
         },
         root,
         workspace_dir=workspace,
     )
 
-    assert mapped["OCTOP_SKILLS_DIR"] == str(skills)
+    assert mapped["HAPPYCLAW_SKILLS_DIR"] == str(skills)
     assert mapped["PYTHONPATH"] == f"{workspace / 'lib'}{os.pathsep}/usr/lib"
     assert mapped["PATH"] == f"/usr/bin{os.pathsep}{custom_bin}"
     assert mapped["URL"] == "https://example.com/a"
-    assert mapped["OCTOP_HOME"] == str(root)
+    assert mapped["HAPPYCLAW_HOME"] == str(root)
 
 
 @pytest.mark.skipif(os.name != "posix", reason="user report uses POSIX shell path semantics")
 def test_scoped_workspace_skill_script_executes_without_bwrap(tmp_path: Path) -> None:
-    """Regression probe for Octop's reported macOS scoped-workspace failure."""
+    """Regression probe for HappyClaw's reported macOS scoped-workspace failure."""
     root = tmp_path / "home with spaces"
     workspace = root / ".octop" / "workspaces" / "QH53B8"
     skill = workspace / ".octop" / "skills" / "commind-data-fetch"
@@ -462,7 +462,7 @@ def test_scoped_workspace_skill_script_executes_without_bwrap(tmp_path: Path) ->
         "import os\n"
         "from pathlib import Path\n"
         "print(Path.cwd().name)\n"
-        "print(Path(os.environ['OCTOP_SKILLS_DIR']).name)\n",
+        "print(Path(os.environ['HAPPYCLAW_SKILLS_DIR']).name)\n",
         encoding="utf-8",
     )
     (workspace / "workspace_probe.py").write_text("print('workspace-cwd')\n", encoding="utf-8")
@@ -472,7 +472,7 @@ def test_scoped_workspace_skill_script_executes_without_bwrap(tmp_path: Path) ->
         workspace_dir=workspace,
         virtual_mode=True,
         inherit_env=False,
-        env={"OCTOP_SKILLS_DIR": "/.octop/workspaces/QH53B8/.octop/skills"},
+        env={"HAPPYCLAW_SKILLS_DIR": "/.octop/workspaces/QH53B8/.octop/skills"},
     )
     virtual_skill = "/.octop/workspaces/QH53B8/.octop/skills/commind-data-fetch"
     assert backend.read(f"{virtual_skill}/SKILL.md").error is not None
@@ -484,7 +484,7 @@ def test_scoped_workspace_skill_script_executes_without_bwrap(tmp_path: Path) ->
     assert "commind-data-fetch" in listed.output
 
     via_env = backend.execute(
-        f'{shlex.quote(sys.executable)} "$OCTOP_SKILLS_DIR/commind-data-fetch/scripts/fetch_gateway.py"'
+        f'{shlex.quote(sys.executable)} "$HAPPYCLAW_SKILLS_DIR/commind-data-fetch/scripts/fetch_gateway.py"'
     )
     assert via_env.exit_code == 0
     assert "QH53B8" in via_env.output
@@ -506,7 +506,7 @@ def test_scoped_workspace_skill_script_executes_without_bwrap(tmp_path: Path) ->
 
 @pytest.mark.skipif(os.name != "posix", reason="reported probe uses POSIX shell path semantics")
 def test_reported_resolve_backend_probe_has_one_path_semantics(tmp_path: Path) -> None:
-    """Mirror the Octop report through the public backend factory."""
+    """Mirror the HappyClaw report through the public backend factory."""
     root = tmp_path / "home"
     workspace = root / ".octop" / "workspaces" / "REPORT1"
     skill = workspace / ".octop" / "skills" / "commind-data-fetch"
@@ -515,7 +515,7 @@ def test_reported_resolve_backend_probe_has_one_path_semantics(tmp_path: Path) -
     (skill / "SKILL.md").write_text("# probe\n", encoding="utf-8")
     (scripts / "fetch_gateway.py").write_text("print('script-ok')\n", encoding="utf-8")
 
-    with patch("octop_harness.backends.bwrap_shell.shutil.which", return_value=None):
+    with patch("happyclaw_harness.backends.bwrap_shell.shutil.which", return_value=None):
         backend = resolve_backend(
             {
                 "type": "local_shell",

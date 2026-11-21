@@ -1,4 +1,4 @@
-# Makefile for octop-harness
+# Makefile for happyclaw-harness
 # Usage:
 #   make              - Show this help
 #   make all          - format + lint + typecheck + test (ship bar)
@@ -28,7 +28,7 @@ PIP    := $(if $(UV),uv pip,python3 -m pip)
 
 .PHONY: help
 help:
-	@echo "octop-harness Build System"
+	@echo "happyclaw-harness Build System"
 	@echo ""
 	@echo "Usage: make <target>"
 	@echo ""
@@ -126,7 +126,7 @@ typecheck:
 .PHONY: test
 test:
 	@echo "[test] pytest..."
-	$(RUN) pytest --cov=octop_harness --cov-report=term-missing
+	$(RUN) pytest --cov=happyclaw_harness --cov-report=term-missing
 
 # ─── Utilities ───────────────────────────────────────────────────────────────
 
@@ -166,4 +166,4 @@ clean:
 
 .PHONY: version
 version:
-	@$(PYTHON) -c "from octop_harness._version import __version__; print(__version__)"
+	@$(PYTHON) -c "from happyclaw_harness._version import __version__; print(__version__)"

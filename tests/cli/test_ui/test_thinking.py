@@ -4,8 +4,8 @@ from io import StringIO
 
 from rich.console import Console
 
-from octop_harness.cli.ui.theme import get_theme
-from octop_harness.cli.ui.thinking import ThinkingRenderer
+from happyclaw_harness.cli.ui.theme import get_theme
+from happyclaw_harness.cli.ui.thinking import ThinkingRenderer
 
 
 def test_thinking_renderer_feed_accumulates() -> None:

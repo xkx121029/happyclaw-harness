@@ -1,4 +1,4 @@
-"""Tests for ``octop_harness.skills.catalog``."""
+"""Tests for ``happyclaw_harness.skills.catalog``."""
 
 from __future__ import annotations
 
@@ -7,8 +7,8 @@ from typing import Any
 
 import pytest
 
-from octop_harness.backends.workspace import BackendWorkspace
-from octop_harness.skills.catalog import list_skill_summaries
+from happyclaw_harness.backends.workspace import BackendWorkspace
+from happyclaw_harness.skills.catalog import list_skill_summaries
 
 
 @pytest.fixture

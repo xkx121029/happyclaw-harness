@@ -6,8 +6,8 @@ from pathlib import Path
 
 from deepagents.backends import FilesystemBackend
 
-from octop_harness.backends.workspace import DEFAULT_AGENTS_DIR, BackendWorkspace
-from octop_harness.builtin._sync import seed_builtin_agents_to_workspace
+from happyclaw_harness.backends.workspace import DEFAULT_AGENTS_DIR, BackendWorkspace
+from happyclaw_harness.builtin._sync import seed_builtin_agents_to_workspace
 
 
 def _workspace(tmp_path: Path) -> BackendWorkspace:

@@ -11,8 +11,8 @@ import pytest
 from langchain.agents.middleware import ModelRequest, ModelResponse
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 
-from octop_harness.backends.workspace import BackendWorkspace
-from octop_harness.middleware.bootstrap import (
+from happyclaw_harness.backends.workspace import BackendWorkspace
+from happyclaw_harness.middleware.bootstrap import (
     BOOTSTRAP_FILENAME,
     BOOTSTRAPPED_MARKER,
     DEFAULT_BOOTSTRAP_PATH,
@@ -116,7 +116,7 @@ def test_bootstrap_injection_is_logged_once_at_debug(
         state={"messages": [HumanMessage(content="hi")]},
         runtime=MagicMock(),
     )
-    with caplog.at_level(logging.DEBUG, logger="octop_harness.middleware.bootstrap"):
+    with caplog.at_level(logging.DEBUG, logger="happyclaw_harness.middleware.bootstrap"):
         mw.wrap_model_call(request, handler)
         mw.wrap_model_call(request, handler)
     logged = [rec for rec in caplog.records if "Bootstrap active" in rec.message]

@@ -7,17 +7,48 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.13] - 2026-11-21
+
+1.0.13 是命名切换版本，属于 **breaking change**：分发名与导入包名同时变更。
+
+### 破坏性变更
+
+- 分发名 `octop-harness` → **`happyclaw-harness`**，导入包 `octop_harness` → **`happyclaw_harness`**。
+  `from octop_harness import …` 一律改为 `from happyclaw_harness import …`，CLI 入口名
+  `octop-harness` 改为 `happyclaw-harness`。公开 API 的类名、函数名与签名未改。
+- 环境变量前缀 `OCTOP_*` → `HAPPYCLAW_*`，并保留对旧名的兼容读取：新名优先，只设置旧名时
+  仍按旧名生效，每个变量首次命中旧名时发一次 `DeprecationWarning`。涉及
+  `HAPPYCLAW_CHECKPOINT_DURABILITY`、`HAPPYCLAW_CHECKPOINT_RETENTION`、
+  `HAPPYCLAW_CHECKPOINT_KEEP_LAST`、`HAPPYCLAW_CHECKPOINT_KEEP_DAYS`、
+  `HAPPYCLAW_CHECKPOINT_VACUUM`、`HAPPYCLAW_CHECKPOINT_BACKUP_BEFORE_PRUNE`、
+  `HAPPYCLAW_CHECKPOINT_BACKUP_KEEP_DAYS`、`HAPPYCLAW_SUMMARY_FALLBACK_KEEP`。
+  `runtime_env` 的受保护前缀同时识别 `HAPPYCLAW_` 与 `OCTOP_`，老部署的进程级变量仍不会被
+  工作区 `.env` 覆盖。
+- logger 名、日志 handler 名与消息 `additional_kwargs` 里带下划线的内部标记键统一改为
+  `happyclaw_*`。
+- **本轮有意不改**：数据/配置路径（`~/.octop-harness`、`/.octop/workspaces/…`）、与宿主交换的
+  协议键（`octop_managed_streamed` / `octop_tool_result` / `octop_decision` / `octop_runtime_error`）、
+  技能清单 frontmatter 的 `octop:` 元数据键，以及对 `octop-memory` / `octop-browser` 两个兄弟库的
+  依赖与导入——它们各自作为独立仓库改名，本库跟随它们的发布节奏。
+
+### 文档
+
+- 新增中英双语 `ATTRIBUTION.md`：本库基于 Octop（`TencentCloud/octop-harness`，
+  Copyright (c) 2026 Octop，MIT 许可），HappyClaw 维护独立分支；`LICENSE` 追加
+  `Copyright (c) 2026 xkx121029`。
+- README.md / README_CN.md 全量改用新名，并补齐章节结构差异。
+
 ## [1.0.12] - 2026-11-21
 
 1.0.12 是 HappyClaw 收编本库后的第一个版本。分发名与导入名仍是
-`octop-harness` / `octop_harness`，公开 API 未改。
+`happyclaw-harness` / `happyclaw_harness`，公开 API 未改。
 
 ### 优化
 
-- `import octop_harness` 不再加载 LangChain / LangGraph / deepagents。
-  `octop_harness.acp` 的 `ACPService` 改为按需解析，`SubAgent` 只在类型注解里
+- `import happyclaw_harness` 不再加载 LangChain / LangGraph / deepagents。
+  `happyclaw_harness.acp` 的 `ACPService` 改为按需解析，`SubAgent` 只在类型注解里
   引用。冷启动从 12.6 秒、1406 个模块降到百毫秒级。
-- `octop-harness --help` 只导入 click，子命令模块在真正执行时才导入。
+- `happyclaw-harness --help` 只导入 click，子命令模块在真正执行时才导入。
 - deepagents 的私有 `_messages_delta_reducer` 改为首次使用时解析：上游改私有
   符号时，checkpoint 保留窗口退化为不携带重放消息，而不是整个包导入失败。
 
@@ -40,7 +71,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 归属
 
 - 分发元数据、README、贡献指南与安全策略统一到 HappyClaw / xkx121029 口径；
-  `OCTOP_*` 环境变量与 `~/.octop-harness/` 配置目录保持不变以兼容既有安装。
+  `HAPPYCLAW_*` 环境变量与 `~/.octop-harness/` 配置目录保持不变以兼容既有安装。
 
 ## [1.0.11] - 2026-11-17
 
@@ -82,7 +113,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - 要求 `deepagents>=0.7.35`，随之需要 langchain 1.4.9+、langchain-core 1.7.6+、langgraph 1.2.12+。主 agent 的模型拒答仍作为普通回复返回，不中断本轮；子 agent 拒答时，`task` 结果会说明拒答原因，不再是空字符串。系统提示词中 skill 段落的位置有变化，升级后第一轮提示词缓存会失效一次。
 - SQLite checkpoint 裁剪默认只在首次清理前尝试备份，备份保留 7 天。空间不足或备份失败时继续裁剪，标记会阻止重复尝试。`always` 要求每次备份成功后才裁剪，`off` 关闭备份。
-- LangGraph checkpoint 默认在调用退出时保存（`OCTOP_CHECKPOINT_DURABILITY=exit`），减少中间步骤的写入。若进程在一轮进行中被强制终止，该轮尚未落盘的消息、工具结果和执行进度会丢失，已产生的外部工具副作用可能仍在。设 `OCTOP_CHECKPOINT_DURABILITY=async` 可恢复按步骤异步保存，也可设为 `sync` 按步骤同步保存。
+- LangGraph checkpoint 默认在调用退出时保存（`HAPPYCLAW_CHECKPOINT_DURABILITY=exit`），减少中间步骤的写入。若进程在一轮进行中被强制终止，该轮尚未落盘的消息、工具结果和执行进度会丢失，已产生的外部工具副作用可能仍在。设 `HAPPYCLAW_CHECKPOINT_DURABILITY=async` 可恢复按步骤异步保存，也可设为 `sync` 按步骤同步保存。
 
 ## [1.0.8] - 2026-11-05
 

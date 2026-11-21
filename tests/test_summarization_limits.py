@@ -9,8 +9,8 @@ from typing import Any
 import pytest
 from langchain_core.exceptions import ContextOverflowError
 
-from octop_harness.config import HarnessAgentConfig
-from octop_harness.middleware.summarization_limits import (
+from happyclaw_harness.config import HarnessAgentConfig
+from happyclaw_harness.middleware.summarization_limits import (
     SUMMARY_FALLBACK_TEXT,
     SUMMARY_INPUT_RETRY_TOKEN_LIMIT,
     SUMMARY_INPUT_TOKEN_LIMIT,
@@ -77,7 +77,7 @@ def _cutoff_middleware() -> SimpleNamespace:
 
 
 def test_cutoff_overflow_keeps_recent_messages(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("OCTOP_SUMMARY_FALLBACK_KEEP", "20")
+    monkeypatch.setenv("HAPPYCLAW_SUMMARY_FALLBACK_KEEP", "20")
     mw = _cutoff_middleware()
     harden_summarization_middleware(mw)
     messages = [SimpleNamespace(type="human", content=str(index)) for index in range(264)]
@@ -116,7 +116,7 @@ def test_cutoff_inside_the_list_is_unchanged() -> None:
 
 
 def test_cutoff_overflow_includes_the_tool_call_that_owns_a_result(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("OCTOP_SUMMARY_FALLBACK_KEEP", "1")
+    monkeypatch.setenv("HAPPYCLAW_SUMMARY_FALLBACK_KEEP", "1")
     mw = _cutoff_middleware()
     harden_summarization_middleware(mw)
     messages = [
@@ -226,7 +226,7 @@ def test_stale_index_with_resolvable_message_id_defers_to_upstream() -> None:
 
 
 def test_stale_index_with_missing_message_id_still_keeps_recent_messages(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("OCTOP_SUMMARY_FALLBACK_KEEP", "20")
+    monkeypatch.setenv("HAPPYCLAW_SUMMARY_FALLBACK_KEEP", "20")
     mw = _cutoff_middleware()
     harden_summarization_middleware(mw)
     messages = [SimpleNamespace(id=f"m{index}", type="human", content=str(index)) for index in range(30)]

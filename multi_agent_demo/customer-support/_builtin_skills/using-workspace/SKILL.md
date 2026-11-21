@@ -5,7 +5,7 @@ description: Use the harness virtual filesystem (workspace) to organize multi-st
 
 # Using the Workspace
 
-You operate inside a **virtual workspace** backed by octop-harness's filesystem
+You operate inside a **virtual workspace** backed by happyclaw-harness's filesystem
 tools (`ls`, `read_file`, `write_file`, `edit_file`, `glob`, `grep`). Treat
 this workspace as your long-term memory for any task that produces artifacts
 or spans multiple turns.

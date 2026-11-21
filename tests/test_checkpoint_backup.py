@@ -17,11 +17,11 @@ import pytest
 from langgraph.checkpoint.base import create_checkpoint, empty_checkpoint
 from octop_memory import Memory
 
-from octop_harness.middleware import checkpoint_backup
-from octop_harness.middleware.memory import _prune_checkpoints_if_configured, checkpoint_retention_policy
+from happyclaw_harness.middleware import checkpoint_backup
+from happyclaw_harness.middleware.memory import _prune_checkpoints_if_configured, checkpoint_retention_policy
 
-_MODE = "OCTOP_CHECKPOINT_BACKUP_BEFORE_PRUNE"
-_KEEP_DAYS = "OCTOP_CHECKPOINT_BACKUP_KEEP_DAYS"
+_MODE = "HAPPYCLAW_CHECKPOINT_BACKUP_BEFORE_PRUNE"
+_KEEP_DAYS = "HAPPYCLAW_CHECKPOINT_BACKUP_KEEP_DAYS"
 
 
 def _append(memory: Memory, count: int = 1) -> None:
@@ -37,10 +37,10 @@ def _append(memory: Memory, count: int = 1) -> None:
 def store(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Iterator[tuple[Memory, Path, Path, Path]]:
     monkeypatch.delenv(_MODE, raising=False)
     monkeypatch.delenv(_KEEP_DAYS, raising=False)
-    monkeypatch.setenv("OCTOP_CHECKPOINT_RETENTION", "1")
-    monkeypatch.setenv("OCTOP_CHECKPOINT_KEEP_LAST", "3")
-    monkeypatch.delenv("OCTOP_CHECKPOINT_KEEP_DAYS", raising=False)
-    monkeypatch.delenv("OCTOP_CHECKPOINT_VACUUM", raising=False)
+    monkeypatch.setenv("HAPPYCLAW_CHECKPOINT_RETENTION", "1")
+    monkeypatch.setenv("HAPPYCLAW_CHECKPOINT_KEEP_LAST", "3")
+    monkeypatch.delenv("HAPPYCLAW_CHECKPOINT_KEEP_DAYS", raising=False)
+    monkeypatch.delenv("HAPPYCLAW_CHECKPOINT_VACUUM", raising=False)
     monkeypatch.setattr(checkpoint_backup.shutil, "disk_usage", lambda _path: SimpleNamespace(free=2**40))
     path = tmp_path / "memory.sqlite"
     memory = Memory("test", backend_config={"db_path": str(path)})
@@ -116,7 +116,7 @@ def test_keep_days_zero_keeps_old_backup_even_with_retention_disabled(store, mon
     _prune_checkpoints_if_configured(memory)
     os.utime(backup, (time.time() - 8 * 86400,) * 2)
     monkeypatch.setenv(_KEEP_DAYS, "0")
-    monkeypatch.setenv("OCTOP_CHECKPOINT_RETENTION", "0")
+    monkeypatch.setenv("HAPPYCLAW_CHECKPOINT_RETENTION", "0")
     _prune_checkpoints_if_configured(memory)
     assert backup.exists()
     monkeypatch.setenv(_KEEP_DAYS, "7")

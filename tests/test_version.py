@@ -5,8 +5,8 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-from octop_harness import __version__ as package_version
-from octop_harness._version import __version__ as module_version
+from happyclaw_harness import __version__ as package_version
+from happyclaw_harness._version import __version__ as module_version
 
 
 def _pyproject_version() -> str:

@@ -1,4 +1,4 @@
-"""Tests for octop_harness.security.models."""
+"""Tests for happyclaw_harness.security.models."""
 
 from __future__ import annotations
 
@@ -6,8 +6,8 @@ import logging
 
 import pytest
 
-from octop_harness.config import HarnessAgentConfig
-from octop_harness.security.models import SecurityPolicy
+from happyclaw_harness.config import HarnessAgentConfig
+from happyclaw_harness.security.models import SecurityPolicy
 
 
 def test_defaults_disables_hitl() -> None:
@@ -59,7 +59,7 @@ def test_apply_to_config_does_not_instantiate_backend(caplog: pytest.LogCaptureF
     policy = SecurityPolicy.defaults()
     cfg = HarnessAgentConfig(name="demo", workspace_dir="/tmp/demo", backend=None)
 
-    with caplog.at_level(logging.WARNING, logger="octop_harness.backends"):
+    with caplog.at_level(logging.WARNING, logger="happyclaw_harness.backends"):
         applied = policy.apply_to_config(cfg)
 
     # backend=None is treated as execution-capable (safe default); permissions stay

@@ -6,13 +6,13 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from octop_harness.backends.s3_backend import (
+from happyclaw_harness.backends.s3_backend import (
     S3Backend,
     S3Config,
     _compat_s3_client_config,
     _is_s3_not_implemented,
 )
-from octop_harness.backends.storage_errors import classify_storage_error
+from happyclaw_harness.backends.storage_errors import classify_storage_error
 
 
 def test_compat_client_config_disables_optional_checksums() -> None:
@@ -133,7 +133,7 @@ def test_get_object_falls_back_on_signature_mismatch() -> None:
     pytest.importorskip("botocore")
     from botocore.exceptions import ClientError
 
-    from octop_harness.backends.s3_backend import _is_s3_signature_mismatch
+    from happyclaw_harness.backends.s3_backend import _is_s3_signature_mismatch
 
     assert _is_s3_signature_mismatch(
         ClientError(
@@ -166,7 +166,7 @@ def test_get_object_falls_back_on_signature_mismatch() -> None:
 
 
 def test_parse_body_accepts_raw_binary() -> None:
-    from octop_harness.backends.cloud_storage_base import CloudStorageBackend
+    from happyclaw_harness.backends.cloud_storage_base import CloudStorageBackend
 
     data = CloudStorageBackend._parse_body(b"\x00\xff\xfe")
     assert data["encoding"] == "base64"

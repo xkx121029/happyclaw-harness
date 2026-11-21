@@ -6,8 +6,8 @@ from unittest.mock import MagicMock
 
 from langchain_core.messages import AIMessage, HumanMessage
 
-from octop_harness.messages import CHECKPOINT_TS_KEY
-from octop_harness.middleware.checkpoint_ts import CheckpointTsMiddleware, stamp_missing_checkpoint_ts
+from happyclaw_harness.messages import CHECKPOINT_TS_KEY
+from happyclaw_harness.middleware.checkpoint_ts import CheckpointTsMiddleware, stamp_missing_checkpoint_ts
 
 
 class TestStampMissingCheckpointTs:

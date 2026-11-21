@@ -5,8 +5,8 @@ from __future__ import annotations
 import pytest
 from pydantic import ValidationError
 
-from octop_harness.builtin.tools import ASK_USER_TOOL_NAME, ask_user_question
-from octop_harness.builtin.tools.ask_user import (
+from happyclaw_harness.builtin.tools import ASK_USER_TOOL_NAME, ask_user_question
+from happyclaw_harness.builtin.tools.ask_user import (
     HEADLESS_FALLBACK,
     MAX_OPTIONS,
     MAX_QUESTIONS,
@@ -85,8 +85,8 @@ class TestHeadlessFallback:
 
 class TestAgentWiring:
     def _active(self, **overrides: object) -> bool:
-        from octop_harness.agent import HarnessAgent
-        from octop_harness.config import HarnessAgentConfig
+        from happyclaw_harness.agent import HarnessAgent
+        from happyclaw_harness.config import HarnessAgentConfig
 
         agent = HarnessAgent.__new__(HarnessAgent)
         agent._config = HarnessAgentConfig(**overrides)  # type: ignore[arg-type]
@@ -102,7 +102,7 @@ class TestAgentWiring:
         assert self._active(tools_disabled=[ASK_USER_TOOL_NAME]) is False
 
     def test_config_roundtrip(self) -> None:
-        from octop_harness.config import HarnessAgentConfig
+        from happyclaw_harness.config import HarnessAgentConfig
 
         cfg = HarnessAgentConfig(ask_user_enabled=False)
         assert cfg.to_dict()["ask_user_enabled"] is False

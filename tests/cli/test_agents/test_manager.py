@@ -7,8 +7,8 @@ from pathlib import Path
 
 import pytest
 
-from octop_harness.cli.agents.manager import CliAgentManager
-from octop_harness.cli.agents.profile import AgentProfile
+from happyclaw_harness.cli.agents.manager import CliAgentManager
+from happyclaw_harness.cli.agents.profile import AgentProfile
 
 
 @pytest.fixture

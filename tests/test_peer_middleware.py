@@ -9,14 +9,14 @@ from unittest.mock import MagicMock, patch
 from langchain.agents.middleware import ModelRequest, ModelResponse
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 
-from octop_harness.config import HarnessAgentConfig, ProviderConfig
-from octop_harness.manager import HarnessAgentManager
-from octop_harness.middleware.peer import (
+from happyclaw_harness.config import HarnessAgentConfig, ProviderConfig
+from happyclaw_harness.manager import HarnessAgentManager
+from happyclaw_harness.middleware.peer import (
     PeerAgentMiddleware,
     has_agent_at_mention,
     render_peer_prompt,
 )
-from octop_harness.teams.tools import AskAgentAsyncInput, AskAgentSyncInput
+from happyclaw_harness.teams.tools import AskAgentAsyncInput, AskAgentSyncInput
 
 
 def _config(tmp_path: Path, name: str) -> HarnessAgentConfig:
@@ -37,7 +37,7 @@ def _config(tmp_path: Path, name: str) -> HarnessAgentConfig:
 def _mgr(tmp_path: Path) -> HarnessAgentManager:
     mock_agent = MagicMock()
     mock_agent.init_workspace.return_value = MagicMock()
-    with patch("octop_harness.manager.HarnessAgent", return_value=mock_agent):
+    with patch("happyclaw_harness.manager.HarnessAgent", return_value=mock_agent):
         mgr = HarnessAgentManager()
         mgr.create_agent(_config(tmp_path, "main"), agent_id="main", metadata={"user_id": 7})
         mgr.create_agent(
@@ -88,7 +88,7 @@ def test_middleware_mounts_peer_tools(tmp_path: Path) -> None:
 
 
 def test_user_text_that_looks_like_a_turn_note_still_injects_roster(tmp_path: Path) -> None:
-    from octop_harness.middleware.turn_note import is_turn_note
+    from happyclaw_harness.middleware.turn_note import is_turn_note
 
     mw = PeerAgentMiddleware(_mgr(tmp_path).team, language="en")
     captured: dict[str, ModelRequest] = {}
@@ -99,7 +99,7 @@ def test_user_text_that_looks_like_a_turn_note_still_injects_roster(tmp_path: Pa
 
     user = "[turn note]\n@data-analyst summarize"
     runtime = {"configurable": {"agent_id": "main", "user": 7}}
-    with patch("octop_harness.middleware.peer.runtime_config", return_value=runtime):
+    with patch("happyclaw_harness.middleware.peer.runtime_config", return_value=runtime):
         mw.wrap_model_call(_request(user=user), handler)
 
     applied = captured["request"]
@@ -118,7 +118,7 @@ def test_wrap_model_call_skips_without_at_mention(tmp_path: Path) -> None:
         return ModelResponse(result=[AIMessage(content="ok")])
 
     runtime = {"configurable": {"agent_id": "main", "user": 7}}
-    with patch("octop_harness.middleware.peer.runtime_config", return_value=runtime):
+    with patch("happyclaw_harness.middleware.peer.runtime_config", return_value=runtime):
         mw.wrap_model_call(_request(user="summarize this"), handler)
 
     applied = captured["request"]
@@ -134,7 +134,7 @@ def test_wrap_model_call_skips_file_at_refs(tmp_path: Path) -> None:
         return ModelResponse(result=[AIMessage(content="ok")])
 
     runtime = {"configurable": {"agent_id": "main", "user": 7}}
-    with patch("octop_harness.middleware.peer.runtime_config", return_value=runtime):
+    with patch("happyclaw_harness.middleware.peer.runtime_config", return_value=runtime):
         mw.wrap_model_call(_request(user="see @src/main.py"), handler)
 
     assert captured["request"].system_prompt == "base"
@@ -149,7 +149,7 @@ def test_wrap_model_call_injects_roster_and_at_hint(tmp_path: Path) -> None:
         return ModelResponse(result=[AIMessage(content="ok")])
 
     runtime = {"configurable": {"agent_id": "main", "user": 7}}
-    with patch("octop_harness.middleware.peer.runtime_config", return_value=runtime):
+    with patch("happyclaw_harness.middleware.peer.runtime_config", return_value=runtime):
         mw.wrap_model_call(_request(), handler)
 
     applied = captured["request"]
@@ -175,7 +175,7 @@ def test_wrap_model_call_zh_mentions_at_usage(tmp_path: Path) -> None:
         return ModelResponse(result=[AIMessage(content="ok")])
 
     runtime = {"configurable": {"agent_id": "main", "user": "7"}}
-    with patch("octop_harness.middleware.peer.runtime_config", return_value=runtime):
+    with patch("happyclaw_harness.middleware.peer.runtime_config", return_value=runtime):
         mw.wrap_model_call(_request(), handler)
 
     assert captured["request"].system_prompt == "base"
@@ -242,7 +242,7 @@ def test_wrap_model_call_appends_without_flattening_blocks(tmp_path: Path) -> No
         runtime=MagicMock(),
     )
     runtime = {"configurable": {"agent_id": "main", "user": 7}}
-    with patch("octop_harness.middleware.peer.runtime_config", return_value=runtime):
+    with patch("happyclaw_harness.middleware.peer.runtime_config", return_value=runtime):
         mw.wrap_model_call(req, handler)
 
     blocks = captured["request"].system_message.content_blocks
@@ -268,7 +268,7 @@ def test_wrap_model_call_uses_enriched_peer_cards(tmp_path: Path) -> None:
         return ModelResponse(result=[AIMessage(content="ok")])
 
     runtime = {"configurable": {"agent_id": "main", "user": 7}}
-    with patch("octop_harness.middleware.peer.runtime_config", return_value=runtime):
+    with patch("happyclaw_harness.middleware.peer.runtime_config", return_value=runtime):
         mw.wrap_model_call(_request(), handler)
 
     assert captured["request"].system_prompt == "base"
@@ -303,7 +303,7 @@ def test_middleware_swaps_ask_agent_schema_without_prompt_on_plain_turn(tmp_path
         runtime=MagicMock(),
     )
     runtime = {"configurable": {"agent_id": "main", "user": 7, "peer_invoke_mode": "sync"}}
-    with patch("octop_harness.middleware.peer.runtime_config", return_value=runtime):
+    with patch("happyclaw_harness.middleware.peer.runtime_config", return_value=runtime):
         mw.wrap_model_call(req, handler)
 
     applied = captured["request"]
@@ -331,7 +331,7 @@ def test_middleware_does_not_escalate_sync_schema(tmp_path: Path) -> None:
         runtime=MagicMock(),
     )
     runtime = {"configurable": {"agent_id": "main", "user": 7, "peer_invoke_mode": "async"}}
-    with patch("octop_harness.middleware.peer.runtime_config", return_value=runtime):
+    with patch("happyclaw_harness.middleware.peer.runtime_config", return_value=runtime):
         mw.wrap_model_call(req, handler)
 
     applied = captured["request"]
@@ -346,7 +346,7 @@ def test_middleware_request_team_peers_intersects_roster(tmp_path: Path) -> None
 
     mock_agent = MagicMock()
     mock_agent.init_workspace.return_value = MagicMock()
-    with patch("octop_harness.manager.HarnessAgent", return_value=mock_agent):
+    with patch("happyclaw_harness.manager.HarnessAgent", return_value=mock_agent):
         scoped = HarnessAgentManager()
         scoped.create_agent(
             replace(_config(tmp_path, "main"), team_peers=("data-analyst", "researcher")),
@@ -370,7 +370,7 @@ def test_middleware_request_team_peers_intersects_roster(tmp_path: Path) -> None
             "team_peers": ["peer-c"],
         }
     }
-    with patch("octop_harness.middleware.peer.runtime_config", return_value=runtime):
+    with patch("happyclaw_harness.middleware.peer.runtime_config", return_value=runtime):
         mw.wrap_model_call(_request(), handler)
 
     assert captured["request"].system_prompt == "base"

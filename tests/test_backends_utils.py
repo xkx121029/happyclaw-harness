@@ -1,4 +1,4 @@
-"""Tests for ``octop_harness.backends.utils``."""
+"""Tests for ``happyclaw_harness.backends.utils``."""
 
 from __future__ import annotations
 
@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 from deepagents.backends import FilesystemBackend
 
-from octop_harness.backends.utils import (
+from happyclaw_harness.backends.utils import (
     anchor_at_backend_root,
     backend_file_exists,
     backend_write_force,

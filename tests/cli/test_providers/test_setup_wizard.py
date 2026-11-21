@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-from octop_harness.cli.providers.setup_wizard import (
+from happyclaw_harness.cli.providers.setup_wizard import (
     SetupResult,
     _detect_env_provider,
     _write_provider_config,

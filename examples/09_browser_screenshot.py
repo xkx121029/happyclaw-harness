@@ -7,7 +7,7 @@ Three run modes:
    to end: open https://cloud.tencent.com, take a screenshot, save it
    under ``$TMPDIR/tencent_cloud.png``. No LLM keys needed, just Chrome.
 
-2. **Wrapper** (``--wrapper``) -- same task via the octop-harness
+2. **Wrapper** (``--wrapper``) -- same task via the happyclaw-harness
    ``browser_use`` LLM-tool wrapper. Demonstrates per-profile
    ``action_history`` and the multimodal ``[image_block, text_block]``
    screenshot return value.
@@ -20,7 +20,7 @@ Three run modes:
 
 This example DOES launch a real Chromium session, so:
 
-    pip install octop-harness     # octop-browser ships by default
+    pip install happyclaw-harness     # octop-browser ships by default
     sudo apt install chromium-browser     # or brew install chromium
 
 Run::
@@ -41,13 +41,13 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-from octop_harness import (
+from happyclaw_harness import (
     ChatRequest,
     HarnessAgent,
     HarnessAgentConfig,
     HarnessAgentManager,
 )
-from octop_harness.builtin.tools import browser_use
+from happyclaw_harness.builtin.tools import browser_use
 
 TARGET_URL = "https://cloud.tencent.com"
 SCREENSHOT_PATH = Path(tempfile.gettempdir()) / "tencent_cloud.png"
@@ -61,7 +61,7 @@ async def run_direct() -> int:
     except ImportError:
         print(
             "ERROR: octop-browser is not installed. It ships as a "
-            "default dependency of octop-harness — reinstall the "
+            "default dependency of happyclaw-harness — reinstall the "
             "package, or run `pip install octop-browser` directly.",
             file=sys.stderr,
         )
@@ -98,7 +98,7 @@ async def run_direct() -> int:
 
 
 async def run_via_wrapper() -> int:
-    """Exercise the octop-harness ``browser_use`` tool wrapper.
+    """Exercise the happyclaw-harness ``browser_use`` tool wrapper.
 
     Demonstrates the two ergonomic features layered on top of
     ``octop_browser.browser_tool``: per-profile ``action_history`` and

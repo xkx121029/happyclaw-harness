@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from octop_harness.cli.config.paths import CliPaths
+from happyclaw_harness.cli.config.paths import CliPaths
 
 
 def test_global_env_file_path(tmp_path: Path) -> None:
@@ -23,7 +23,7 @@ def test_project_env_file_path(tmp_path: Path) -> None:
 
 def test_load_dotenv_files_prefers_project(tmp_path: Path, monkeypatch: object) -> None:
     """Project .env takes precedence over global .env."""
-    from octop_harness.cli import load_dotenv_files
+    from happyclaw_harness.cli import load_dotenv_files
 
     # Create project .env with PROJECT_VAR
     project_env = tmp_path / ".env"
@@ -49,7 +49,7 @@ def test_load_dotenv_files_prefers_project(tmp_path: Path, monkeypatch: object) 
 
 def test_load_dotenv_files_falls_back_to_global(tmp_path: Path, monkeypatch: object) -> None:
     """Falls back to global .env when no project .env exists."""
-    from octop_harness.cli import load_dotenv_files
+    from happyclaw_harness.cli import load_dotenv_files
 
     global_dir = tmp_path / "home" / ".octop-harness"
     global_dir.mkdir(parents=True)
@@ -69,7 +69,7 @@ def test_load_dotenv_files_falls_back_to_global(tmp_path: Path, monkeypatch: obj
 
 def test_load_dotenv_files_returns_none_when_none_exist(tmp_path: Path, monkeypatch: object) -> None:
     """Returns None silently when neither .env exists."""
-    from octop_harness.cli import load_dotenv_files
+    from happyclaw_harness.cli import load_dotenv_files
 
     monkeypatch.setattr(Path, "home", staticmethod(lambda: tmp_path / "home"))  # type: ignore[attr-defined]
 
@@ -79,7 +79,7 @@ def test_load_dotenv_files_returns_none_when_none_exist(tmp_path: Path, monkeypa
 
 def test_load_dotenv_files_override_false_does_not_clobber(tmp_path: Path, monkeypatch: object) -> None:
     """override=False does not clobber existing env vars."""
-    from octop_harness.cli import load_dotenv_files
+    from happyclaw_harness.cli import load_dotenv_files
 
     project_env = tmp_path / ".env"
     project_env.write_text("CLOBBER_TEST=from_file\n")
@@ -96,7 +96,7 @@ def test_load_dotenv_files_override_false_does_not_clobber(tmp_path: Path, monke
 
 def test_load_dotenv_files_override_true_clobbers(tmp_path: Path, monkeypatch: object) -> None:
     """override=True replaces existing env vars (reload semantics)."""
-    from octop_harness.cli import load_dotenv_files
+    from happyclaw_harness.cli import load_dotenv_files
 
     project_env = tmp_path / ".env"
     project_env.write_text("RELOAD_VAR=new_value\n")

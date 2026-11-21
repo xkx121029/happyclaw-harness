@@ -8,7 +8,7 @@ import pytest
 
 
 def test_checkpoint_messages_channel_is_built_once() -> None:
-    from octop_harness.memory import runtime
+    from happyclaw_harness.memory import runtime
 
     runtime._checkpoint_messages_channel.cache_clear()
     channel = runtime._checkpoint_messages_channel()
@@ -21,7 +21,7 @@ def test_checkpoint_messages_channel_degrades_when_deepagents_renames_it(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     """A renamed private deepagents symbol must not break imports or pruning."""
-    from octop_harness.memory import runtime
+    from happyclaw_harness.memory import runtime
 
     monkeypatch.setitem(sys.modules, "deepagents._messages_reducer", None)
     runtime._checkpoint_messages_channel.cache_clear()

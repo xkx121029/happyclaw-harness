@@ -1,7 +1,7 @@
 ---
 name: publish
 description: >-
-  Publish the octop-harness Python package: cut a release branch from develop, bump
+  Publish the happyclaw-harness Python package: cut a release branch from develop, bump
   version, update CHANGELOG / README, open a PR to main; after merge, Actions
   tag on main (PyPI + GitHub Release) and sync main into develop. Use when the
   user asks to publish, release, bump version, cut a release, or run /publish.
@@ -10,7 +10,7 @@ disable-model-invocation: true
 
 # Publish
 
-自动化 octop-harness（PyPI: `octop-harness`）的完整发布流程。
+自动化 happyclaw-harness（PyPI: `happyclaw-harness`）的完整发布流程。
 
 **开始时宣告：** "正在使用 publish 技能发布版本 {VERSION}。"
 
@@ -30,7 +30,7 @@ disable-model-invocation: true
 | `INTEGRATION_BRANCH` | `develop` | 日常集成分支；release 必须从最新 tip 切出 |
 | `TARGET_BRANCH` | `main` | 合并请求的目标分支（生产真源） |
 | `RELEASE_BRANCH_PREFIX` | `release/` | release 分支名前缀 |
-| `PYPI_PACKAGE` | `octop-harness` | PyPI 包名（仅用于提示文案） |
+| `PYPI_PACKAGE` | `happyclaw-harness` | PyPI 包名（仅用于提示文案） |
 
 ## 调用方式
 
@@ -76,7 +76,7 @@ Release 分支:                       release/A.B.C
 集成起点:                           develop
 合入目标:                           main
 Tag 时机:                           main 合并之后（不会在 release 上先打 tag）
-PyPI 包:                            octop-harness
+PyPI 包:                            happyclaw-harness
 
 确认发布 X.Y.Z → A.B.C？[y/N]
 ```
@@ -195,7 +195,7 @@ git checkout -B {RELEASE_BRANCH_PREFIX}{version} {REMOTE}/{INTEGRATION_BRANCH}
    ```
    对每一个命中文件：
    - 若存在静态 shields 徽标 `version-X.Y.Z-orange`（或同类），升级为 `version-A.B.C-orange`。
-   - 若仅使用动态 `shields.io/pypi/v/octop-harness` 徽标，**无需改徽标**（PyPI 发布后自动更新），但仍须检查是否有硬编码安装示例版本（如 `pip install octop-harness==X.Y.Z`）并同步。
+   - 若仅使用动态 `shields.io/pypi/v/happyclaw-harness` 徽标，**无需改徽标**（PyPI 发布后自动更新），但仍须检查是否有硬编码安装示例版本（如 `pip install happyclaw-harness==X.Y.Z`）并同步。
    - 用户可见的发版说明若写在 README，按需补一行指向 `CHANGELOG.md` 对应版本。
    当前仓库至少包括 `README.md` 与 `README_CN.md`；某文件不存在则跳过该文件。全部未命中则提示并继续（不中止）。
 3. `INIT_VERSION_FILE` — 仅当文件内存在硬编码 `__version__ = "..."` 时升级；若通过 `importlib.metadata` / `_version.py` 读包元数据则跳过。
@@ -226,7 +226,7 @@ git push -u {REMOTE} {RELEASE_BRANCH_PREFIX}{version}
 
 ```bash
 gh pr create \
-  --repo xkx121029/octop-harness \
+  --repo xkx121029/happyclaw-harness \
   --base {TARGET_BRANCH} \
   --head {RELEASE_BRANCH_PREFIX}{version} \
   --title "chore: release {version}" \
@@ -237,7 +237,7 @@ gh pr create \
 - [ ] CI green
 - [ ] Merge this PR into main with a **merge commit** (not squash)
 - [ ] After merge, GitHub Action auto-pushes v{version} tag on main tip
-- [ ] Release workflow publishes octop-harness to PyPI and syncs main → develop
+- [ ] Release workflow publishes happyclaw-harness to PyPI and syncs main → develop
 EOF
 )"
 ```

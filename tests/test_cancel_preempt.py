@@ -9,8 +9,8 @@ from typing import Any
 
 import pytest
 
-from octop_harness.agent import HarnessAgent
-from octop_harness.request import ChatRequest
+from happyclaw_harness.agent import HarnessAgent
+from happyclaw_harness.request import ChatRequest
 
 
 def _bare_agent() -> HarnessAgent:

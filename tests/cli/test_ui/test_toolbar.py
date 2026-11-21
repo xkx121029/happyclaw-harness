@@ -1,7 +1,7 @@
 """Tests for the prompt_toolkit bottom toolbar formatter."""
 
-from octop_harness.cli.repl.state import SessionState
-from octop_harness.cli.ui.toolbar import format_toolbar
+from happyclaw_harness.cli.repl.state import SessionState
+from happyclaw_harness.cli.ui.toolbar import format_toolbar
 
 
 def test_format_toolbar_basic() -> None:

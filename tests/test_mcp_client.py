@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pytest
 
-from octop_harness import ManagedMCPClient
+from happyclaw_harness import ManagedMCPClient
 
 
 @pytest.mark.asyncio

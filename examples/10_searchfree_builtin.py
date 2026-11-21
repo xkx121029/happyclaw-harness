@@ -19,7 +19,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-from octop_harness import (
+from happyclaw_harness import (
     ChatRequest,
     HarnessAgentConfig,
     HarnessAgentManager,
@@ -99,7 +99,7 @@ async def _run_tests() -> None:
     cfg = _make_config(root)
     assert cfg.web_search_tools == "auto", f"Expected 'auto', got {cfg.web_search_tools!r}"
 
-    from octop_harness.builtin.tools.web_search import load_web_search_tools
+    from happyclaw_harness.builtin.tools.web_search import load_web_search_tools
 
     tools = load_web_search_tools(cfg.web_search_tools)
     tool_names = [t.name for t in tools]
@@ -114,7 +114,7 @@ async def _run_tests() -> None:
     print(" Test 2: Direct invocation of searchfree_search tool")
     print("=" * 60)
 
-    from octop_harness.builtin.tools.web_search.searchfree import searchfree_search
+    from happyclaw_harness.builtin.tools.web_search.searchfree import searchfree_search
 
     search_result = await searchfree_search.ainvoke(
         {"query": "Python programming language", "max_results": 3},

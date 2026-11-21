@@ -8,7 +8,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from octop_harness.backends import resolve_backend, spec_supports_execution
+from happyclaw_harness.backends import resolve_backend, spec_supports_execution
 
 
 def _msg(text: str) -> SimpleNamespace:
@@ -72,7 +72,7 @@ class TestMissingDependency:
 
         with (
             patch("builtins.__import__", side_effect=_fake_import),
-            pytest.raises(ImportError, match=r"octop-harness\[opensandbox\]"),
+            pytest.raises(ImportError, match=r"happyclaw-harness\[opensandbox\]"),
         ):
             resolve_backend({"type": "opensandbox", "domain": "localhost:8080"})
 

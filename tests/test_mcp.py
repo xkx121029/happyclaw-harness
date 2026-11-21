@@ -11,7 +11,7 @@ from langchain.agents.middleware import ModelRequest, ModelResponse
 from langchain_core.runnables.config import var_child_runnable_config
 from pydantic import ValidationError
 
-from octop_harness.mcp import (
+from happyclaw_harness.mcp import (
     aload_mcp_tools,
     filter_tools_for_mcp_servers,
     mcp_args_model,
@@ -21,7 +21,7 @@ from octop_harness.mcp import (
     sanitize_llm_tool_name,
     validate_mcp_default_servers,
 )
-from octop_harness.middleware.mcp_tools import MCPToolMiddleware
+from happyclaw_harness.middleware.mcp_tools import MCPToolMiddleware
 
 
 def _named_tool(name: str) -> MagicMock:
@@ -47,7 +47,7 @@ class TestAloadMcpTools:
                     raise RuntimeError("boom")
                 return [_named_tool(f"{self._name}_tool")]
 
-        monkeypatch.setattr("octop_harness.mcp.MultiServerMCPClient", _Client)
+        monkeypatch.setattr("happyclaw_harness.mcp.MultiServerMCPClient", _Client)
         tools = await aload_mcp_tools(
             {
                 "bad": {"transport": "http", "url": "http://bad"},
@@ -73,7 +73,7 @@ class TestAloadMcpTools:
                     )
                 return [_named_tool(f"{self._name}_tool")]
 
-        monkeypatch.setattr("octop_harness.mcp.MultiServerMCPClient", _Client)
+        monkeypatch.setattr("happyclaw_harness.mcp.MultiServerMCPClient", _Client)
         tools = await aload_mcp_tools(
             {
                 "bad": {"transport": "sse", "url": "http://bad"},
@@ -91,7 +91,7 @@ class TestAloadMcpTools:
             async def get_tools(self) -> list[MagicMock]:
                 return [_named_tool(f"{self._name}_tool")]
 
-        monkeypatch.setattr("octop_harness.mcp.MultiServerMCPClient", _Client)
+        monkeypatch.setattr("happyclaw_harness.mcp.MultiServerMCPClient", _Client)
         tools = await aload_mcp_tools(
             {
                 "registry_only": {},
@@ -124,7 +124,7 @@ class TestAloadMcpToolPostprocess:
                 tool.coroutine = None
                 return [tool]
 
-        monkeypatch.setattr("octop_harness.mcp.MultiServerMCPClient", _Client)
+        monkeypatch.setattr("happyclaw_harness.mcp.MultiServerMCPClient", _Client)
         tools = await aload_mcp_tools({"docs": {"transport": "http", "url": "http://docs"}})
         assert [t.name for t in tools] == ["docs_manage_search_file"]
 
@@ -145,7 +145,7 @@ class TestAloadMcpToolPostprocess:
                 tool.coroutine = _run
                 return [tool]
 
-        monkeypatch.setattr("octop_harness.mcp.MultiServerMCPClient", _Client)
+        monkeypatch.setattr("happyclaw_harness.mcp.MultiServerMCPClient", _Client)
         tools = await aload_mcp_tools(
             {
                 "docs": {
@@ -302,7 +302,7 @@ class TestMcpArgsModel:
                 tool.coroutine = _run
                 return [tool]
 
-        monkeypatch.setattr("octop_harness.mcp.MultiServerMCPClient", _Client)
+        monkeypatch.setattr("happyclaw_harness.mcp.MultiServerMCPClient", _Client)
         tools = await aload_mcp_tools({"notion": {"transport": "http", "url": "http://notion"}})
         await tools[0].coroutine(query="budget", page_size=None)
         assert captured["arguments"] == {"query": "budget"}
@@ -326,7 +326,7 @@ class TestMcpArgsModel:
                 }
                 return [tool]
 
-        monkeypatch.setattr("octop_harness.mcp.MultiServerMCPClient", _Client)
+        monkeypatch.setattr("happyclaw_harness.mcp.MultiServerMCPClient", _Client)
         tools = await aload_mcp_tools({"docs": {"transport": "http", "url": "http://docs"}})
         schema = tools[0].args_schema
         assert isinstance(schema, type)

@@ -10,11 +10,11 @@ from deepagents.middleware.summarization import compute_summarization_defaults
 from langchain.agents.middleware.summarization import SummarizationMiddleware
 from langchain_core.messages import HumanMessage
 
-from octop_harness.middleware.turn_aware_profile import (
+from happyclaw_harness.middleware.turn_aware_profile import (
     TurnAwareProfile,
     install_turn_aware_profile,
 )
-from octop_harness.middleware.turn_model import resolve_turn_model_ref
+from happyclaw_harness.middleware.turn_model import resolve_turn_model_ref
 
 
 def _model_with_profile(max_input_tokens: int) -> MagicMock:
@@ -72,13 +72,13 @@ def test_profile_follows_turn_model(factory: MagicMock) -> None:
     assert isinstance(seed.profile, dict)
 
     with patch(
-        "octop_harness.middleware.turn_aware_profile._configurable_from_runtime",
+        "happyclaw_harness.middleware.turn_aware_profile._configurable_from_runtime",
         return_value={},
     ):
         assert seed.profile.get("max_input_tokens") == 1_000_000
 
     with patch(
-        "octop_harness.middleware.turn_aware_profile._configurable_from_runtime",
+        "happyclaw_harness.middleware.turn_aware_profile._configurable_from_runtime",
         return_value={"model": "p/kimi"},
     ):
         assert seed.profile["max_input_tokens"] == 131_072
@@ -117,13 +117,13 @@ def test_should_summarize_respects_turn_window(factory: MagicMock) -> None:
     tokens = 120_000
 
     with patch(
-        "octop_harness.middleware.turn_aware_profile._configurable_from_runtime",
+        "happyclaw_harness.middleware.turn_aware_profile._configurable_from_runtime",
         return_value={"model": "p/kimi"},
     ):
         assert mw._should_summarize(messages, tokens) is True
 
     with patch(
-        "octop_harness.middleware.turn_aware_profile._configurable_from_runtime",
+        "happyclaw_harness.middleware.turn_aware_profile._configurable_from_runtime",
         return_value={"model": "p/minimax"},
     ):
         assert mw._should_summarize(messages, tokens) is False

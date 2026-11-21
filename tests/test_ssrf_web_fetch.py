@@ -7,10 +7,10 @@ from unittest.mock import patch
 
 import pytest
 
-from octop_harness.builtin.tools.web_fetch import web_fetch
-from octop_harness.security.ssrf import UnsafeAgentFetchUrlError, validate_agent_fetch_url
+from happyclaw_harness.builtin.tools.web_fetch import web_fetch
+from happyclaw_harness.security.ssrf import UnsafeAgentFetchUrlError, validate_agent_fetch_url
 
-_web_fetch_mod = importlib.import_module("octop_harness.builtin.tools.web_fetch")
+_web_fetch_mod = importlib.import_module("happyclaw_harness.builtin.tools.web_fetch")
 
 
 @pytest.mark.parametrize(
@@ -42,7 +42,7 @@ def test_validate_agent_fetch_url_rejects_hostname_resolving_private(
     def fake_getaddrinfo(*_args: object, **_kwargs: object) -> list[tuple]:
         return [(None, None, None, None, ("10.1.2.3", 80))]
 
-    monkeypatch.setattr("octop_harness.security.ssrf.socket.getaddrinfo", fake_getaddrinfo)
+    monkeypatch.setattr("happyclaw_harness.security.ssrf.socket.getaddrinfo", fake_getaddrinfo)
     with pytest.raises(UnsafeAgentFetchUrlError, match="private or local"):
         validate_agent_fetch_url("https://evil.example.com/x")
 

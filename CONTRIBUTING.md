@@ -1,4 +1,4 @@
-# Contributing to octop-harness
+# Contributing to happyclaw-harness
 
 Thank you for your interest in contributing! This guide applies to the [HappyClaw Harness](https://github.com/xkx121029) ecosystem.
 
@@ -7,8 +7,8 @@ Thank you for your interest in contributing! This guide applies to the [HappyCla
 **Prerequisites:** Python 3.12+, [uv](https://docs.astral.sh/uv/)
 
 ```bash
-git clone https://github.com/xkx121029/octop-harness.git
-cd octop-harness
+git clone https://github.com/xkx121029/happyclaw-harness.git
+cd happyclaw-harness
 make install        # install dev dependencies
 make all            # lint + typecheck + test (CI ship bar)
 ```
@@ -81,7 +81,7 @@ Configure in the GitHub repo **Settings → Branches** for both `main` and `deve
 1. Cut `release/x.y.z` from latest `develop` (version bump + CHANGELOG + README sync on that branch)
 2. Open PR: `release/x.y.z` → `main` and merge when green (**merge commit**)
 3. GitHub Action `Auto Tag On Release Merge` reads `pyproject.toml` on **main tip**, pushes `v<version>`, and dispatches `Release`
-4. `Release` builds, publishes `octop-harness` to PyPI (trusted publishing), creates the GitHub Release, then dispatches `Sync Main Into Develop`
+4. `Release` builds, publishes `happyclaw-harness` to PyPI (trusted publishing), creates the GitHub Release, then dispatches `Sync Main Into Develop`
 5. Delete `release/x.y.z`; Actions syncs `main` → `develop` (or opens `chore/sync-develop-after-*` if merge conflicts / branch protection)
 
 Agent-assisted publish: `.cursor/skills/publish` / `.codebuddy/skills/publish` (`/publish <version>`).
@@ -97,15 +97,15 @@ Branch from `main` → PR into `main` (tag via the same auto-tag path if shippin
 
 # 贡献指南
 
-感谢你对 octop-harness 的关注！本指南适用于 [HappyClaw Harness](https://github.com/xkx121029) 生态。
+感谢你对 happyclaw-harness 的关注！本指南适用于 [HappyClaw Harness](https://github.com/xkx121029) 生态。
 
 ## 环境搭建
 
 **前置条件：** Python 3.12+、[uv](https://docs.astral.sh/uv/)
 
 ```bash
-git clone https://github.com/xkx121029/octop-harness.git
-cd octop-harness
+git clone https://github.com/xkx121029/happyclaw-harness.git
+cd happyclaw-harness
 make install
 make all            # 提交 PR 前必须通过
 ```
@@ -161,7 +161,7 @@ make all            # 提交 PR 前必须通过
 1. 从最新 `develop` 切 `release/x.y.z`（在该分支 bump 版本、CHANGELOG，并同步 README 等）
 2. PR：`release/x.y.z` → `main`，合并通过后（使用 **merge commit**）
 3. Action `Auto Tag On Release Merge` 读取 main tip 的 `pyproject.toml`，推送 `v<version>` 并触发 `Release`
-4. `Release` 构建、发布 `octop-harness` 到 PyPI、创建 GitHub Release，再触发 `Sync Main Into Develop`
+4. `Release` 构建、发布 `happyclaw-harness` 到 PyPI、创建 GitHub Release，再触发 `Sync Main Into Develop`
 5. 删除 `release/x.y.z`；Actions 自动 sync `main` → `develop`（冲突或分支保护时会开 `chore/sync-develop-after-*` PR）
 
 Agent 辅助发布：`.cursor/skills/publish` / `.codebuddy/skills/publish`（`/publish <version>`）。

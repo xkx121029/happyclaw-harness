@@ -7,9 +7,9 @@ from typing import Any
 
 import pytest
 
-from octop_harness.acp.client import ACPHostedClient
-from octop_harness.acp.models import ACPRunnerConfig
-from octop_harness.acp.permission_mode import (
+from happyclaw_harness.acp.client import ACPHostedClient
+from happyclaw_harness.acp.models import ACPRunnerConfig
+from happyclaw_harness.acp.permission_mode import (
     ask_mode_id,
     mode_state,
     select_session_mode,

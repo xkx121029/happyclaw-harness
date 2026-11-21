@@ -1,4 +1,4 @@
-"""Tests for ``octop_harness.agent.HarnessAgent``.
+"""Tests for ``happyclaw_harness.agent.HarnessAgent``.
 
 These tests focus on construction wiring — what middleware/tools/skills get
 passed to ``create_deep_agent`` — without actually calling an LLM. The
@@ -18,22 +18,22 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from octop_harness.agent import HarnessAgent
-from octop_harness.backends.workspace import DEFAULT_MEMORY_FILES
-from octop_harness.config import HarnessAgentConfig, ModelConfig, ProviderConfig
-from octop_harness.memory.policy import render_memory_policy_prompt
-from octop_harness.middleware.bootstrap import BOOTSTRAP_FILENAME, BOOTSTRAPPED_MARKER
-from octop_harness.middleware.skill_filter import render_slash_skill_prompt
-from octop_harness.observability.logging import _HANDLER_NAME, _log_agent_id
-from octop_harness.request import ChatRequest
+from happyclaw_harness.agent import HarnessAgent
+from happyclaw_harness.backends.workspace import DEFAULT_MEMORY_FILES
+from happyclaw_harness.config import HarnessAgentConfig, ModelConfig, ProviderConfig
+from happyclaw_harness.memory.policy import render_memory_policy_prompt
+from happyclaw_harness.middleware.bootstrap import BOOTSTRAP_FILENAME, BOOTSTRAPPED_MARKER
+from happyclaw_harness.middleware.skill_filter import render_slash_skill_prompt
+from happyclaw_harness.observability.logging import _HANDLER_NAME, _log_agent_id
+from happyclaw_harness.request import ChatRequest
 
 
 def _package_log_dir() -> Path:
-    pkg = logging.getLogger("octop_harness")
+    pkg = logging.getLogger("happyclaw_harness")
     for handler in pkg.handlers:
         if getattr(handler, "name", None) == _HANDLER_NAME:
             return Path(handler.baseFilename).parent
-    raise AssertionError("octop_harness file handler is missing")
+    raise AssertionError("happyclaw_harness file handler is missing")
 
 
 @pytest.fixture
@@ -105,7 +105,7 @@ class TestConstruction:
         stub_create_deep_agent: Any,
         tmp_path: Path,
     ) -> None:
-        from octop_harness.observability.logging import setup_logging
+        from happyclaw_harness.observability.logging import setup_logging
 
         app_dir = tmp_path / "app-logs"
         setup_logging(app_dir)
@@ -120,12 +120,12 @@ class TestConstruction:
         stub_create_deep_agent: Any,
         tmp_path: Path,
     ) -> None:
-        from octop_harness.observability.logging import setup_logging
+        from happyclaw_harness.observability.logging import setup_logging
 
         setup_logging(tmp_path / "logs", level="INFO")
         with mock_model_factory(), stub_create_deep_agent:
             HarnessAgent(replace(cfg, debug=True))
-        assert logging.getLogger("octop_harness").level == logging.INFO
+        assert logging.getLogger("happyclaw_harness").level == logging.INFO
 
     def test_direct_construction_has_no_agent_id(
         self,
@@ -488,7 +488,7 @@ class TestInvocation:
         with (
             mock_model_factory(),
             patch("deepagents.create_deep_agent", return_value=MagicMock()),
-            patch("octop_harness.slash.runtime.iter_with_runtime_slash", side_effect=fake_iter),
+            patch("happyclaw_harness.slash.runtime.iter_with_runtime_slash", side_effect=fake_iter),
         ):
             agent = HarnessAgent(cfg, agent_id="agent-a")
             stream = agent.stream("hello")
@@ -731,8 +731,8 @@ class TestProtocolIntegration:
 class TestHarnessAgentModelFactory:
     def test_accepts_external_model_factory(self, tmp_path: Path) -> None:
         """When model_factory is passed, HarnessAgent must use it, not build its own."""
-        from octop_harness.config import ModelConfig, ProviderConfig
-        from octop_harness.llm.factory import ChatModelFactory
+        from happyclaw_harness.config import ModelConfig, ProviderConfig
+        from happyclaw_harness.llm.factory import ChatModelFactory
 
         providers = [
             ProviderConfig(
@@ -748,14 +748,14 @@ class TestHarnessAgentModelFactory:
             providers=providers,
             default_model="p/m",
         )
-        with patch("octop_harness.agent.deepagents.create_deep_agent"):
+        with patch("happyclaw_harness.agent.deepagents.create_deep_agent"):
             agent = HarnessAgent(cfg, model_factory=factory)
         assert agent._model_factory is factory
 
     def test_no_factory_builds_own(self, tmp_path: Path) -> None:
         """When model_factory is not passed, HarnessAgent builds its own."""
-        from octop_harness.config import ModelConfig, ProviderConfig
-        from octop_harness.llm.factory import ChatModelFactory
+        from happyclaw_harness.config import ModelConfig, ProviderConfig
+        from happyclaw_harness.llm.factory import ChatModelFactory
 
         providers = [
             ProviderConfig(
@@ -770,14 +770,14 @@ class TestHarnessAgentModelFactory:
             providers=providers,
             default_model="p/m",
         )
-        with patch("octop_harness.agent.deepagents.create_deep_agent"):
+        with patch("happyclaw_harness.agent.deepagents.create_deep_agent"):
             agent = HarnessAgent(cfg)
         assert isinstance(agent._model_factory, ChatModelFactory)
 
     def test_injected_factory_syncs_providers_when_config_empty(self, tmp_path: Path) -> None:
         """Shared factory from HarnessAgentManager may be the sole provider source."""
-        from octop_harness.config import ModelConfig, ProviderConfig
-        from octop_harness.llm.factory import ChatModelFactory
+        from happyclaw_harness.config import ModelConfig, ProviderConfig
+        from happyclaw_harness.llm.factory import ChatModelFactory
 
         providers = [
             ProviderConfig(
@@ -789,7 +789,7 @@ class TestHarnessAgentModelFactory:
         ]
         factory = ChatModelFactory(providers)
         cfg = HarnessAgentConfig(workspace_dir=tmp_path)
-        with patch("octop_harness.agent.deepagents.create_deep_agent"):
+        with patch("happyclaw_harness.agent.deepagents.create_deep_agent"):
             agent = HarnessAgent(cfg, model_factory=factory)
         assert agent._model_factory is factory
         assert len(agent.config.providers) == 1
@@ -1042,7 +1042,7 @@ class TestAappendMessages:
     async def test_appends_stamped_messages_through_graph(self, tmp_path: Path) -> None:
         from langchain_core.messages import AIMessage, HumanMessage
 
-        from octop_harness.messages import CHECKPOINT_TS_KEY
+        from happyclaw_harness.messages import CHECKPOINT_TS_KEY
 
         fake_cp = MagicMock()
         agent = TestAgetHistory()._make_agent(tmp_path, checkpointer=fake_cp)
@@ -1073,7 +1073,7 @@ class TestAappendMessages:
     async def test_preserves_ids_and_timestamps_for_idempotent_retry(self, tmp_path: Path) -> None:
         from langchain_core.messages import HumanMessage
 
-        from octop_harness.messages import CHECKPOINT_TS_KEY
+        from happyclaw_harness.messages import CHECKPOINT_TS_KEY
 
         fake_cp = MagicMock()
         agent = TestAgetHistory()._make_agent(tmp_path, checkpointer=fake_cp)
@@ -1166,7 +1166,7 @@ class TestMcpIntegration:
         tmp_path: Path,
         mock_model_factory: Callable[[], Any],
     ) -> None:
-        from octop_harness.middleware.mcp_tools import MCPToolMiddleware
+        from happyclaw_harness.middleware.mcp_tools import MCPToolMiddleware
 
         fake_tool = MagicMock(name="github_search")
         fake_tool.name = "github_search"
@@ -1195,7 +1195,7 @@ class TestMcpIntegration:
         with (
             mock_model_factory(),
             patch("deepagents.create_deep_agent", side_effect=fake_create),
-            patch("octop_harness.agent.load_mcp_tools", return_value=[fake_tool]),
+            patch("happyclaw_harness.agent.load_mcp_tools", return_value=[fake_tool]),
         ):
             HarnessAgent(cfg)
 
@@ -1259,7 +1259,7 @@ class TestMcpIntegration:
         with (
             mock_model_factory(),
             patch("deepagents.create_deep_agent", side_effect=fake_create),
-            patch("octop_harness.agent.load_mcp_tools", return_value=[]),
+            patch("happyclaw_harness.agent.load_mcp_tools", return_value=[]),
         ):
             agent = HarnessAgent(cfg)
             stale_graph = agent.protocol._graph
@@ -1270,7 +1270,7 @@ class TestMcpIntegration:
 
 class TestBootstrapMiddlewareWiring:
     def test_registers_when_bootstrap_pending(self, tmp_path: Path, mock_model_factory: Callable[[], Any]) -> None:
-        from octop_harness.middleware.bootstrap import BootstrapMiddleware
+        from happyclaw_harness.middleware.bootstrap import BootstrapMiddleware
 
         (tmp_path / BOOTSTRAP_FILENAME).write_text("onboarding", encoding="utf-8")
         cfg = HarnessAgentConfig(
@@ -1298,7 +1298,7 @@ class TestBootstrapMiddlewareWiring:
         tmp_path: Path,
         mock_model_factory: Callable[[], Any],
     ) -> None:
-        from octop_harness.middleware.bootstrap import BootstrapMiddleware
+        from happyclaw_harness.middleware.bootstrap import BootstrapMiddleware
 
         cfg = HarnessAgentConfig(
             workspace_dir=tmp_path,
@@ -1345,7 +1345,7 @@ class TestBootstrapMiddlewareWiring:
         tmp_path: Path,
         mock_model_factory: Callable[[], Any],
     ) -> None:
-        from octop_harness.security.models import SecurityPolicy
+        from happyclaw_harness.security.models import SecurityPolicy
 
         (tmp_path / BOOTSTRAP_FILENAME).write_text("onboarding", encoding="utf-8")
         base_cfg = HarnessAgentConfig(
@@ -1385,7 +1385,7 @@ class TestBootstrapMiddlewareWiring:
         tmp_path: Path,
         mock_model_factory: Callable[[], Any],
     ) -> None:
-        from octop_harness.security.models import SecurityPolicy
+        from happyclaw_harness.security.models import SecurityPolicy
 
         (tmp_path / BOOTSTRAP_FILENAME).write_text("onboarding", encoding="utf-8")
         (tmp_path / BOOTSTRAPPED_MARKER).write_text("", encoding="utf-8")
@@ -1488,7 +1488,7 @@ class TestAgetHistoryTimestamps:
     async def test_returns_persisted_checkpoint_ts(self, tmp_path: Path) -> None:
         from langchain_core.messages import HumanMessage
 
-        from octop_harness.messages import CHECKPOINT_TS_KEY
+        from happyclaw_harness.messages import CHECKPOINT_TS_KEY
 
         human = HumanMessage(
             content="hello",
@@ -1522,7 +1522,7 @@ class TestAgetHistoryTimestamps:
     async def test_does_not_backfill_missing_checkpoint_ts(self, tmp_path: Path) -> None:
         from langchain_core.messages import HumanMessage
 
-        from octop_harness.messages import CHECKPOINT_TS_KEY
+        from happyclaw_harness.messages import CHECKPOINT_TS_KEY
 
         human = HumanMessage(content="hello", id="m-1")
 
@@ -1556,7 +1556,7 @@ class TestAgentVisibleWorkspaceDir:
         mock_model_factory: Callable[[], Any],
         stub_create_deep_agent: Any,
     ) -> None:
-        """Octop passes ``/.octop/workspaces/<id>``; harness maps disk under root_dir."""
+        """HappyClaw passes ``/.octop/workspaces/<id>``; harness maps disk under root_dir."""
         root = tmp_path / "home"
         host_ws = root / ".octop" / "workspaces" / "J1BT2X"
         host_ws.mkdir(parents=True)
@@ -1788,7 +1788,7 @@ def test_summarization_factory_patch_is_exclusive() -> None:
 
     from deepagents import graph
 
-    from octop_harness.agent import _patched_summarization_factory
+    from happyclaw_harness.agent import _patched_summarization_factory
 
     original = graph.create_summarization_middleware
     first_in = threading.Event()

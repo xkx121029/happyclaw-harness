@@ -24,9 +24,9 @@ import sys
 import tempfile
 from pathlib import Path
 
-from octop_harness import HarnessAgent, HarnessAgentConfig, ModelConfig, ProviderConfig
-from octop_harness.backends.utils import DEFENSIVE_OP_ERRORS
-from octop_harness.builtin.tools import current_time, desktop_screenshot, send_file_to_user
+from happyclaw_harness import HarnessAgent, HarnessAgentConfig, ModelConfig, ProviderConfig
+from happyclaw_harness.backends.utils import DEFENSIVE_OP_ERRORS
+from happyclaw_harness.builtin.tools import current_time, desktop_screenshot, send_file_to_user
 
 
 def _heading(label: str) -> None:
@@ -134,7 +134,7 @@ def scenario_desktop_screenshot() -> None:
         import mss as _mss  # noqa: F401 — probe for the optional dep
     except ImportError:
         print(
-            "(skipped — `mss` is not installed; install with `pip install 'octop-harness[desktop]'`)",
+            "(skipped — `mss` is not installed; install with `pip install 'happyclaw-harness[desktop]'`)",
         )
         return
 

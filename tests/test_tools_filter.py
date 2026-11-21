@@ -1,4 +1,4 @@
-"""Tests for ``octop_harness.middleware.tools_filter.ToolsFilterMiddleware``."""
+"""Tests for ``happyclaw_harness.middleware.tools_filter.ToolsFilterMiddleware``."""
 
 from __future__ import annotations
 
@@ -9,8 +9,8 @@ import pytest
 from langchain.agents.middleware import ModelRequest, ModelResponse
 from langchain_core.messages import SystemMessage
 
-from octop_harness.config import HarnessAgentConfig
-from octop_harness.middleware.tools_filter import ToolsFilterMiddleware
+from happyclaw_harness.config import HarnessAgentConfig
+from happyclaw_harness.middleware.tools_filter import ToolsFilterMiddleware
 
 
 def _named_tool(name: str) -> MagicMock:

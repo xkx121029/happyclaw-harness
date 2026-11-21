@@ -1,4 +1,4 @@
-"""Tests for ``octop_harness.config``."""
+"""Tests for ``happyclaw_harness.config``."""
 
 from __future__ import annotations
 
@@ -7,8 +7,8 @@ from unittest.mock import patch
 
 import pytest
 
-from octop_harness.backends.workspace import DEFAULT_MEMORY_FILES
-from octop_harness.config import (
+from happyclaw_harness.backends.workspace import DEFAULT_MEMORY_FILES
+from happyclaw_harness.config import (
     HarnessAgentConfig,
     ModelConfig,
     ProviderConfig,
@@ -159,7 +159,7 @@ class TestHarnessAgentConfig:
             HarnessAgentConfig(workspace_dir=Path("relative") / "ws")
 
     def test_agent_facing_rootfs_workspace_allowed(self) -> None:
-        """Octop-style ``/.octop/workspaces/<id>`` has no drive letter on Windows."""
+        """HappyClaw-style ``/.octop/workspaces/<id>`` has no drive letter on Windows."""
         config = HarnessAgentConfig(workspace_dir="/.octop/workspaces/J1BT2X")
         assert Path(config.workspace_dir).as_posix() == "/.octop/workspaces/J1BT2X"
 

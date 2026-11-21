@@ -20,10 +20,10 @@ from langchain_core.tools import tool
 from octop_memory import Memory
 from pydantic import PrivateAttr
 
-from octop_harness.agent import HarnessAgent
-from octop_harness.config import HarnessAgentConfig, ModelConfig, ProviderConfig
-from octop_harness.llm.factory import ChatModelFactory
-from octop_harness.request import ChatRequest
+from happyclaw_harness.agent import HarnessAgent
+from happyclaw_harness.config import HarnessAgentConfig, ModelConfig, ProviderConfig
+from happyclaw_harness.llm.factory import ChatModelFactory
+from happyclaw_harness.request import ChatRequest
 
 pytestmark = pytest.mark.filterwarnings("ignore:Direct attribute assignment to ModelRequest.model:DeprecationWarning")
 
@@ -223,7 +223,7 @@ async def _stream(agent: HarnessAgent, thread_id: str, text: str) -> list[dict[s
 async def test_multiturn_tool_and_delta_snapshot_replay(tmp_path, monkeypatch):
     results = {}
     for mode in ("async", "exit"):
-        monkeypatch.setenv("OCTOP_CHECKPOINT_DURABILITY", mode)
+        monkeypatch.setenv("HAPPYCLAW_CHECKPOINT_DURABILITY", mode)
         async with open_probe(tmp_path / mode / "memory.sqlite", tmp_path / "workspace") as (agent, model, memory, _):
             counts = []
             states = []
@@ -247,7 +247,7 @@ async def test_multiturn_tool_and_delta_snapshot_replay(tmp_path, monkeypatch):
 async def test_cancel_and_follow_up(tmp_path, monkeypatch, turn):
     results = {}
     for mode in ("async", "exit"):
-        monkeypatch.setenv("OCTOP_CHECKPOINT_DURABILITY", mode)
+        monkeypatch.setenv("HAPPYCLAW_CHECKPOINT_DURABILITY", mode)
         async with open_probe(tmp_path / mode / "memory.sqlite", tmp_path / "workspace") as (agent, model, _, tool):
             await agent.call(request("thread", "first"))
             blocked = "BLOCK_MODEL" if turn == "BLOCK_MODEL" else "BLOCK_TOOL"
@@ -268,7 +268,7 @@ async def test_cancel_and_follow_up(tmp_path, monkeypatch, turn):
 async def test_error_state_and_next_turn(tmp_path, monkeypatch, kind):
     results = {}
     for mode in ("async", "exit"):
-        monkeypatch.setenv("OCTOP_CHECKPOINT_DURABILITY", mode)
+        monkeypatch.setenv("HAPPYCLAW_CHECKPOINT_DURABILITY", mode)
         async with open_probe(tmp_path / mode / "memory.sqlite", tmp_path / "workspace") as (agent, model, memory, _):
             await agent.call(request("thread", "first"))
             before = rows(memory, "thread")
@@ -285,7 +285,7 @@ async def test_error_state_and_next_turn(tmp_path, monkeypatch, kind):
 async def test_approval_after_reopening_agent(tmp_path, monkeypatch, approval, decision):
     results = {}
     for mode in ("async", "exit"):
-        monkeypatch.setenv("OCTOP_CHECKPOINT_DURABILITY", mode)
+        monkeypatch.setenv("HAPPYCLAW_CHECKPOINT_DURABILITY", mode)
         db = tmp_path / mode / "memory.sqlite"
         workspace = tmp_path / "workspace"
         subagent = approval == "child"
@@ -313,7 +313,7 @@ async def test_approval_after_reopening_agent(tmp_path, monkeypatch, approval, d
 async def test_delegated_tool_preserves_parent_state(tmp_path, monkeypatch):
     results = {}
     for mode in ("async", "exit"):
-        monkeypatch.setenv("OCTOP_CHECKPOINT_DURABILITY", mode)
+        monkeypatch.setenv("HAPPYCLAW_CHECKPOINT_DURABILITY", mode)
         async with open_probe(tmp_path / mode / "memory.sqlite", tmp_path / "workspace", subagent=True) as (
             agent,
             model,
@@ -331,7 +331,7 @@ async def test_delegated_tool_preserves_parent_state(tmp_path, monkeypatch):
 @pytest.mark.parametrize("mode", ["async", "exit"])
 @pytest.mark.filterwarnings("ignore:The v3 streaming protocol on Pregel is experimental")
 async def test_v3_stream_flushes_checkpoint_before_output_returns(tmp_path, monkeypatch, mode):
-    monkeypatch.setenv("OCTOP_CHECKPOINT_DURABILITY", mode)
+    monkeypatch.setenv("HAPPYCLAW_CHECKPOINT_DURABILITY", mode)
     async with open_probe(tmp_path / "memory.sqlite", tmp_path / "workspace") as (agent, _, memory, _):
         stream = await agent.stream_events(request("thread", "first"))
         output = await stream.output()
@@ -353,7 +353,7 @@ async def test_pruning_preserves_state_and_pending_approval(tmp_path, monkeypatc
     # Dependency-aware pruning with skip_pending ships in octop-memory 1.0.4.
     if "skip_pending" not in inspect.signature(prune_checkpoints).parameters:
         pytest.skip("requires octop-memory>=1.0.4")
-    monkeypatch.setenv("OCTOP_CHECKPOINT_DURABILITY", mode)
+    monkeypatch.setenv("HAPPYCLAW_CHECKPOINT_DURABILITY", mode)
     async with open_probe(tmp_path / "memory.sqlite", tmp_path / "workspace", approval="parent") as (
         agent,
         _,
@@ -399,7 +399,7 @@ def retention_dsn(backend):
 def test_pg_maintenance_skips_before_calling_memory_pruner(retention_dsn, monkeypatch):
     from octop_memory.pipeline.lifecycle import checkpoint_gc
 
-    from octop_harness.middleware.memory import _prune_checkpoints_if_configured
+    from happyclaw_harness.middleware.memory import _prune_checkpoints_if_configured
 
     memory = Memory("retention", backend="postgres", backend_config={"dsn": retention_dsn})
     calls = []
@@ -421,15 +421,15 @@ async def test_pruning_snapshots_messages_and_preserves_approval(
 
     from octop_memory.pipeline.lifecycle.checkpoint_gc import prune_checkpoints
 
-    from octop_harness.middleware.memory import _prune_checkpoints_if_configured
+    from happyclaw_harness.middleware.memory import _prune_checkpoints_if_configured
 
     if "messages_channel" not in inspect.signature(prune_checkpoints).parameters:
         pytest.skip("installed octop-memory does not support message snapshots")
-    monkeypatch.setenv("OCTOP_CHECKPOINT_DURABILITY", "async")
-    monkeypatch.setenv("OCTOP_CHECKPOINT_RETENTION", "1")
-    monkeypatch.setenv("OCTOP_CHECKPOINT_KEEP_LAST", "20")
-    monkeypatch.delenv("OCTOP_CHECKPOINT_KEEP_DAYS", raising=False)
-    monkeypatch.setenv("OCTOP_CHECKPOINT_BACKUP_BEFORE_PRUNE", "first")
+    monkeypatch.setenv("HAPPYCLAW_CHECKPOINT_DURABILITY", "async")
+    monkeypatch.setenv("HAPPYCLAW_CHECKPOINT_RETENTION", "1")
+    monkeypatch.setenv("HAPPYCLAW_CHECKPOINT_KEEP_LAST", "20")
+    monkeypatch.delenv("HAPPYCLAW_CHECKPOINT_KEEP_DAYS", raising=False)
+    monkeypatch.setenv("HAPPYCLAW_CHECKPOINT_BACKUP_BEFORE_PRUNE", "first")
     db = tmp_path / "memory.sqlite"
     async with open_probe(
         db, tmp_path / "workspace", approval=approval, subagent=approval == "child", postgres_dsn=retention_dsn
@@ -455,7 +455,7 @@ async def test_pruning_snapshots_messages_and_preserves_approval(
         before_states = [(await agent.graph.aget_state(row.config)).values for row in retained]
         before_history = await agent.aget_history("done", limit=100)
 
-        monkeypatch.setenv("OCTOP_CHECKPOINT_DURABILITY", "exit")
+        monkeypatch.setenv("HAPPYCLAW_CHECKPOINT_DURABILITY", "exit")
         _prune_checkpoints_if_configured(memory, messages_channel=agent.graph.channels["messages"])
 
         if backend == "sqlite":
@@ -491,7 +491,7 @@ async def _crash_child(db: Path, workspace: Path) -> None:
         baseline = rows(memory, "thread")[0]
         task = asyncio.create_task(_stream(agent, "thread", "CRASH"))
         await started.wait()
-        if os.environ["OCTOP_CHECKPOINT_DURABILITY"] == "async":
+        if os.environ["HAPPYCLAW_CHECKPOINT_DURABILITY"] == "async":
             while rows(memory, "thread")[0] <= baseline:
                 await asyncio.sleep(0.01)
         print("ready-to-kill", flush=True)
@@ -501,7 +501,7 @@ async def _crash_child(db: Path, workspace: Path) -> None:
 async def test_process_kill_keeps_last_finished_exit_turn(tmp_path, monkeypatch):
     recovered = {}
     for mode in ("async", "exit"):
-        monkeypatch.setenv("OCTOP_CHECKPOINT_DURABILITY", mode)
+        monkeypatch.setenv("HAPPYCLAW_CHECKPOINT_DURABILITY", mode)
         db = tmp_path / mode / "memory.sqlite"
         workspace = tmp_path / "workspace"
         child = await asyncio.create_subprocess_exec(

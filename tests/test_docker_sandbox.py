@@ -14,8 +14,8 @@ import pytest
 from langchain_core.messages import ToolMessage
 from langgraph.prebuilt.tool_node import ToolCallRequest
 
-from octop_harness.backends import resolve_backend, spec_supports_execution
-from octop_harness.middleware.filesystem_guard import FilesystemGuardMiddleware
+from happyclaw_harness.backends import resolve_backend, spec_supports_execution
+from happyclaw_harness.middleware.filesystem_guard import FilesystemGuardMiddleware
 
 
 def _tar_bytes(arcname: str, data: bytes) -> bytes:
@@ -83,7 +83,7 @@ class TestMissingDependency:
 
         with (
             patch("builtins.__import__", side_effect=_fake_import),
-            pytest.raises(ImportError, match=r"octop-harness\[docker\]"),
+            pytest.raises(ImportError, match=r"happyclaw-harness\[docker\]"),
         ):
             resolve_backend({"type": "docker"}, workspace_dir=tmp_path)
 
@@ -201,9 +201,9 @@ class TestResolveAndLifecycle:
         assert downloads[0].content == b"content"
         backend.close()
 
-    def test_close_via_octop_harness(self, tmp_path: Path, mock_docker: Any) -> None:
-        from octop_harness.agent import HarnessAgent
-        from octop_harness.config import HarnessAgentConfig, ModelConfig, ProviderConfig
+    def test_close_via_happyclaw_harness(self, tmp_path: Path, mock_docker: Any) -> None:
+        from happyclaw_harness.agent import HarnessAgent
+        from happyclaw_harness.config import HarnessAgentConfig, ModelConfig, ProviderConfig
 
         backend = resolve_backend({"type": "docker"}, workspace_dir=tmp_path)
         close_mock = MagicMock(wraps=backend.close)
@@ -312,7 +312,7 @@ class TestEnsureImage:
 
 class TestPathMapping:
     def test_virtual_root_maps_into_workspace(self, tmp_path: Path, mock_docker: Any) -> None:
-        from octop_harness.backends.docker_sandbox import DockerSandbox
+        from happyclaw_harness.backends.docker_sandbox import DockerSandbox
 
         _docker_mod, _client, _container = mock_docker
         sandbox = DockerSandbox(workspace_dir=tmp_path, image="python:3.12-slim")
@@ -333,7 +333,7 @@ class TestPathMapping:
         tmp_path: Path,
         mock_docker: Any,
     ) -> None:
-        from octop_harness.backends.docker_sandbox import DockerSandbox
+        from happyclaw_harness.backends.docker_sandbox import DockerSandbox
 
         _docker_mod, client, _container = mock_docker
         sandbox = DockerSandbox(
@@ -369,7 +369,7 @@ class TestGuardUsesDockerShellPath:
     """FilesystemGuard and DockerSandbox share one path, not a stand-in mapper."""
 
     def test_default_mirror_and_custom_workspace_path(self, tmp_path: Path, mock_docker: Any) -> None:
-        from octop_harness.backends.docker_sandbox import DockerSandbox
+        from happyclaw_harness.backends.docker_sandbox import DockerSandbox
 
         _docker_mod, _client, _container = mock_docker
         host = str(tmp_path.resolve())
@@ -421,7 +421,7 @@ class TestGuardUsesDockerShellPath:
         tmp_path: Path,
         mock_docker: Any,
     ) -> None:
-        from octop_harness.backends.docker_sandbox import DockerSandbox
+        from happyclaw_harness.backends.docker_sandbox import DockerSandbox
 
         _docker_mod, client, _container = mock_docker
         vols = {"/host/data": {"bind": "/data", "mode": "ro"}}
@@ -445,8 +445,8 @@ class TestGuardUsesDockerShellPath:
         import json
         import re
 
-        from octop_harness.backends.docker_sandbox import DockerSandbox
-        from octop_harness.backends.workspace import BackendWorkspace
+        from happyclaw_harness.backends.docker_sandbox import DockerSandbox
+        from happyclaw_harness.backends.workspace import BackendWorkspace
 
         _docker_mod, client, container = mock_docker
 
@@ -504,8 +504,8 @@ class TestGuardUsesDockerShellPath:
         import json
         import re
 
-        from octop_harness.backends.docker_sandbox import DockerSandbox
-        from octop_harness.backends.workspace import BackendWorkspace
+        from happyclaw_harness.backends.docker_sandbox import DockerSandbox
+        from happyclaw_harness.backends.workspace import BackendWorkspace
 
         _docker_mod, client, container = mock_docker
         seen_paths: list[str] = []
@@ -551,9 +551,9 @@ class TestGuardUsesDockerShellPath:
         tmp_path: Path,
         mock_docker: Any,
     ) -> None:
-        from octop_harness.backends.docker_sandbox import DockerSandbox
-        from octop_harness.backends.workspace import BackendWorkspace
-        from octop_harness.builtin.tools.send_file import build_send_file_to_user_tool
+        from happyclaw_harness.backends.docker_sandbox import DockerSandbox
+        from happyclaw_harness.backends.workspace import BackendWorkspace
+        from happyclaw_harness.builtin.tools.send_file import build_send_file_to_user_tool
 
         _docker_mod, _client, container = mock_docker
         container.get_archive.return_value = (
@@ -581,8 +581,8 @@ class TestGuardUsesDockerShellPath:
         tmp_path: Path,
         mock_docker: Any,
     ) -> None:
-        from octop_harness.backends.docker_sandbox import DockerSandbox
-        from octop_harness.backends.workspace import BackendWorkspace
+        from happyclaw_harness.backends.docker_sandbox import DockerSandbox
+        from happyclaw_harness.backends.workspace import BackendWorkspace
 
         _docker_mod, _client, _container = mock_docker
         sandbox = DockerSandbox(workspace_dir=tmp_path, image="python:3.12-slim")
@@ -599,7 +599,7 @@ class TestContainerReuse:
         tmp_path: Path,
         mock_docker: Any,
     ) -> None:
-        from octop_harness.backends.docker_sandbox import DockerSandbox
+        from happyclaw_harness.backends.docker_sandbox import DockerSandbox
 
         _docker_mod, client, existing = mock_docker
         existing.status = "running"
@@ -625,7 +625,7 @@ class TestContainerReuse:
         tmp_path: Path,
         mock_docker: Any,
     ) -> None:
-        from octop_harness.backends.docker_sandbox import DockerSandbox
+        from happyclaw_harness.backends.docker_sandbox import DockerSandbox
 
         _docker_mod, client, existing = mock_docker
         existing.status = "exited"
@@ -645,7 +645,7 @@ class TestContainerReuse:
         tmp_path: Path,
         mock_docker: Any,
     ) -> None:
-        from octop_harness.backends.docker_sandbox import DockerSandbox
+        from happyclaw_harness.backends.docker_sandbox import DockerSandbox
 
         docker_mod, client, _container = mock_docker
         client.containers.get.side_effect = docker_mod.errors.NotFound("gone")
@@ -662,7 +662,7 @@ class TestContainerReuse:
         tmp_path: Path,
         mock_docker: Any,
     ) -> None:
-        from octop_harness.backends.docker_sandbox import DockerSandbox
+        from happyclaw_harness.backends.docker_sandbox import DockerSandbox
 
         docker_mod, client, first = mock_docker
         first.status = "running"
@@ -688,7 +688,7 @@ class TestContainerReuse:
         tmp_path: Path,
         mock_docker: Any,
     ) -> None:
-        from octop_harness.backends.docker_sandbox import DockerSandbox
+        from happyclaw_harness.backends.docker_sandbox import DockerSandbox
 
         docker_mod, client, existing = mock_docker
         existing.status = "exited"
@@ -715,7 +715,7 @@ class TestContainerReuse:
         tmp_path: Path,
         mock_docker: Any,
     ) -> None:
-        from octop_harness.backends.docker_sandbox import DockerSandbox
+        from happyclaw_harness.backends.docker_sandbox import DockerSandbox
 
         _docker_mod, _client, container = mock_docker
         sandbox = DockerSandbox(workspace_dir=tmp_path, agent_id="d1")
@@ -728,35 +728,35 @@ class TestContainerReuse:
 
 class TestSandboxNaming:
     def test_resolve_agent_default_prefix(self) -> None:
-        from octop_harness.backends.docker_sandbox import resolve_sandbox_name
+        from happyclaw_harness.backends.docker_sandbox import resolve_sandbox_name
 
         assert resolve_sandbox_name(agent_id="ZE6GR2") == "sandbox_agent_ZE6GR2"
 
-    def test_resolve_agent_octop_prefix(self) -> None:
-        from octop_harness.backends.docker_sandbox import resolve_sandbox_name
+    def test_resolve_agent_happyclaw_prefix(self) -> None:
+        from happyclaw_harness.backends.docker_sandbox import resolve_sandbox_name
 
         assert (
             resolve_sandbox_name(
-                sandbox_prefix="octop_sandbox",
+                sandbox_prefix="happyclaw_sandbox",
                 agent_id="ZE6GR2",
             )
-            == "octop_sandbox_agent_ZE6GR2"
+            == "happyclaw_sandbox_agent_ZE6GR2"
         )
 
     def test_resolve_user_scope(self) -> None:
-        from octop_harness.backends.docker_sandbox import resolve_sandbox_name
+        from happyclaw_harness.backends.docker_sandbox import resolve_sandbox_name
 
         assert (
             resolve_sandbox_name(
                 sandbox_scope="user",
-                sandbox_prefix="octop_sandbox",
+                sandbox_prefix="happyclaw_sandbox",
                 username="alice",
             )
-            == "octop_sandbox_alice"
+            == "happyclaw_sandbox_alice"
         )
 
     def test_resolve_fixed_scope(self) -> None:
-        from octop_harness.backends.docker_sandbox import resolve_sandbox_name
+        from happyclaw_harness.backends.docker_sandbox import resolve_sandbox_name
 
         assert (
             resolve_sandbox_name(
@@ -767,13 +767,13 @@ class TestSandboxNaming:
         )
 
     def test_user_scope_requires_username(self) -> None:
-        from octop_harness.backends.docker_sandbox import resolve_sandbox_name
+        from happyclaw_harness.backends.docker_sandbox import resolve_sandbox_name
 
         with pytest.raises(ValueError, match=r"username"):
             resolve_sandbox_name(sandbox_scope="user")
 
     def test_fixed_scope_requires_sandbox_id(self) -> None:
-        from octop_harness.backends.docker_sandbox import resolve_sandbox_name
+        from happyclaw_harness.backends.docker_sandbox import resolve_sandbox_name
 
         with pytest.raises(ValueError, match=r"sandbox_id"):
             resolve_sandbox_name(sandbox_scope="fixed")
@@ -783,16 +783,16 @@ class TestSandboxNaming:
         tmp_path: Path,
         mock_docker: Any,
     ) -> None:
-        from octop_harness.backends.docker_sandbox import DockerSandbox
+        from happyclaw_harness.backends.docker_sandbox import DockerSandbox
 
         _docker_mod, client, _container = mock_docker
         sandbox = DockerSandbox(
             workspace_dir=tmp_path,
             sandbox_scope="user",
-            sandbox_prefix="octop_sandbox",
+            sandbox_prefix="happyclaw_sandbox",
             username="bob",
         )
-        assert client.containers.run.call_args.kwargs["name"] == "octop_sandbox_bob"
+        assert client.containers.run.call_args.kwargs["name"] == "happyclaw_sandbox_bob"
         assert sandbox.previewable is False
         sandbox.close()
 
@@ -801,7 +801,7 @@ class TestSandboxNaming:
         tmp_path: Path,
         mock_docker: Any,
     ) -> None:
-        from octop_harness.backends.docker_sandbox import DockerSandbox
+        from happyclaw_harness.backends.docker_sandbox import DockerSandbox
 
         _docker_mod, client, _container = mock_docker
         sandbox = DockerSandbox(
@@ -818,7 +818,7 @@ class TestExecuteTimeout:
     def test_execute_times_out(self, tmp_path: Path, mock_docker: Any) -> None:
         import time
 
-        from octop_harness.backends.docker_sandbox import DockerSandbox
+        from happyclaw_harness.backends.docker_sandbox import DockerSandbox
 
         _docker_mod, client, _container = mock_docker
         client.api.exec_create.return_value = {"Id": "exec1"}
@@ -850,8 +850,8 @@ class TestMaterializePath:
         tmp_path: Path,
         mock_docker: Any,
     ) -> None:
-        from octop_harness.backends.docker_sandbox import DockerSandbox
-        from octop_harness.backends.workspace import BackendWorkspace
+        from happyclaw_harness.backends.docker_sandbox import DockerSandbox
+        from happyclaw_harness.backends.workspace import BackendWorkspace
 
         _docker_mod, _client, container = mock_docker
         container.get_archive.return_value = (

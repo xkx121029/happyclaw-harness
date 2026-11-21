@@ -1,6 +1,6 @@
 """Provider-neutral token usage normalization tests."""
 
-from octop_harness.usage import normalize_usage_metadata
+from happyclaw_harness.usage import normalize_usage_metadata
 
 
 def test_normalize_openai_cache_hit_is_disjoint() -> None:

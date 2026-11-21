@@ -7,8 +7,8 @@ from typing import Any
 
 import pytest
 
-from octop_harness.acp.models import ACPSessionError
-from octop_harness.acp.session_index import (
+from happyclaw_harness.acp.models import ACPSessionError
+from happyclaw_harness.acp.session_index import (
     AcpSessionIndex,
     resume_or_create_session,
     session_index_path,

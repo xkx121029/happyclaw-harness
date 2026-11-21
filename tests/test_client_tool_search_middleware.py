@@ -18,9 +18,9 @@ from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.prebuilt.tool_node import ToolCallRequest
 from langgraph.types import Command
 
-from octop_harness.config import ModelConfig, ProviderConfig
-from octop_harness.llm.factory import build_chat_model
-from octop_harness.middleware.client_tool_search import (
+from happyclaw_harness.config import ModelConfig, ProviderConfig
+from happyclaw_harness.llm.factory import build_chat_model
+from happyclaw_harness.middleware.client_tool_search import (
     ClientToolSearchMiddleware,
     ClientToolSearchState,
 )
@@ -71,7 +71,7 @@ def _capture_tools(middleware: ClientToolSearchMiddleware, request: ModelRequest
         return ModelResponse(result=[])
 
     with patch(
-        "octop_harness.middleware.client_tool_search._current_thread_key",
+        "happyclaw_harness.middleware.client_tool_search._current_thread_key",
         return_value="thread-1",
     ):
         middleware.wrap_model_call(request, handler)
@@ -203,7 +203,7 @@ def test_client_deferred_reference_omits_native_marker_from_wire_format() -> Non
         return ModelResponse(result=[])
 
     with patch(
-        "octop_harness.middleware.client_tool_search._current_thread_key",
+        "happyclaw_harness.middleware.client_tool_search._current_thread_key",
         return_value="thread-1",
     ):
         middleware.wrap_model_call(_request([original]), handler)
@@ -232,7 +232,7 @@ async def test_async_model_path_filters_tools() -> None:
         return ModelResponse(result=[])
 
     with patch(
-        "octop_harness.middleware.client_tool_search._current_thread_key",
+        "happyclaw_harness.middleware.client_tool_search._current_thread_key",
         return_value="thread-1",
     ):
         result = await middleware.awrap_model_call(request, handler)

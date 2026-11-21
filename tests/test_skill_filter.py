@@ -1,4 +1,4 @@
-"""Tests for ``octop_harness.middleware.skill_filter.SkillFilterMiddleware``."""
+"""Tests for ``happyclaw_harness.middleware.skill_filter.SkillFilterMiddleware``."""
 
 from __future__ import annotations
 
@@ -14,8 +14,8 @@ from langchain_core.messages import HumanMessage, SystemMessage, ToolMessage
 from langgraph.config import var_child_runnable_config
 from langgraph.prebuilt.tool_node import ToolCallRequest
 
-from octop_harness.config import HarnessAgentConfig
-from octop_harness.middleware.skill_filter import (
+from happyclaw_harness.config import HarnessAgentConfig
+from happyclaw_harness.middleware.skill_filter import (
     SkillFilterMiddleware,
     disabled_skill_block_reason,
     render_slash_skill_prompt,
@@ -96,24 +96,24 @@ class TestSkillFilterMiddleware:
         assert captured["system_message"] is req.system_message
 
     def test_canonical_octop_skills_directory_is_listed_first(self) -> None:
-        from octop_harness.middleware.skill_filter import format_skills_locations
+        from happyclaw_harness.middleware.skill_filter import format_skills_locations
 
         builtin_path = "/home/wally/.octop/agents/Q6084B/.octop/_builtin_skills"
         legacy_path = "/home/wally/.octop/agents/Q6084B/skills"
         canonical_path = "/home/wally/.octop/agents/Q6084B/.octop/skills"
         text = format_skills_locations(
             [builtin_path, legacy_path, canonical_path],
-            ["_builtin_skills", "Q6084B", "Octop"],
+            ["_builtin_skills", "Q6084B", "HappyClaw"],
         )
         builtin = f"**_builtin_skills Skills**: `{builtin_path}`"
         legacy = f"**Q6084B Skills**: `{legacy_path}`"
-        canonical = f"**Octop Skills**: `{canonical_path}` (higher priority)"
+        canonical = f"**HappyClaw Skills**: `{canonical_path}` (higher priority)"
         assert text.index(canonical) < text.index(builtin) < text.index(legacy)
 
     def test_canonical_location_patch_is_idempotent_and_falls_back(self) -> None:
         from deepagents.middleware.skills import SkillsMiddleware
 
-        from octop_harness.middleware.skill_filter import install_canonical_skill_location_order
+        from happyclaw_harness.middleware.skill_filter import install_canonical_skill_location_order
 
         barrier = threading.Barrier(8)
 
@@ -128,17 +128,17 @@ class TestSkillFilterMiddleware:
             thread.join()
 
         installed = SkillsMiddleware._format_skills_locations
-        assert getattr(installed, "_octop_canonical_first", False) is True
-        original = installed._octop_original  # type: ignore[attr-defined]
+        assert getattr(installed, "_happyclaw_canonical_first", False) is True
+        original = installed._happyclaw_original  # type: ignore[attr-defined]
         assert original is not installed
         sample = SimpleNamespace(
             sources=["/ws/.octop/_builtin_skills", "/ws/.octop/skills"],
-            source_labels=["Builtin", "Octop"],
+            source_labels=["Builtin", "HappyClaw"],
         )
         rendered = installed(sample)
         assert rendered.index("/ws/.octop/skills") < rendered.index("/ws/.octop/_builtin_skills")
         with patch(
-            "octop_harness.middleware.skill_filter.format_skills_locations",
+            "happyclaw_harness.middleware.skill_filter.format_skills_locations",
             side_effect=RuntimeError("boom"),
         ):
             fallback = installed(sample)

@@ -1,11 +1,11 @@
-"""Tests for Langfuse tracing in octop-harness."""
+"""Tests for Langfuse tracing in happyclaw-harness."""
 
 from __future__ import annotations
 
 from unittest import mock
 
-from octop_harness.observability.langfuse import LangfuseConfig, LangfuseTracer
-from octop_harness.request import ChatRequest
+from happyclaw_harness.observability.langfuse import LangfuseConfig, LangfuseTracer
+from happyclaw_harness.request import ChatRequest
 
 
 def test_enrich_request_disabled_returns_unchanged() -> None:
@@ -62,7 +62,7 @@ def test_callbacks_for_graph_with_config() -> None:
 
 
 def test_set_langfuse_callbacks_wraps_graph() -> None:
-    from octop_harness.agent import HarnessAgent
+    from happyclaw_harness.agent import HarnessAgent
 
     base = mock.MagicMock(name="base_graph")
     wrapped = mock.MagicMock(name="wrapped_graph")

@@ -1,6 +1,6 @@
 """Tests for SessionState."""
 
-from octop_harness.cli.repl.state import SessionState
+from happyclaw_harness.cli.repl.state import SessionState
 
 
 def test_session_state_defaults() -> None:

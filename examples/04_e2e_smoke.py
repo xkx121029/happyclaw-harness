@@ -24,12 +24,12 @@ from typing import Any
 
 from dotenv import load_dotenv
 
-from octop_harness import (
+from happyclaw_harness import (
     ChatRequest,
     HarnessAgentConfig,
     HarnessAgentManager,
 )
-from octop_harness.backends.utils import DEFENSIVE_OP_ERRORS
+from happyclaw_harness.backends.utils import DEFENSIVE_OP_ERRORS
 
 
 def _make_config(
@@ -104,10 +104,10 @@ async def scenario_4_workspace_roundtrip(root_dir: Path) -> None:
     manager = HarnessAgentManager()
     entry = manager.create_agent(_make_config(root_dir=root_dir))
 
-    from octop_harness.backends.utils import backend_write_force
+    from happyclaw_harness.backends.utils import backend_write_force
 
     # Access the cached agent's backend directly via entry.agent.
-    backend_write_force(entry.agent.backend, "/hello.md", "# Hello\n\nThe magic word is Octop.")
+    backend_write_force(entry.agent.backend, "/hello.md", "# Hello\n\nThe magic word is HappyClaw.")
     ls_result = entry.agent.backend.ls("/")
     entries_ls = getattr(ls_result, "entries", None) or []
     files = [e.get("path", "") if isinstance(e, dict) else getattr(e, "path", "") for e in entries_ls]

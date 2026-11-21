@@ -1,4 +1,4 @@
-"""Tests for ``octop_harness.protocols.base.ChatProtocol`` ABC."""
+"""Tests for ``happyclaw_harness.protocols.base.ChatProtocol`` ABC."""
 
 from __future__ import annotations
 
@@ -13,7 +13,7 @@ from langchain_core.messages import (
     HumanMessage,
 )
 
-from octop_harness.protocols.base import ChatProtocol
+from happyclaw_harness.protocols.base import ChatProtocol
 
 # ---------------------------------------------------------------------------
 # Helpers

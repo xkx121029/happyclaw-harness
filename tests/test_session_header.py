@@ -9,10 +9,10 @@ from unittest.mock import patch
 import httpx
 import pytest
 
-from octop_harness.config import ModelConfig, ProviderConfig
-from octop_harness.llm.factory import _get_reasoning_aware_chat_openai, build_chat_model
-from octop_harness.llm.http_timeout import LLM_HTTP_TIMEOUT
-from octop_harness.llm.session_header import (
+from happyclaw_harness.config import ModelConfig, ProviderConfig
+from happyclaw_harness.llm.factory import _get_reasoning_aware_chat_openai, build_chat_model
+from happyclaw_harness.llm.http_timeout import LLM_HTTP_TIMEOUT
+from happyclaw_harness.llm.session_header import (
     attach_session_http_clients,
     close_session_http_clients,
     current_session_id,
@@ -241,11 +241,11 @@ def test_anthropic_factory_sets_explicit_timeout() -> None:
 async def test_session_header_middleware_uses_thread_id_from_runtime() -> None:
     from langchain.agents.middleware import ModelRequest
 
-    from octop_harness.middleware.session_header import SessionHeaderMiddleware, thread_id_from_request
+    from happyclaw_harness.middleware.session_header import SessionHeaderMiddleware, thread_id_from_request
 
     request = ModelRequest(model=object(), messages=[], model_settings={})
     with patch(
-        "octop_harness.middleware.session_header.runtime_config",
+        "happyclaw_harness.middleware.session_header.runtime_config",
         return_value={"configurable": {"thread_id": "mw-thread"}},
     ):
         assert thread_id_from_request(request) == "mw-thread"
@@ -263,7 +263,7 @@ async def test_session_header_middleware_uses_thread_id_from_runtime() -> None:
 async def test_session_header_middleware_without_thread_id_preserves_outer_scope() -> None:
     from langchain.agents.middleware import ModelRequest
 
-    from octop_harness.middleware.session_header import SessionHeaderMiddleware
+    from happyclaw_harness.middleware.session_header import SessionHeaderMiddleware
 
     request = ModelRequest(model=object(), messages=[], model_settings={})
     seen: list[str] = []
@@ -275,7 +275,7 @@ async def test_session_header_middleware_without_thread_id_preserves_outer_scope
     with (
         session_header_scope("outer-thread"),
         patch(
-            "octop_harness.middleware.session_header.runtime_config",
+            "happyclaw_harness.middleware.session_header.runtime_config",
             return_value={},
         ),
     ):

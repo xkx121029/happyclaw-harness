@@ -10,8 +10,8 @@ from unittest.mock import MagicMock, patch
 import pytest
 from octop_memory import Memory
 
-from octop_harness.agent import HarnessAgent
-from octop_harness.config import HarnessAgentConfig, ModelConfig, ProviderConfig
+from happyclaw_harness.agent import HarnessAgent
+from happyclaw_harness.config import HarnessAgentConfig, ModelConfig, ProviderConfig
 
 
 @pytest.fixture
@@ -35,9 +35,9 @@ def agent(cfg: HarnessAgentConfig) -> Iterator[HarnessAgent]:
         patch("langchain_openai.ChatOpenAI", return_value=MagicMock()),
         patch("deepagents.create_deep_agent", return_value=MagicMock()),
     ):
-        octop_harness = HarnessAgent(cfg)
-    yield octop_harness
-    octop_harness.close()
+        happyclaw_harness = HarnessAgent(cfg)
+    yield happyclaw_harness
+    happyclaw_harness.close()
 
 
 class TestMemoryIntegration:
@@ -78,7 +78,7 @@ class TestMemoryIntegration:
         ):
             HarnessAgent(cfg)
 
-        from octop_harness.middleware.memory import MemoryMiddleware
+        from happyclaw_harness.middleware.memory import MemoryMiddleware
 
         mw_types = [type(m) for m in captured["middleware"]]
         assert MemoryMiddleware in mw_types
@@ -104,7 +104,7 @@ class TestMemoryIntegration:
         ):
             agent = HarnessAgent(cfg)
 
-        from octop_harness.middleware.memory import MemoryMiddleware
+        from happyclaw_harness.middleware.memory import MemoryMiddleware
 
         mw_instances = [m for m in captured["middleware"] if isinstance(m, MemoryMiddleware)]
         assert len(mw_instances) == 1, "expected exactly one MemoryMiddleware"

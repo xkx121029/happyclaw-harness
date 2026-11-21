@@ -5,7 +5,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 from click.testing import CliRunner
 
-from octop_harness.cli.main import cli
+from happyclaw_harness.cli.main import cli
 
 
 def test_chat_help() -> None:
@@ -34,12 +34,12 @@ def test_chat_no_config_launches_wizard(tmp_path: Path, monkeypatch: object) -> 
     monkeypatch.setattr(Path, "home", staticmethod(lambda: tmp_path / "fakehome"))  # type: ignore[attr-defined]
 
     with (
-        patch("octop_harness.cli.commands.chat.load_config") as mock_load,
-        patch("octop_harness.cli.providers.setup_wizard.run_setup_wizard") as mock_wizard,
-        patch("octop_harness.cli.commands.chat._run_repl") as mock_repl,
+        patch("happyclaw_harness.cli.commands.chat.load_config") as mock_load,
+        patch("happyclaw_harness.cli.providers.setup_wizard.run_setup_wizard") as mock_wizard,
+        patch("happyclaw_harness.cli.commands.chat._run_repl") as mock_repl,
     ):
-        from octop_harness.cli.config.schema import CliConfig
-        from octop_harness.cli.providers.setup_wizard import SetupResult
+        from happyclaw_harness.cli.config.schema import CliConfig
+        from happyclaw_harness.cli.providers.setup_wizard import SetupResult
 
         cli_cfg = CliConfig()
         fake_config = {"providers": {"deepseek": {"base_url": "http://x", "api_key": "k", "models": [{"id": "m"}]}}}
@@ -59,10 +59,10 @@ def test_chat_no_config_wizard_cancelled(tmp_path: Path, monkeypatch: object) ->
     monkeypatch.setattr(Path, "home", staticmethod(lambda: tmp_path / "fakehome"))  # type: ignore[attr-defined]
 
     with (
-        patch("octop_harness.cli.commands.chat.load_config") as mock_load,
-        patch("octop_harness.cli.providers.setup_wizard.run_setup_wizard") as mock_wizard,
+        patch("happyclaw_harness.cli.commands.chat.load_config") as mock_load,
+        patch("happyclaw_harness.cli.providers.setup_wizard.run_setup_wizard") as mock_wizard,
     ):
-        from octop_harness.cli.config.schema import CliConfig
+        from happyclaw_harness.cli.config.schema import CliConfig
 
         cli_cfg = CliConfig()
         mock_load.return_value = (None, cli_cfg)
@@ -86,11 +86,11 @@ def test_chat_one_shot_calls_agent(tmp_path: Path, monkeypatch: object) -> None:
     fake_config = {"providers": {"test": {"base_url": "http://x", "api_key": "k", "models": [{"id": "m"}]}}}
 
     with (
-        patch("octop_harness.cli.commands.chat.load_config") as mock_load,
-        patch("octop_harness.HarnessAgent", return_value=mock_agent),
-        patch("octop_harness.HarnessAgentConfig"),
+        patch("happyclaw_harness.cli.commands.chat.load_config") as mock_load,
+        patch("happyclaw_harness.HarnessAgent", return_value=mock_agent),
+        patch("happyclaw_harness.HarnessAgentConfig"),
     ):
-        from octop_harness.cli.config.schema import CliConfig
+        from happyclaw_harness.cli.config.schema import CliConfig
 
         mock_load.return_value = (fake_config, CliConfig())
         runner = CliRunner()
@@ -109,11 +109,11 @@ def test_chat_one_shot_no_messages(tmp_path: Path, monkeypatch: object) -> None:
     fake_config = {"providers": {"test": {"base_url": "http://x", "api_key": "k", "models": [{"id": "m"}]}}}
 
     with (
-        patch("octop_harness.cli.commands.chat.load_config") as mock_load,
-        patch("octop_harness.HarnessAgent", return_value=mock_agent),
-        patch("octop_harness.HarnessAgentConfig"),
+        patch("happyclaw_harness.cli.commands.chat.load_config") as mock_load,
+        patch("happyclaw_harness.HarnessAgent", return_value=mock_agent),
+        patch("happyclaw_harness.HarnessAgentConfig"),
     ):
-        from octop_harness.cli.config.schema import CliConfig
+        from happyclaw_harness.cli.config.schema import CliConfig
 
         mock_load.return_value = (fake_config, CliConfig())
         runner = CliRunner()
@@ -129,10 +129,10 @@ def test_chat_repl_launched_without_prompt(tmp_path: Path, monkeypatch: object) 
     fake_config = {"providers": {"test": {"base_url": "http://x", "api_key": "k", "models": [{"id": "m"}]}}}
 
     with (
-        patch("octop_harness.cli.commands.chat.load_config") as mock_load,
-        patch("octop_harness.cli.commands.chat._run_repl") as mock_repl,
+        patch("happyclaw_harness.cli.commands.chat.load_config") as mock_load,
+        patch("happyclaw_harness.cli.commands.chat._run_repl") as mock_repl,
     ):
-        from octop_harness.cli.config.schema import CliConfig
+        from happyclaw_harness.cli.config.schema import CliConfig
 
         cli_cfg = CliConfig()
         mock_load.return_value = (fake_config, cli_cfg)
@@ -149,10 +149,10 @@ def test_chat_agent_option_passed_to_repl(tmp_path: Path, monkeypatch: object) -
     fake_config = {"providers": {"test": {"base_url": "http://x", "api_key": "k", "models": [{"id": "m"}]}}}
 
     with (
-        patch("octop_harness.cli.commands.chat.load_config") as mock_load,
-        patch("octop_harness.cli.commands.chat._run_repl") as mock_repl,
+        patch("happyclaw_harness.cli.commands.chat.load_config") as mock_load,
+        patch("happyclaw_harness.cli.commands.chat._run_repl") as mock_repl,
     ):
-        from octop_harness.cli.config.schema import CliConfig
+        from happyclaw_harness.cli.config.schema import CliConfig
 
         cli_cfg = CliConfig()
         mock_load.return_value = (fake_config, cli_cfg)
@@ -172,12 +172,12 @@ def test_chat_model_override(tmp_path: Path, monkeypatch: object) -> None:
     fake_config = {"providers": {"test": {"base_url": "http://x", "api_key": "k", "models": [{"id": "m"}]}}}
 
     with (
-        patch("octop_harness.cli.commands.chat.load_config") as mock_load,
-        patch("octop_harness.HarnessAgent", return_value=mock_agent),
-        patch("octop_harness.HarnessAgentConfig"),
-        patch("octop_harness.ChatRequest") as mock_req_cls,
+        patch("happyclaw_harness.cli.commands.chat.load_config") as mock_load,
+        patch("happyclaw_harness.HarnessAgent", return_value=mock_agent),
+        patch("happyclaw_harness.HarnessAgentConfig"),
+        patch("happyclaw_harness.ChatRequest") as mock_req_cls,
     ):
-        from octop_harness.cli.config.schema import CliConfig
+        from happyclaw_harness.cli.config.schema import CliConfig
 
         mock_load.return_value = (fake_config, CliConfig())
         runner = CliRunner()

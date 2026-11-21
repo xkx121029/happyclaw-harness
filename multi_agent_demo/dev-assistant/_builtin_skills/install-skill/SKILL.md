@@ -23,7 +23,7 @@ Skills in the workspace.
 
 Skills live under ``{workspace}/skills/<skill-name>/`` and are
 auto-discovered by the deepagents skills middleware on the next agent
-session. Built-in Skills shipped with ``octop-harness`` live
+session. Built-in Skills shipped with ``happyclaw-harness`` live
 under ``{workspace}/_builtin_skills/`` and **must not** be edited
 directly — they are wiped and re-synced from the package on every
 ``HarnessAgent.init()`` call.

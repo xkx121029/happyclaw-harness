@@ -1,13 +1,13 @@
 # pylint: disable=invalid-name
 """Async ``ask_agent`` follow-up: DM and team rooms share one push hook.
 
-octop-harness does **not** depend on a gateway, IM, or HTTP server. After a
+happyclaw-harness does **not** depend on a gateway, IM, or HTTP server. After a
 background peer job finishes it:
 
 1. ``call``s the source agent on the original ``thread_id`` / ``session_key``
 2. hands ``TeamProcessor.on_reply`` a ``ReplyEvent``
 
-The host (Octop) is what talks to the gateway. DM and group rooms use that
+The host (HappyClaw) is what talks to the gateway. DM and group rooms use that
 same ``on_reply`` → ``gateway.push`` path. A group room only adds host-side
 data (room transcript, member cards) around the identical push.
 
@@ -17,7 +17,7 @@ data (room transcript, member cards) around the identical push.
         → inbox: target.call → compose_followup → source.call
         → TeamProcessor.on_reply(ReplyEvent)
         → host gateway.push(surface, thread_id, text)
-             └─ room only: also write Octop room transcript
+             └─ room only: also write HappyClaw room transcript
 
 This script fakes the agents and the gateway so it runs without API keys.
 
@@ -31,8 +31,8 @@ from __future__ import annotations
 import asyncio
 from typing import Any
 
-from octop_harness.request import ChatRequest
-from octop_harness.teams import (
+from happyclaw_harness.request import ChatRequest
+from happyclaw_harness.teams import (
     HarnessAgentInboxManager,
     InboxMessage,
     ReplyEvent,
@@ -41,7 +41,7 @@ from octop_harness.teams import (
 
 
 class FakeGateway:
-    """Stand-in for the host IM gateway. octop-harness never imports this."""
+    """Stand-in for the host IM gateway. happyclaw-harness never imports this."""
 
     def __init__(self) -> None:
         self.pushes: list[tuple[str, str, str]] = []
@@ -52,7 +52,7 @@ class FakeGateway:
 
 
 class HostProcessor:
-    """Octop-shaped host: one push path, extra room write only for groups."""
+    """HappyClaw-shaped host: one push path, extra room write only for groups."""
 
     def __init__(self, gateway: FakeGateway) -> None:
         self._gateway = gateway
@@ -107,7 +107,7 @@ async def main() -> None:
     print("=== same push path, two surfaces ===")
     for surface, thread_id, _text in gateway.pushes:
         print(f"  {surface:4} → {thread_id}")
-    print(f"room transcript extras (host/Octop only): {len(processor.room_transcript)}")
+    print(f"room transcript extras (host/HappyClaw only): {len(processor.room_transcript)}")
 
     await inbox.shutdown()
 

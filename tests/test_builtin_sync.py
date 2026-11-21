@@ -1,4 +1,4 @@
-"""Tests for ``octop_harness.builtin._sync.sync_builtin_skills_to_backend``."""
+"""Tests for ``happyclaw_harness.builtin._sync.sync_builtin_skills_to_backend``."""
 
 from __future__ import annotations
 
@@ -7,8 +7,8 @@ from pathlib import Path
 import pytest
 from deepagents.backends import FilesystemBackend
 
-from octop_harness.backends.workspace import DEFAULT_BUILTIN_SKILLS_DIR, BackendWorkspace
-from octop_harness.builtin._sync import sync_builtin_skills_to_backend
+from happyclaw_harness.backends.workspace import DEFAULT_BUILTIN_SKILLS_DIR, BackendWorkspace
+from happyclaw_harness.builtin._sync import sync_builtin_skills_to_backend
 
 
 @pytest.fixture
@@ -47,7 +47,7 @@ class TestSyncBuiltinSkillsToBackend:
         assert synced is True
         assert fallback == []
 
-        package = resources.files("octop_harness.builtin.skills")
+        package = resources.files("happyclaw_harness.builtin.skills")
         zh_skill = package.joinpath("zh/watchers/SKILL.md").read_text(encoding="utf-8")
         en_script = package.joinpath("en/watchers/scripts/watch_github.py").read_text(encoding="utf-8")
         assert workspace.read_text(f"{DEFAULT_BUILTIN_SKILLS_DIR}/watchers/SKILL.md") == zh_skill

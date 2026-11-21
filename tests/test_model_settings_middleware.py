@@ -8,7 +8,7 @@ from unittest.mock import patch
 
 from langchain.agents.middleware import ModelRequest
 
-from octop_harness.middleware.model_settings import apply_configurable_model_settings
+from happyclaw_harness.middleware.model_settings import apply_configurable_model_settings
 
 
 @dataclass
@@ -24,7 +24,7 @@ def test_apply_configurable_model_settings_merges_generation_knobs() -> None:
     )
     runtime = {"configurable": {"model_settings": {"temperature": 0.3, "top_p": 0.8, "max_tokens": 512}}}
     with patch(
-        "octop_harness.middleware.model_settings.runtime_config",
+        "happyclaw_harness.middleware.model_settings.runtime_config",
         return_value=runtime,
     ):
         updated = apply_configurable_model_settings(request)
@@ -40,7 +40,7 @@ def test_apply_configurable_model_settings_sets_context_cap_on_model_profile() -
     request = ModelRequest(model=model, messages=[], model_settings={})
     runtime = {"configurable": {"max_input_tokens": 64_000}}
     with patch(
-        "octop_harness.middleware.model_settings.runtime_config",
+        "happyclaw_harness.middleware.model_settings.runtime_config",
         return_value=runtime,
     ):
         updated = apply_configurable_model_settings(request)
@@ -54,7 +54,7 @@ def test_apply_configurable_model_settings_reserves_requested_output() -> None:
     request = ModelRequest(model=model, messages=[], model_settings={})
     runtime = {"configurable": {"model_settings": {"max_tokens": 64_000}}}
     with patch(
-        "octop_harness.middleware.model_settings.runtime_config",
+        "happyclaw_harness.middleware.model_settings.runtime_config",
         return_value=runtime,
     ):
         apply_configurable_model_settings(request)

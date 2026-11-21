@@ -1,4 +1,4 @@
-"""Tests for ``octop_harness.protocols.langgraph.LangGraphProtocol``."""
+"""Tests for ``happyclaw_harness.protocols.langgraph.LangGraphProtocol``."""
 
 from __future__ import annotations
 
@@ -8,18 +8,18 @@ from unittest.mock import AsyncMock, MagicMock
 import pytest
 from langchain_core.messages import AIMessage, AIMessageChunk, BaseMessage, HumanMessage
 
-from octop_harness.protocols.langgraph import LangGraphProtocol
-from octop_harness.protocols.mcp import MCPProtocol
-from octop_harness.protocols.openai import OpenAIProtocol
+from happyclaw_harness.protocols.langgraph import LangGraphProtocol
+from happyclaw_harness.protocols.mcp import MCPProtocol
+from happyclaw_harness.protocols.openai import OpenAIProtocol
 
 
 @pytest.mark.parametrize("adapter", [LangGraphProtocol, MCPProtocol, OpenAIProtocol])
 @pytest.mark.parametrize(("setting", "expected"), [(None, "exit"), ("async", "async"), (" SYNC ", "sync")])
 async def test_checkpoint_durability_on_graph_entry_points(adapter, setting, expected, monkeypatch):
     if setting is None:
-        monkeypatch.delenv("OCTOP_CHECKPOINT_DURABILITY", raising=False)
+        monkeypatch.delenv("HAPPYCLAW_CHECKPOINT_DURABILITY", raising=False)
     else:
-        monkeypatch.setenv("OCTOP_CHECKPOINT_DURABILITY", setting)
+        monkeypatch.setenv("HAPPYCLAW_CHECKPOINT_DURABILITY", setting)
     graph = MagicMock()
     graph.ainvoke = AsyncMock(return_value={})
     graph.astream_events = AsyncMock()
@@ -47,14 +47,14 @@ async def test_checkpoint_durability_on_graph_entry_points(adapter, setting, exp
 
 
 async def test_invalid_durability_warns_once_and_does_not_change_stateless_graphs(monkeypatch, caplog):
-    monkeypatch.setenv("OCTOP_CHECKPOINT_DURABILITY", "unrecognized-mode")
+    monkeypatch.setenv("HAPPYCLAW_CHECKPOINT_DURABILITY", "unrecognized-mode")
     graph = MagicMock()
     graph.ainvoke = AsyncMock(return_value={})
     protocol = LangGraphProtocol(graph=graph)
     for _ in range(2):
         await protocol.call([], {})
         assert graph.ainvoke.await_args.kwargs["durability"] == "exit"
-    assert caplog.text.count("OCTOP_CHECKPOINT_DURABILITY") == 1
+    assert caplog.text.count("HAPPYCLAW_CHECKPOINT_DURABILITY") == 1
     graph.checkpointer = None
     await protocol.call([], {})
     assert "durability" not in graph.ainvoke.await_args.kwargs

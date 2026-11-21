@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from octop_harness.acp.models import ACPConfig, ACPRunnerConfig, default_acp_runners
+from happyclaw_harness.acp.models import ACPConfig, ACPRunnerConfig, default_acp_runners
 
 
 def test_default_runners_include_builtins() -> None:

@@ -1,6 +1,6 @@
-"""Tests for octop_harness.cli.ui.theme."""
+"""Tests for happyclaw_harness.cli.ui.theme."""
 
-from octop_harness.cli.ui.theme import Theme, get_theme
+from happyclaw_harness.cli.ui.theme import Theme, get_theme
 
 
 def test_get_theme_dark() -> None:

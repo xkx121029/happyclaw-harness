@@ -1,9 +1,9 @@
-"""Tests for octop_harness.security.tool_guard."""
+"""Tests for happyclaw_harness.security.tool_guard."""
 
 from __future__ import annotations
 
-from octop_harness.security.models import SecurityPolicy
-from octop_harness.security.tool_guard import ToolGuardEngine
+from happyclaw_harness.security.models import SecurityPolicy
+from happyclaw_harness.security.tool_guard import ToolGuardEngine
 
 
 def test_guard_blocks_rm_rf_root() -> None:
@@ -42,7 +42,7 @@ def test_build_tool_guard_hitl_request_shape() -> None:
     engine = ToolGuardEngine(enabled=True, mode="require_approval")
     result = engine.guard("bash", {"command": "rm -rf /"})
     assert result is not None
-    from octop_harness.security.tool_guard.engine import build_tool_guard_hitl_request
+    from happyclaw_harness.security.tool_guard.engine import build_tool_guard_hitl_request
 
     payload = build_tool_guard_hitl_request(result)
     assert payload["action_requests"][0]["name"] == "bash"
@@ -52,7 +52,7 @@ def test_build_tool_guard_hitl_request_shape() -> None:
 
 
 def test_security_policy_applies_tool_guard() -> None:
-    from octop_harness.config import HarnessAgentConfig
+    from happyclaw_harness.config import HarnessAgentConfig
 
     policy = SecurityPolicy.defaults()
     cfg = HarnessAgentConfig(name="demo", workspace_dir="/tmp/demo")
@@ -71,7 +71,7 @@ def test_tool_guard_round_trip_dict() -> None:
 
 
 def test_list_guard_rule_catalog_nonempty() -> None:
-    from octop_harness.security.tool_guard import list_guard_rule_catalog
+    from happyclaw_harness.security.tool_guard import list_guard_rule_catalog
 
     catalog = list_guard_rule_catalog()
     assert len(catalog) >= 10

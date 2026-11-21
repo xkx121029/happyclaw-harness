@@ -16,12 +16,12 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from octop_harness.config import HarnessAgentConfig, ModelConfig, ProviderConfig
-from octop_harness.llm.session_header import current_session_id, session_header_scope
-from octop_harness.manager import HarnessAgentManager
-from octop_harness.request import ChatRequest
-from octop_harness.slash.core import RuntimeSlashCtx
-from octop_harness.slash.runtime import iter_with_runtime_slash
+from happyclaw_harness.config import HarnessAgentConfig, ModelConfig, ProviderConfig
+from happyclaw_harness.llm.session_header import current_session_id, session_header_scope
+from happyclaw_harness.manager import HarnessAgentManager
+from happyclaw_harness.request import ChatRequest
+from happyclaw_harness.slash.core import RuntimeSlashCtx
+from happyclaw_harness.slash.runtime import iter_with_runtime_slash
 
 _THREAD = "t-early"
 
@@ -70,7 +70,7 @@ class _Proto:
 
 @pytest.fixture
 def manager_with_agent(tmp_path: Path) -> tuple[HarnessAgentManager, str, _Proto]:
-    with patch("octop_harness.agent.deepagents.create_deep_agent", return_value=MagicMock()):
+    with patch("happyclaw_harness.agent.deepagents.create_deep_agent", return_value=MagicMock()):
         mgr = HarnessAgentManager()
         mgr.create_agent(_config(tmp_path), init_workspace=False)
     agent_id = next(iter(mgr._registry.agent_ids()))

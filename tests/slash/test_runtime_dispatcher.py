@@ -1,10 +1,10 @@
-"""Tests for octop_harness.slash runtime dispatcher."""
+"""Tests for happyclaw_harness.slash runtime dispatcher."""
 
 from __future__ import annotations
 
 from unittest.mock import AsyncMock, MagicMock
 
-from octop_harness.slash import (
+from happyclaw_harness.slash import (
     BufferSink,
     RuntimeSlashCtx,
     SlashCommand,

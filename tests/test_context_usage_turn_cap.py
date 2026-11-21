@@ -7,8 +7,8 @@ from unittest.mock import MagicMock, patch
 from langchain.agents.middleware import ModelResponse
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 
-from octop_harness.context_usage import CONTEXT_USAGE_KEY
-from octop_harness.middleware.context_usage import ContextUsageMiddleware
+from happyclaw_harness.context_usage import CONTEXT_USAGE_KEY
+from happyclaw_harness.middleware.context_usage import ContextUsageMiddleware
 
 
 def test_capture_uses_request_model_profile_window() -> None:
@@ -28,7 +28,7 @@ def test_capture_uses_request_model_profile_window() -> None:
     response = ModelResponse(result=[ai])
 
     with patch(
-        "octop_harness.middleware.context_usage._thread_id_from_request",
+        "happyclaw_harness.middleware.context_usage._thread_id_from_request",
         return_value="thr_1",
     ):
         out = mw._capture(request, response)

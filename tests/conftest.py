@@ -1,4 +1,4 @@
-"""Shared pytest fixtures for octop_harness tests."""
+"""Shared pytest fixtures for happyclaw_harness tests."""
 
 from __future__ import annotations
 
@@ -8,10 +8,10 @@ from pathlib import Path
 
 import pytest
 
-from octop_harness.agent import HarnessAgent
-from octop_harness.config import HarnessAgentConfig, ModelConfig, ProviderConfig
-from octop_harness.manager import HarnessAgentManager
-from octop_harness.observability.logging import teardown_logging
+from happyclaw_harness.agent import HarnessAgent
+from happyclaw_harness.config import HarnessAgentConfig, ModelConfig, ProviderConfig
+from happyclaw_harness.manager import HarnessAgentManager
+from happyclaw_harness.observability.logging import teardown_logging
 
 
 def close_memory_instance(memory: object) -> None:
@@ -38,14 +38,14 @@ def _isolate_home_for_runtime_logs(monkeypatch: pytest.MonkeyPatch, tmp_path: Pa
     monkeypatch.setattr(Path, "home", classmethod(lambda cls: home))
     # init caches this path at import time, before this fixture changes HOME.
     # Overwrite tests must never write the developer's real provider template.
-    monkeypatch.setattr("octop_harness.init._PROVIDERS_USER_DIR", home / ".octop-harness")
+    monkeypatch.setattr("happyclaw_harness.init._PROVIDERS_USER_DIR", home / ".octop-harness")
     teardown_logging()
     yield
     teardown_logging()
 
 
 @pytest.fixture(autouse=True)
-def _close_octop_harnesss_created_in_test() -> Iterator[None]:
+def _close_happyclaw_harnesss_created_in_test() -> Iterator[None]:
     """Close every ``HarnessAgent`` / ``HarnessAgentManager`` built in a test."""
     created_agents: list[HarnessAgent] = []
     created_managers: list[HarnessAgentManager] = []

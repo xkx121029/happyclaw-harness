@@ -1,14 +1,14 @@
-"""Tests for ``octop_harness.config.env``."""
+"""Tests for ``happyclaw_harness.config.env``."""
 
 from __future__ import annotations
 
 from importlib import resources
 from unittest.mock import patch
 
-from octop_harness.config.env import detect_providers_from_env
-from octop_harness.providers import load_provider_templates
+from happyclaw_harness.config.env import detect_providers_from_env
+from happyclaw_harness.providers import load_provider_templates
 
-_BUNDLED_TEMPLATE = resources.files("octop_harness.providers").joinpath("provider_template.json")
+_BUNDLED_TEMPLATE = resources.files("happyclaw_harness.providers").joinpath("provider_template.json")
 
 
 class TestDetectHarnessPrefix:
@@ -146,7 +146,7 @@ class TestDetectOpenAIFallback:
 class TestTemplatePresetModelInput:
     def test_tencent_hai_propagates_image_input(self, monkeypatch) -> None:
         presets = load_provider_templates(templates_path=_BUNDLED_TEMPLATE)
-        monkeypatch.setattr("octop_harness.config.env._load_template_presets", lambda: presets)
+        monkeypatch.setattr("happyclaw_harness.config.env._load_template_presets", lambda: presets)
         env = {"TENCENT_HAI_API_KEY": "sk-hai"}
         with patch.dict("os.environ", env, clear=True):
             providers, _ = detect_providers_from_env()
@@ -161,7 +161,7 @@ class TestTemplatePresetModelInput:
 
     def test_openai_preset_propagates_image_input(self, monkeypatch) -> None:
         presets = load_provider_templates(templates_path=_BUNDLED_TEMPLATE)
-        monkeypatch.setattr("octop_harness.config.env._load_template_presets", lambda: presets)
+        monkeypatch.setattr("happyclaw_harness.config.env._load_template_presets", lambda: presets)
         env = {"OPENAI_API_KEY": "sk-openai"}
         with patch.dict("os.environ", env, clear=True):
             providers, _ = detect_providers_from_env()

@@ -7,7 +7,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from octop_harness.middleware.memory import MemoryMiddleware
+from happyclaw_harness.middleware.memory import MemoryMiddleware
 
 
 def test_pause_drains_only_this_middleware_and_reopens_on_timeout():

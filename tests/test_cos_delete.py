@@ -1,4 +1,4 @@
-"""Tests for :class:`~octop_harness.backends.cos.CosBackend` delete helpers."""
+"""Tests for :class:`~happyclaw_harness.backends.cos.CosBackend` delete helpers."""
 
 from __future__ import annotations
 
@@ -7,7 +7,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from octop_harness.backends.cos_backend import CosBackend, CosConfig
+from happyclaw_harness.backends.cos_backend import CosBackend, CosConfig
 
 
 def _test_credential() -> str:

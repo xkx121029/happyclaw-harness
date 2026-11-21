@@ -18,12 +18,12 @@ from langchain_core.language_models.fake_chat_models import FakeMessagesListChat
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, SystemMessage
 from langgraph.checkpoint.memory import InMemorySaver
 
-from octop_harness.agent import HarnessAgent
-from octop_harness.config import HarnessAgentConfig
-from octop_harness.context_usage import CONTEXT_USAGE_KEY, message_content_text, partition_system_prompt_segments
-from octop_harness.decision.config import DecisionConfig
-from octop_harness.middleware.model_refusal import RefusalPassthroughMiddleware
-from octop_harness.middleware.skill_filter import SkillFilterMiddleware
+from happyclaw_harness.agent import HarnessAgent
+from happyclaw_harness.config import HarnessAgentConfig
+from happyclaw_harness.context_usage import CONTEXT_USAGE_KEY, message_content_text, partition_system_prompt_segments
+from happyclaw_harness.decision.config import DecisionConfig
+from happyclaw_harness.middleware.model_refusal import RefusalPassthroughMiddleware
+from happyclaw_harness.middleware.skill_filter import SkillFilterMiddleware
 
 
 class _Model(FakeMessagesListChatModel):
@@ -120,7 +120,7 @@ def harness_with_skills(
     _write_skill(tmp_path, "beta")
     (tmp_path / "_builtin_skills").mkdir()
     model = _Model(responses=[AIMessage(content="one"), AIMessage(content="two"), AIMessage(content="three")])
-    monkeypatch.setattr("octop_harness.llm.factory.ChatModelFactory.get_chat_model", lambda *args, **kwargs: model)
+    monkeypatch.setattr("happyclaw_harness.llm.factory.ChatModelFactory.get_chat_model", lambda *args, **kwargs: model)
     config = replace(
         sample_config,
         backend={"type": "filesystem", "root_dir": str(tmp_path), "virtual_mode": False},
@@ -142,7 +142,7 @@ async def test_decision_keeps_skill_catalog_out_of_the_cached_prefix(
     async def score(*args, **kwargs):
         return next(scores)
 
-    monkeypatch.setattr("octop_harness.decision.client.HttpDecisionClient.score_async", score)
+    monkeypatch.setattr("happyclaw_harness.decision.client.HttpDecisionClient.score_async", score)
     decision = DecisionConfig(enabled=True, endpoint="https://example.invalid", tools=False, team=False)
     agent = HarnessAgent(replace(config, decision=decision))
     graph_config = {"configurable": {"thread_id": "decision-skills"}}
@@ -188,10 +188,10 @@ def test_summarization_policy_reaches_every_factory_call(
     sample_config: HarnessAgentConfig, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     """Main agent and subagents share the factory wrapper, so one policy covers both."""
-    from octop_harness.middleware.summarization_limits import apply_summarization_policy
+    from happyclaw_harness.middleware.summarization_limits import apply_summarization_policy
 
     model = _Model(responses=[AIMessage(content="ok")])
-    monkeypatch.setattr("octop_harness.llm.factory.ChatModelFactory.get_chat_model", lambda *args, **kwargs: model)
+    monkeypatch.setattr("happyclaw_harness.llm.factory.ChatModelFactory.get_chat_model", lambda *args, **kwargs: model)
     seen: list[Any] = []
     real = apply_summarization_policy
 
@@ -199,7 +199,7 @@ def test_summarization_policy_reaches_every_factory_call(
         seen.append(middleware)
         real(middleware, config)
 
-    monkeypatch.setattr("octop_harness.middleware.summarization_limits.apply_summarization_policy", _spy)
+    monkeypatch.setattr("happyclaw_harness.middleware.summarization_limits.apply_summarization_policy", _spy)
     HarnessAgent(
         replace(
             sample_config,

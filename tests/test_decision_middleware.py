@@ -14,14 +14,14 @@ from langgraph.config import var_child_runnable_config
 from langgraph.prebuilt.tool_node import ToolCallRequest
 from langgraph.types import Command
 
-from octop_harness.config import HarnessAgentConfig
-from octop_harness.decision import decision_active, parse_probabilities
-from octop_harness.decision.client import _ATTEMPTS, DecisionRequestError, HttpDecisionClient, _timeout_for
-from octop_harness.decision.config import DecisionConfig
-from octop_harness.decision.select import Candidate, keep_confident, lexical_shortlist
-from octop_harness.middleware.decision import DecisionMiddleware, decision_dispatch_snapshot
-from octop_harness.middleware.tool_search import ToolSearchMiddleware
-from octop_harness.middleware.tools_filter import ToolsFilterMiddleware
+from happyclaw_harness.config import HarnessAgentConfig
+from happyclaw_harness.decision import decision_active, parse_probabilities
+from happyclaw_harness.decision.client import _ATTEMPTS, DecisionRequestError, HttpDecisionClient, _timeout_for
+from happyclaw_harness.decision.config import DecisionConfig
+from happyclaw_harness.decision.select import Candidate, keep_confident, lexical_shortlist
+from happyclaw_harness.middleware.decision import DecisionMiddleware, decision_dispatch_snapshot
+from happyclaw_harness.middleware.tool_search import ToolSearchMiddleware
+from happyclaw_harness.middleware.tools_filter import ToolsFilterMiddleware
 
 
 class _Scorer:
@@ -145,7 +145,7 @@ def test_local_laya_allows_a_full_cpu_batch_to_finish() -> None:
 
 
 def test_build_decision_body_uses_noul_questions() -> None:
-    from octop_harness.decision import build_decision_body
+    from happyclaw_harness.decision import build_decision_body
 
     body = build_decision_body(
         state="帮我读 pdf",
@@ -364,7 +364,7 @@ def test_question_budget_keeps_unasked_catalog_entries() -> None:
 
 
 def test_turn_cache_drops_the_oldest_entry() -> None:
-    from octop_harness.middleware.decision import _TurnFilter
+    from happyclaw_harness.middleware.decision import _TurnFilter
 
     mw = DecisionMiddleware(config=_config(skills=False, tools=False, team=False), scorer=_Scorer({}))
     for index in range(129):
@@ -417,7 +417,7 @@ def test_later_user_turn_sends_prior_conversation_to_the_decision_model() -> Non
 
 
 def test_decision_state_keeps_the_latest_ask_when_history_overflows() -> None:
-    from octop_harness.middleware.decision import _STATE_LIMIT, _state_text
+    from happyclaw_harness.middleware.decision import _STATE_LIMIT, _state_text
 
     earlier = "帮我处理这份很长的合同。" + ("条款" * (_STATE_LIMIT))
     request = _request(
@@ -892,7 +892,7 @@ def test_decision_client_retries_transport_errors_then_raises(monkeypatch: pytes
         raise httpx.ConnectError("down")
 
     monkeypatch.setattr(httpx, "post", post)
-    monkeypatch.setattr("octop_harness.decision.client.time.sleep", lambda _delay: None)
+    monkeypatch.setattr("happyclaw_harness.decision.client.time.sleep", lambda _delay: None)
     client = HttpDecisionClient(endpoint="http://127.0.0.1:9/v1/decisions", provider="laya")
     with pytest.raises(DecisionRequestError):
         client.score(state="读 pdf", statements=[("skill:pdf", "需要 pdf")])
@@ -943,7 +943,7 @@ async def test_decision_client_async_retries_then_raises(monkeypatch: pytest.Mon
 
 
 def test_decision_request_error_is_public() -> None:
-    from octop_harness import decision as decision_api
+    from happyclaw_harness import decision as decision_api
 
     assert decision_api.DecisionRequestError is DecisionRequestError
 
@@ -966,7 +966,7 @@ def test_decision_client_does_not_retry_a_client_error(monkeypatch: pytest.Monke
 
 
 def test_middleware_reports_tokens_kept_out_while_the_model_runs() -> None:
-    from octop_harness.context_usage import pending_decision_saved
+    from happyclaw_harness.context_usage import pending_decision_saved
 
     tools = [_tool(f"misc_{index}", "unrelated tool") for index in range(8)]
     tools.append(_tool("read_pdf", "读取 pdf 合同"))
@@ -1113,7 +1113,7 @@ def test_unscored_turn_keeps_the_same_cached_prefix() -> None:
 
 
 def test_turn_notes_merge_into_one_message() -> None:
-    from octop_harness.middleware.turn_note import insert_turn_note, is_turn_note
+    from happyclaw_harness.middleware.turn_note import insert_turn_note, is_turn_note
 
     user = HumanMessage(content="[turn note]\nhi")
     assert not is_turn_note(user)
@@ -1129,7 +1129,7 @@ def test_turn_notes_merge_into_one_message() -> None:
 
 
 def test_user_message_prefixed_like_a_turn_note_is_still_scored() -> None:
-    from octop_harness.middleware.turn_note import is_turn_note
+    from happyclaw_harness.middleware.turn_note import is_turn_note
 
     tools = [_tool("read_file", "读取文件"), *(_tool(f"misc_{index}", "unrelated") for index in range(8))]
     tools.append(_tool("read_pdf", "读取 pdf"))

@@ -8,7 +8,7 @@ import pytest
 from acp import Agent
 from acp.schema import InitializeResponse, NewSessionResponse
 
-from octop_harness.acp.server import (
+from happyclaw_harness.acp.server import (
     ACP_AGENT_META_KEY,
     HarnessACPAgent,
     _acp_agent_cls,
@@ -93,7 +93,7 @@ async def test_build_harness_acp_agent_initialize_not_null() -> None:
     assert result.agent_capabilities is not None
     assert result.agent_capabilities.load_session is True
     assert result.agent_info is not None
-    assert result.agent_info.name == "octop"
+    assert result.agent_info.name == "happyclaw"
 
 
 @pytest.mark.asyncio

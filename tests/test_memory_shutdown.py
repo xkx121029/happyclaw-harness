@@ -13,10 +13,10 @@ from unittest.mock import MagicMock
 import pytest
 from langchain_core.messages import AIMessage, HumanMessage
 
-from octop_harness.config import HarnessAgentConfig
-from octop_harness.memory.runtime import MemoryRuntime
-from octop_harness.memory.store import memory_identity, shared_memory_store
-from octop_harness.middleware import memory as memory_module
+from happyclaw_harness.config import HarnessAgentConfig
+from happyclaw_harness.memory.runtime import MemoryRuntime
+from happyclaw_harness.memory.store import memory_identity, shared_memory_store
+from happyclaw_harness.middleware import memory as memory_module
 
 
 @pytest.fixture

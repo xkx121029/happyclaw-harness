@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from octop_harness.backends.s3_backend import (
+from happyclaw_harness.backends.s3_backend import (
     S3Config,
     cos_spec_to_s3_compat,
     normalize_s3_spec_kwargs,

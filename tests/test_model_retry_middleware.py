@@ -8,7 +8,7 @@ import pytest
 from langchain.agents.middleware.types import ModelResponse
 from langchain_core.messages import AIMessage
 
-from octop_harness.middleware.model_retry import ModelRetryMiddleware
+from happyclaw_harness.middleware.model_retry import ModelRetryMiddleware
 
 
 def _retry() -> ModelRetryMiddleware:
@@ -104,7 +104,7 @@ async def test_graph_records_failure_without_error_memory_and_can_resume(tmp_pat
     from langgraph.checkpoint.memory import InMemorySaver
     from octop_memory import Memory, MemoryService
 
-    from octop_harness.middleware.memory import MemoryMiddleware
+    from happyclaw_harness.middleware.memory import MemoryMiddleware
 
     captured = threading.Event()
 

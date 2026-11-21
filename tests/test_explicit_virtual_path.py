@@ -9,12 +9,12 @@ import pytest
 from deepagents.backends import FilesystemBackend
 from deepagents.backends.protocol import ExecuteResponse
 
-from octop_harness.backends import _artifacts_root_for_workspace
-from octop_harness.backends.explicit_virtual_path import (
+from happyclaw_harness.backends import _artifacts_root_for_workspace
+from happyclaw_harness.backends.explicit_virtual_path import (
     build_virtual_to_native_tool,
     resolve_explicit_virtual_path,
 )
-from octop_harness.backends.local_shell import HarnessLocalShellBackend
+from happyclaw_harness.backends.local_shell import HarnessLocalShellBackend
 
 
 class _RecordingBackend:

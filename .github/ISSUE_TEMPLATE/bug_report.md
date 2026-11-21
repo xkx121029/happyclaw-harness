@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Report a defect or unexpected behavior in octop-harness
+about: Report a defect or unexpected behavior in happyclaw-harness
 title: "[bug] "
 labels: bug
 ---
@@ -21,7 +21,7 @@ labels: bug
 
 ## Environment
 
-- `octop-harness` version:
+- `happyclaw-harness` version:
 - Python version:
 - OS:
 - Provider / model:

@@ -1,4 +1,4 @@
-"""Tests for ``octop_harness.protocols.openai.OpenAIProtocol``."""
+"""Tests for ``happyclaw_harness.protocols.openai.OpenAIProtocol``."""
 
 from __future__ import annotations
 
@@ -20,7 +20,7 @@ from tests.test_protocols._fakes import (
     public_model_stream_parts,
 )
 
-from octop_harness.protocols.openai import OpenAIProtocol, OpenAIStreamWrapper
+from happyclaw_harness.protocols.openai import OpenAIProtocol, OpenAIStreamWrapper
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -50,7 +50,7 @@ class TestCall:
         result = await protocol.call([HumanMessage(content="hi")], {})
 
         assert result["object"] == "chat.completion"
-        assert result["model"] == "octop-harness"
+        assert result["model"] == "happyclaw-harness"
         assert result["id"].startswith("chatcmpl-")
         assert len(result["id"]) == len("chatcmpl-") + 24
         assert isinstance(result["created"], int)
@@ -120,7 +120,7 @@ class TestStream:
         assert len(chunks) == 2
         for c in chunks:
             assert c["object"] == "chat.completion.chunk"
-            assert c["model"] == "octop-harness"
+            assert c["model"] == "happyclaw-harness"
             assert c["choices"][0]["delta"]["role"] == "assistant"
         assert chunks[0]["choices"][0]["delta"]["content"] == "Hello"
         assert chunks[1]["choices"][0]["delta"]["content"] == " world"
@@ -156,7 +156,7 @@ class TestStreamEvents:
             assert c["id"] == "chatcmpl-test123"
             assert c["object"] == "chat.completion.chunk"
             assert c["created"] == 1700000000
-            assert c["model"] == "octop-harness"
+            assert c["model"] == "happyclaw-harness"
             assert c["choices"][0]["index"] == 0
             assert c["choices"][0]["delta"]["role"] == "assistant"
             assert c["choices"][0]["finish_reason"] is None

@@ -15,7 +15,7 @@ from langgraph.runtime import Runtime
 from mcp.shared.exceptions import McpError
 from mcp.types import ErrorData
 
-from octop_harness.middleware.mcp_tool_error import McpToolErrorMiddleware
+from happyclaw_harness.middleware.mcp_tool_error import McpToolErrorMiddleware
 
 _SCHEMA_ERROR = RuntimeError(
     "Invalid structured content returned by tool manage.search_file: "

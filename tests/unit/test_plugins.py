@@ -1,4 +1,4 @@
-"""Unit tests for octop_harness.plugins."""
+"""Unit tests for happyclaw_harness.plugins."""
 
 from __future__ import annotations
 
@@ -6,11 +6,11 @@ from pathlib import Path
 
 import pytest
 
-from octop_harness.plugins.context import PluginContext
-from octop_harness.plugins.loader import load_plugin_dir
-from octop_harness.plugins.manifest import PluginManifest
-from octop_harness.plugins.registry import PluginRegistry
-from octop_harness.plugins.tools import _tool_enabled
+from happyclaw_harness.plugins.context import PluginContext
+from happyclaw_harness.plugins.loader import load_plugin_dir
+from happyclaw_harness.plugins.manifest import PluginManifest
+from happyclaw_harness.plugins.registry import PluginRegistry
+from happyclaw_harness.plugins.tools import _tool_enabled
 
 _FIXTURE = Path(__file__).resolve().parents[1] / "fixtures" / "plugins" / "echo-tool"
 _CHANNEL_FIXTURE = Path(__file__).resolve().parents[1] / "fixtures" / "plugins" / "acme-channel"
@@ -116,7 +116,7 @@ def test_context_channel_validates_input(tmp_path: Path) -> None:
 
 
 def test_registry_rejects_channel_owner_conflict() -> None:
-    from octop_harness.plugins.registry import ChannelRegistration, LoadedPlugin
+    from happyclaw_harness.plugins.registry import ChannelRegistration, LoadedPlugin
 
     class A:
         pass
@@ -183,7 +183,7 @@ def test_tool_enabled_defaults_on_when_plugin_globally_on() -> None:
 
 
 def test_channel_registry_update_and_unload(tmp_path: Path) -> None:
-    from octop_harness.plugins.registry import ChannelRegistration, LoadedPlugin
+    from happyclaw_harness.plugins.registry import ChannelRegistration, LoadedPlugin
 
     manifest = PluginManifest(id="owner", version="1", name="Owner", kind="channel", entry="main.py")
     registry = PluginRegistry()

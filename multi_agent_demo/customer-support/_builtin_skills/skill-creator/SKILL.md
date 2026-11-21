@@ -187,7 +187,7 @@ the skill, e.g. in `evals/prompts.json`:
 In a fresh agent session with the Skill loaded:
 
 ```python
-from octop_harness import HarnessAgent, HarnessAgentConfig
+from happyclaw_harness import HarnessAgent, HarnessAgentConfig
 
 config = HarnessAgentConfig(
     name="skill-test",

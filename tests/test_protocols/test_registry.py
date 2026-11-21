@@ -9,12 +9,12 @@ from unittest.mock import MagicMock
 import pytest
 from langchain_core.messages import BaseMessage
 
-from octop_harness.protocols import (
+from happyclaw_harness.protocols import (
     _PROTOCOL_REGISTRY,
     register_protocol,
     resolve_protocol,
 )
-from octop_harness.protocols.base import ChatProtocol
+from happyclaw_harness.protocols.base import ChatProtocol
 
 # ---------------------------------------------------------------------------
 # Helpers

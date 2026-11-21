@@ -3,10 +3,10 @@ requires = ["hatchling>=1.25"]
 build-backend = "hatchling.build"
 
 [project]
-name = "octop-harness"
+name = "happyclaw-harness"
 # Single source of truth for the package version (runtime reads via importlib.metadata).
-version = "1.0.12"
-description = "Production-grade Harness Agent built on top of LangChain Deep Agents."
+version = "1.0.13"
+description = "HappyClaw Harness: a production-grade agent harness built on LangChain Deep Agents."
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.12"
@@ -100,13 +100,13 @@ all = [
 ]
 
 [project.scripts]
-octop-harness = "octop_harness.cli.main:cli"
+happyclaw-harness = "happyclaw_harness.cli.main:cli"
 
 [project.urls]
-Homepage = "https://github.com/xkx121029/octop-harness"
-Repository = "https://github.com/xkx121029/octop-harness"
-Issues = "https://github.com/xkx121029/octop-harness/issues"
-Changelog = "https://github.com/xkx121029/octop-harness/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/xkx121029/happyclaw-harness"
+Repository = "https://github.com/xkx121029/happyclaw-harness"
+Issues = "https://github.com/xkx121029/happyclaw-harness/issues"
+Changelog = "https://github.com/xkx121029/happyclaw-harness/blob/main/CHANGELOG.md"
 
 [dependency-groups]
 dev = [
@@ -136,12 +136,12 @@ dev = [
 
 [tool.hatch.build.targets.wheel]
 core-metadata-version = "2.3"
-packages = ["src/octop_harness"]
+packages = ["src/happyclaw_harness"]
 
 [tool.hatch.build.targets.sdist]
 core-metadata-version = "2.3"
 include = [
-    "src/octop_harness",
+    "src/happyclaw_harness",
     "README.md",
     "CHANGELOG.md",
     "LICENSE",
@@ -180,24 +180,24 @@ ignore = [
 "tests/**/*.py" = ["PLC0415", "RUF012", "N803"]
 "examples/**/*.py" = ["PLC0415", "RUF001", "T201"]
 # Intentional lazy / optional imports across the package
-"src/octop_harness/**/*.py" = ["PLC0415"]
+"src/happyclaw_harness/**/*.py" = ["PLC0415"]
 # Complexity / specialty rules (keep narrow so new code still gets flagged)
-"src/octop_harness/backends/__init__.py" = ["PLR0911", "PLR0912", "E402"]
-"src/octop_harness/cli/**/*.py" = ["PLR0911", "PLR0912", "PLR0915"]
-"src/octop_harness/llm/factory.py" = ["PLR0912"]
-"src/octop_harness/config/env.py" = ["PLR0912"]
-"src/octop_harness/config/__init__.py" = ["PLR0912"]
-"src/octop_harness/protocols/langgraph.py" = ["PLR0912"]
-"src/octop_harness/acp/**/*.py" = ["PLR0911", "N818", "RUF006"]
-"src/octop_harness/builtin/tools/acp_runner.py" = ["PLR0911"]
-"src/octop_harness/builtin/skills/**/scripts/*.py" = ["PLR0911", "PLR0912", "PLR0915"]
+"src/happyclaw_harness/backends/__init__.py" = ["PLR0911", "PLR0912", "E402"]
+"src/happyclaw_harness/cli/**/*.py" = ["PLR0911", "PLR0912", "PLR0915"]
+"src/happyclaw_harness/llm/factory.py" = ["PLR0912"]
+"src/happyclaw_harness/config/env.py" = ["PLR0912"]
+"src/happyclaw_harness/config/__init__.py" = ["PLR0912"]
+"src/happyclaw_harness/protocols/langgraph.py" = ["PLR0912"]
+"src/happyclaw_harness/acp/**/*.py" = ["PLR0911", "N818", "RUF006"]
+"src/happyclaw_harness/builtin/tools/acp_runner.py" = ["PLR0911"]
+"src/happyclaw_harness/builtin/skills/**/scripts/*.py" = ["PLR0911", "PLR0912", "PLR0915"]
 # i18n: full-width punctuation in user-facing zh strings / comments
-"src/octop_harness/slash/core.py" = ["RUF001"]
-"src/octop_harness/middleware/memory.py" = ["RUF003"]
-"src/octop_harness/context_usage.py" = ["PLR0912"]
+"src/happyclaw_harness/slash/core.py" = ["RUF001"]
+"src/happyclaw_harness/middleware/memory.py" = ["RUF003"]
+"src/happyclaw_harness/context_usage.py" = ["PLR0912"]
 
 [tool.ruff.lint.isort]
-known-first-party = ["octop_harness"]
+known-first-party = ["happyclaw_harness"]
 
 [tool.ruff.format]
 quote-style = "double"
@@ -217,9 +217,9 @@ warn_unreachable = true
 disallow_untyped_defs = true
 no_implicit_optional = true
 check_untyped_defs = true
-files = ["src/octop_harness"]
+files = ["src/happyclaw_harness"]
 exclude = [
-    "src/octop_harness/builtin/skills/",
+    "src/happyclaw_harness/builtin/skills/",
 ]
 
 [[tool.mypy.overrides]]
@@ -289,7 +289,7 @@ filterwarnings = [
 ]
  
 [tool.coverage.run]
-source = ["src/octop_harness"]
+source = ["src/happyclaw_harness"]
 branch = true
 
 [tool.coverage.report]
