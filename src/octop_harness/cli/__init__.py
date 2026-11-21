@@ -5,6 +5,7 @@ Install with: pip install octop-harness[cli]
 
 from __future__ import annotations
 
+from importlib.util import find_spec
 from pathlib import Path
 
 from octop_harness._version import __version__
@@ -16,13 +17,12 @@ def _check_cli_deps() -> None:
     Uses ImportError (not SystemExit) so importing ``octop_harness.cli.main``
     during test collection cannot abort the whole pytest session.
     The CLI entrypoint converts this into a friendly ``SystemExit``.
+
+    ``find_spec`` proves presence without executing the module: importing
+    ``rich`` and ``prompt_toolkit`` here cost ~170 modules on every
+    ``octop-harness --help``.
     """
-    missing = []
-    for mod in ("click", "rich", "prompt_toolkit", "dotenv"):
-        try:
-            __import__(mod)
-        except ImportError:
-            missing.append(mod)
+    missing = [mod for mod in ("click", "rich", "prompt_toolkit", "dotenv") if find_spec(mod) is None]
     if missing:
         raise ImportError(
             f"Missing CLI dependencies: {', '.join(missing)}.\nInstall them with: pip install octop-harness[cli]"

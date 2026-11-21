@@ -34,12 +34,15 @@ from dataclasses import InitVar, dataclass, field, fields
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Literal
 
-from deepagents import SubAgent
-
 from octop_harness.acp.models import ACPRunnerConfig, default_acp_runners
 from octop_harness.decision.config import DecisionConfig
 
 if TYPE_CHECKING:
+    # ``SubAgent`` only appears in annotations, and ``from __future__ import
+    # annotations`` keeps them unevaluated, so importing deepagents here would
+    # cost the whole LangChain stack on every ``import octop_harness``.
+    from deepagents import SubAgent
+
     # State / runtime types are intentionally erased to ``Any`` to avoid
     # tightly coupling our public API to LangGraph internals.
     ModelSelector = Callable[[dict[str, Any], dict[str, Any]], str | None]

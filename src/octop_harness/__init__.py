@@ -13,7 +13,6 @@ from octop_harness.config import (
     ModelConfig,
     ProviderConfig,
 )
-from octop_harness.request import ChatRequest
 
 if TYPE_CHECKING:
     from octop_harness.agent import HarnessAgent
@@ -28,8 +27,10 @@ if TYPE_CHECKING:
     )
     from octop_harness.protocols.langgraph import AgentEventType
     from octop_harness.providers import ModelPreset, ProviderPreset
+    from octop_harness.request import ChatRequest
 
 _LAZY_EXPORTS: dict[str, tuple[str, str]] = {
+    "ChatRequest": ("octop_harness.request", "ChatRequest"),
     "ManagedMCPClient": ("octop_harness.mcp_client", "ManagedMCPClient"),
     "AgentEntry": ("octop_harness.manager", "AgentEntry"),
     "HarnessAgentManager": ("octop_harness.manager", "HarnessAgentManager"),
