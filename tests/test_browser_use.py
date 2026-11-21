@@ -1,9 +1,9 @@
 """Tests for the ``browser_use`` built-in tool.
 
-The real ``octop_browser.browser_tool`` would launch Chrome over CDP;
+The real ``happyclaw_browser.browser_tool`` would launch Chrome over CDP;
 we replace that single entry-point with a fake during each test so the
 suite is hermetic. We still construct the **real**
-:class:`octop_browser.ToolResult` pydantic model so the wrapper's
+:class:`happyclaw_browser.ToolResult` pydantic model so the wrapper's
 projection of the result is genuinely exercised.
 """
 
@@ -19,8 +19,8 @@ from unittest.mock import patch
 
 import pytest
 
-# ``octop-browser`` ships in the dev group, so the real model is available.
-from octop_browser import ActionMetrics, ToolResult
+# ``happyclaw-browser`` ships in the dev group, so the real model is available.
+from happyclaw_browser import ActionMetrics, ToolResult
 
 import happyclaw_harness.builtin.tools.browser_use  # noqa: F401  # pylint: disable=unused-import
 from happyclaw_harness.builtin.tools.browser_use import browser_use
@@ -57,7 +57,7 @@ def install_fake() -> Iterator[
         list[dict[str, Any]],
     ]
 ]:
-    """Install a fake ``octop_browser`` module for the duration of the test.
+    """Install a fake ``happyclaw_browser`` module for the duration of the test.
 
     The fixture yields a registrar; tests call it with a function that
     builds the desired :class:`ToolResult` from the action+kwargs, and
@@ -72,9 +72,9 @@ def install_fake() -> Iterator[
             captured.append({"action": action, "profile": profile, **kwargs})
             return builder(action=action, profile=profile, **kwargs)
 
-        module = types.ModuleType("octop_browser")
+        module = types.ModuleType("happyclaw_browser")
         module.browser_tool = fake_browser_tool  # type: ignore[attr-defined]
-        ctx = patch.dict(sys.modules, {"octop_browser": module})
+        ctx = patch.dict(sys.modules, {"happyclaw_browser": module})
         ctx.__enter__()
         contexts.append(ctx)
         return captured
@@ -789,11 +789,11 @@ class TestTabsAndErrors:
         assert payload["action_history"] == [{"action": "navigate", "success": False}]
 
     async def test_missing_dependency_returns_install_hint(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        # Drop any real or fake octop_browser from sys.modules and force
+        # Drop any real or fake happyclaw_browser from sys.modules and force
         # the import to fail.
         import builtins
 
-        monkeypatch.delitem(sys.modules, "octop_browser", raising=False)
+        monkeypatch.delitem(sys.modules, "happyclaw_browser", raising=False)
         real_import = builtins.__import__
 
         def fake_import(
@@ -803,7 +803,7 @@ class TestTabsAndErrors:
             fromlist: tuple[str, ...] = (),
             level: int = 0,
         ) -> Any:
-            if name == "octop_browser":
+            if name == "happyclaw_browser":
                 raise ImportError("simulated missing dependency")
             return real_import(name, globals, locals, fromlist, level)
 
@@ -811,8 +811,8 @@ class TestTabsAndErrors:
             result = await browser_use.ainvoke({"action": "navigate", "url": "https://example.com"})
 
         assert isinstance(result, str)
-        assert "octop-browser" in result
-        assert "octop-browser" in result  # install-hint mentions the package name
+        assert "happyclaw-browser" in result
+        assert "happyclaw-browser" in result  # install-hint mentions the package name
         # install hint should suggest reinstalling the parent package or
         # the browser package directly — no longer references the
         # removed ``[browser]`` extras.

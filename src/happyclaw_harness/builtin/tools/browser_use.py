@@ -1,11 +1,11 @@
 """Built-in tool: ``browser_use``.
 
-Thin wrapper around :func:`octop_browser.browser_tool` exposing it as a
-LangChain async ``@tool``. ``octop-browser`` drives Chrome via the
+Thin wrapper around :func:`happyclaw_browser.browser_tool` exposing it as a
+LangChain async ``@tool``. ``happyclaw-browser`` drives Chrome via the
 Chrome DevTools Protocol with profile-based login persistence -- see
-https://pypi.org/project/octop-browser/ for the underlying API.
+https://pypi.org/project/happyclaw-browser/ for the underlying API.
 
-``octop-browser`` ships as a required dependency of
+``happyclaw-browser`` ships as a required dependency of
 ``happyclaw-harness``, so ``browser_use`` is always available as a
 default tool. Chrome or Chromium must be present at runtime for the
 tool to actually drive a browser; missing-binary errors are surfaced
@@ -83,10 +83,10 @@ def _reset_history_for_tests() -> None:
 
 def _missing_dependency_error() -> str:
     return (
-        "Error: browser_use requires the 'octop-browser' package. "
+        "Error: browser_use requires the 'happyclaw-browser' package. "
         "It is normally installed as a default dependency of "
         "happyclaw-harness; reinstall the package, or run "
-        "`pip install octop-browser` directly. Chrome/Chromium must "
+        "`pip install happyclaw-browser` directly. Chrome/Chromium must "
         "also be available at runtime."
     )
 
@@ -178,7 +178,7 @@ def _screenshot_blocks(
 
 
 def _result_to_dict(result: Any) -> dict[str, Any]:
-    """Project a octop_browser ``ToolResult`` into a plain dict."""
+    """Project a happyclaw_browser ``ToolResult`` into a plain dict."""
     metrics = getattr(result, "metrics", None)
     metrics_dict: dict[str, Any] = {}
     if metrics is not None:
@@ -203,7 +203,7 @@ def _iter_listed_tabs(
 ) -> list[tuple[str, str]]:
     """Return ``(tab_id, url)`` pairs from ``list_tabs`` output.
 
-    Newer octop-browser versions expose structured tab data in metadata;
+    Newer happyclaw-browser versions expose structured tab data in metadata;
     prefer that over parsing the human-readable content because page titles can
     contain the same dash separator used in the fallback text format.
     """
@@ -274,7 +274,7 @@ def _synthetic_reuse_result(
     requested_url: str,
     matched_url: str,
 ) -> Any:
-    """Build a ToolResult-like object without importing octop_browser models."""
+    """Build a ToolResult-like object without importing happyclaw_browser models."""
     return SimpleNamespace(
         success=True,
         content=f"Reused existing tab {tab_id} for {requested_url}",
@@ -305,7 +305,7 @@ async def _maybe_reuse_open_tab(
     """Switch to an already-open matching tab instead of opening duplicates.
 
     This is intentionally implemented in the high-level agent wrapper rather
-    than the lower-level ``octop_browser`` API: raw browser automation keeps
+    than the lower-level ``happyclaw_browser`` API: raw browser automation keeps
     precise ``navigate`` / ``new_tab`` semantics, while chat usage gets
     idempotent "open this site" behavior that survives LLM retries.
     """
@@ -479,11 +479,11 @@ async def browser_use(
         else (and any failure) a JSON string with ``success``, ``content``,
         ``error``, ``metrics``, ``metadata``, and the rolling
         ``action_history`` / ``total_actions_in_session`` for this
-        ``profile``. Plain-text error if ``octop-browser`` is not
+        ``profile``. Plain-text error if ``happyclaw-browser`` is not
         installed.
     """
     try:
-        from octop_browser import browser_tool
+        from happyclaw_browser import browser_tool
     except ImportError:
         return _missing_dependency_error()
 

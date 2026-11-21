@@ -27,7 +27,7 @@ from typing import TYPE_CHECKING, Any
 from happyclaw_harness.backends.utils import DEFENSIVE_OP_ERRORS
 
 if TYPE_CHECKING:
-    from octop_memory import Memory
+    from happyclaw_memory import Memory
 
     from happyclaw_harness.config import HarnessAgentConfig
 

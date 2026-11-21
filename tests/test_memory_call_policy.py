@@ -7,7 +7,7 @@ from typing import Any
 
 import httpx
 import pytest
-from octop_memory.ports.llm import LLMClientError
+from happyclaw_memory.ports.llm import LLMClientError
 
 from happyclaw_harness.config import HarnessAgentConfig, ModelConfig, ProviderConfig
 from happyclaw_harness.llm.factory import ChatModelFactory

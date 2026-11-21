@@ -1,7 +1,7 @@
-"""``HarnessAgentLLMClient`` — adapt the agent's models to octop-memory.
+"""``HarnessAgentLLMClient`` — adapt the agent's models to happyclaw-memory.
 
-``octop-memory``'s extractor / promotion / page-regen paths talk to the
-host model through the :class:`octop_memory.ports.llm.LLMClient` protocol. This
+``happyclaw-memory``'s extractor / promotion / page-regen paths talk to the
+host model through the :class:`happyclaw_memory.ports.llm.LLMClient` protocol. This
 module wraps the agent's existing :class:`ChatModelFactory` so we can reuse
 the same providers and credentials the rest of the agent already uses.
 
@@ -36,7 +36,7 @@ from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any, Literal
 
 import httpx
-from octop_memory.ports.llm import LLMClientError, LLMTier
+from happyclaw_memory.ports.llm import LLMClientError, LLMTier
 
 from happyclaw_harness.llm.invoke_helpers import bind_call_options, build_text_messages, stringify_content
 

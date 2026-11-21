@@ -30,7 +30,7 @@ from langchain_core.tools import StructuredTool
 from langchain_openai.chat_models.base import _convert_message_to_dict
 from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.graph.message import add_messages
-from octop_memory import Memory, MemoryService
+from happyclaw_memory import Memory, MemoryService
 
 from happyclaw_harness.middleware.memory import MemoryMiddleware
 from happyclaw_harness.middleware.memory_recall import RECALL_SNAPSHOT_KEY, count_tokens_with_recall

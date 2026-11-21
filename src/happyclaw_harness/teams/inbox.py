@@ -370,7 +370,7 @@ class HarnessAgentInboxManager:
                 source="inbox",
                 thread_id=msg.source_thread_id,
                 session_key=session_key,
-                configurable={"octop_memory_capture_exclude": True} if error_text else None,
+                configurable={"happyclaw_memory_capture_exclude": True} if error_text else None,
             )
             reply = await self._call_agent(msg.source_agent_id, source_req)
             return extract_call_response(reply) if isinstance(reply, dict) else ""

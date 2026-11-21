@@ -228,10 +228,10 @@ async def test_stream_pulls_keep_the_same_async_activity_context(entry: str) -> 
 
 @pytest.mark.parametrize("backend", ["sqlite", "postgres"])
 async def test_cancel_during_final_flush_keeps_activity_until_memory_io_finishes(tmp_path, monkeypatch, backend):
-    from octop_memory import Memory
+    from happyclaw_memory import Memory
 
     if not callable(getattr(Memory, "acheckpoint_activity", None)):
-        pytest.skip("requires octop-memory's async checkpoint activity API")
+        pytest.skip("requires happyclaw-memory's async checkpoint activity API")
     if backend == "postgres":
         dsn = os.environ.get("TEST_POSTGRES_DSN")
         if not dsn:
@@ -286,14 +286,14 @@ async def test_cancel_during_final_flush_keeps_activity_until_memory_io_finishes
 
 
 async def test_postgres_retention_defers_an_active_historical_fork() -> None:
-    from octop_memory import Memory
-    from octop_memory.pipeline.lifecycle.checkpoint_gc import prune_checkpoints
+    from happyclaw_memory import Memory
+    from happyclaw_memory.pipeline.lifecycle.checkpoint_gc import prune_checkpoints
 
     dsn = os.environ.get("TEST_POSTGRES_DSN")
     if not dsn:
         pytest.skip("set TEST_POSTGRES_DSN to an isolated PostgreSQL test database")
     if not callable(getattr(Memory, "checkpoint_maintenance", None)):
-        pytest.skip("requires octop-memory's coordinated checkpoint API")
+        pytest.skip("requires happyclaw-memory's coordinated checkpoint API")
     thread_id = f"activity-{uuid4().hex}"
     memory = Memory("activity_runtime", backend="postgres", backend_config={"dsn": dsn})
     maintainer = Memory("activity_maintenance", backend="postgres", backend_config={"dsn": dsn})

@@ -176,7 +176,7 @@ class TestConstruction:
         mw_classes = [type(m).__name__ for m in captured["middleware"]]
         assert "ModelRouterMiddleware" in mw_classes
         assert "McpToolErrorMiddleware" in mw_classes
-        # The octop-memory adapter also owns the default-on JSONL session log.
+        # The happyclaw-memory adapter also owns the default-on JSONL session log.
         assert "HarnessMemoryMiddleware" in [m.name for m in captured["middleware"]]
         # ModelRetry and PII (api-key redaction) are on by default.
         assert "ModelRetryMiddleware" in mw_classes
@@ -551,7 +551,7 @@ class TestCheckpointerResolution:
         tmp_path: Path,
         mock_model_factory: Callable[[], Any],
     ) -> None:
-        from octop_memory import Memory
+        from happyclaw_memory import Memory
 
         captured: dict[str, Any] = {}
 

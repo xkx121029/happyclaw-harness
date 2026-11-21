@@ -8,7 +8,7 @@ from typing import Any
 from unittest.mock import MagicMock, patch
 
 import pytest
-from octop_memory import Memory
+from happyclaw_memory import Memory
 
 from happyclaw_harness.agent import HarnessAgent
 from happyclaw_harness.config import HarnessAgentConfig, ModelConfig, ProviderConfig

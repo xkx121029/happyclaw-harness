@@ -3,7 +3,7 @@
 
 Three run modes:
 
-1. **Direct** (default) -- call :func:`octop_browser.browser_tool` end
+1. **Direct** (default) -- call :func:`happyclaw_browser.browser_tool` end
    to end: open https://cloud.tencent.com, take a screenshot, save it
    under ``$TMPDIR/tencent_cloud.png``. No LLM keys needed, just Chrome.
 
@@ -20,7 +20,7 @@ Three run modes:
 
 This example DOES launch a real Chromium session, so:
 
-    pip install happyclaw-harness     # octop-browser ships by default
+    pip install happyclaw-harness     # happyclaw-browser ships by default
     sudo apt install chromium-browser     # or brew install chromium
 
 Run::
@@ -55,14 +55,14 @@ PROFILE = "demo-tencent-cloud"
 
 
 async def run_direct() -> int:
-    """Drive ``octop_browser.browser_tool`` directly — no LLM involved."""
+    """Drive ``happyclaw_browser.browser_tool`` directly — no LLM involved."""
     try:
-        from octop_browser import browser_tool
+        from happyclaw_browser import browser_tool
     except ImportError:
         print(
-            "ERROR: octop-browser is not installed. It ships as a "
+            "ERROR: happyclaw-browser is not installed. It ships as a "
             "default dependency of happyclaw-harness — reinstall the "
-            "package, or run `pip install octop-browser` directly.",
+            "package, or run `pip install happyclaw-browser` directly.",
             file=sys.stderr,
         )
         return 1
@@ -101,7 +101,7 @@ async def run_via_wrapper() -> int:
     """Exercise the happyclaw-harness ``browser_use`` tool wrapper.
 
     Demonstrates the two ergonomic features layered on top of
-    ``octop_browser.browser_tool``: per-profile ``action_history`` and
+    ``happyclaw_browser.browser_tool``: per-profile ``action_history`` and
     multimodal screenshot blocks.
     """
     print(f"→ navigate to {TARGET_URL} (via browser_use wrapper)")

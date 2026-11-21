@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.14] - 2026-11-22
+
+### 破坏性变更
+
+- 兄弟库依赖改用 HappyClaw 分发名：`octop-memory>=1.0.5` → **`happyclaw-memory>=1.0.7`**、
+  `octop-browser>=0.9.9` → **`happyclaw-browser>=1.0.2`**，导入名 `octop_memory` /
+  `octop_browser` 同步改为 `happyclaw_memory` / `happyclaw_browser`。
+  动机是实测问题：主仓 `uv lock` 会把腾讯版 `octop-memory 1.0.5` 与本库的 happyclaw 版本同时装进
+  site-packages，两个包提供同名模块，导入到哪个取决于路径顺序。
+  对外部使用者而言这是 breaking：只装 `happyclaw-harness` 的人会拿到新的兄弟分发，
+  任何 `import octop_memory` 的代码需要改名。本库公开 API 的类名与签名未变。
+
+
+
 ## [1.0.13] - 2026-11-21
 
 1.0.13 是命名切换版本，属于 **breaking change**：分发名与导入包名同时变更。

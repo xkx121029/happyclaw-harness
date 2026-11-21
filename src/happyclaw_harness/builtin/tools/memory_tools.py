@@ -30,7 +30,7 @@ from typing import TYPE_CHECKING, Literal
 from langchain_core.tools import StructuredTool, tool
 
 if TYPE_CHECKING:
-    from octop_memory import MemoryService
+    from happyclaw_memory import MemoryService
 
 logger = logging.getLogger(__name__)
 
@@ -121,7 +121,7 @@ def build_memory_tools(service: MemoryService) -> list[StructuredTool]:
         topic: str | None = None,
         kind: Literal["Fact", "Preference", "Decision", "Task"] = "Fact",
     ) -> str:
-        """Save a durable memory with its semantic kind to octop-memory.
+        """Save a durable memory with its semantic kind to happyclaw-memory.
 
         Use when the user asks you to remember something. Store one concise
         memory per call; choose its kind in this tool call, without another
@@ -141,7 +141,7 @@ def build_memory_tools(service: MemoryService) -> list[StructuredTool]:
         if not content.strip():
             return "memory_save failed: content is empty"
         if kind != "Fact" and not supports_kind:
-            return "memory_save failed: upgrade octop-memory to a version supporting MemoryService.save(kind=...)"
+            return "memory_save failed: upgrade happyclaw-memory to a version supporting MemoryService.save(kind=...)"
         try:
             if kind == "Fact":
                 service.save(content.strip(), topic=topic)
@@ -150,7 +150,7 @@ def build_memory_tools(service: MemoryService) -> list[StructuredTool]:
         except Exception as exc:  # pragma: no cover - fail softly at the tool boundary; pylint: disable=broad-except
             logger.warning("memory_save failed: %s", exc, exc_info=True)
             return f"memory_save failed: {exc.__class__.__name__}"
-        return "Memory saved to octop-memory."
+        return "Memory saved to happyclaw-memory."
 
     return [memory_search, memory_get, memory_save]  # type: ignore[list-item]
 

@@ -1,4 +1,4 @@
-"""Runtime wiring for the structured ``octop-memory`` integration.
+"""Runtime wiring for the structured ``happyclaw-memory`` integration.
 
 ``HarnessAgent`` has several memory touchpoints: tools, middleware,
 checkpointer reuse, and session-end extraction. This module keeps those
@@ -15,7 +15,7 @@ from functools import cache
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
-from octop_memory import Memory, MemoryService
+from happyclaw_memory import Memory, MemoryService
 
 from happyclaw_harness.builtin.tools.memory_tools import build_memory_tools
 from happyclaw_harness.memory.llm_client import HarnessAgentLLMClient
@@ -357,7 +357,7 @@ class MemoryRuntime:
 
 
 def _extraction_service_config(config: HarnessAgentConfig) -> dict[str, Any] | None:
-    """Budget passed into octop-memory's extractor.
+    """Budget passed into happyclaw-memory's extractor.
 
     ``CandidateExtractor`` always sends its own ``max_tokens`` (default
     2048). A harness-side fallback on the chat client never overrides that,

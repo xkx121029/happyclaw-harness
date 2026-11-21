@@ -232,7 +232,7 @@ def test_worker_can_close_its_own_runtime(tmp_path: Path) -> None:
 def test_close_preserves_real_background_database_work(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture, kind: str
 ) -> None:
-    from octop_memory.pipeline import lifecycle
+    from happyclaw_memory.pipeline import lifecycle
 
     runtime = make_runtime(tmp_path)
     memory = runtime.memory

@@ -156,7 +156,7 @@ async def test_inbox_sdk_auth_failure_finishes_and_excludes_notification_from_me
     assert msg.status == "failed"
     assert proc.events[0].status == "failed"
     assert "401" in (proc.events[0].error_text or "")
-    assert requests[-1].to_runnable_config()["configurable"]["octop_memory_capture_exclude"] is True
+    assert requests[-1].to_runnable_config()["configurable"]["happyclaw_memory_capture_exclude"] is True
 
     await inbox.shutdown()
 

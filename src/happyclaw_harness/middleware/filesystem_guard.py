@@ -65,7 +65,7 @@ _MEMORY_REMOVE_TOOLS = frozenset({"delete", "delete_file", "move_file"})
 _MEMORY_WRITE_TOOLS = _MEMORY_CONTENT_TOOLS | _MEMORY_REMOVE_TOOLS
 _MEMORY_READ_ONLY_MESSAGE = (
     "{filename} is user-maintained memory. Edit it manually in the memory dashboard. "
-    "Use memory_save to remember information in octop-memory."
+    "Use memory_save to remember information in happyclaw-memory."
 )
 _MEMORY_KEEP_PATH_MESSAGE = (
     "{filename} must stay at its workspace path. Clear it by writing empty content instead of deleting or moving it."

@@ -50,8 +50,8 @@ from happyclaw_harness.middleware.memory_recall import (
 )
 
 # ~20MB at the default 4KB page size. Matches
-# octop_memory.pipeline.lifecycle.vacuum.MAINTENANCE_INCREMENTAL_VACUUM_PAGES.
-# Kept local so a host can pass it to an already-installed octop-memory
+# happyclaw_memory.pipeline.lifecycle.vacuum.MAINTENANCE_INCREMENTAL_VACUUM_PAGES.
+# Kept local so a host can pass it to an already-installed happyclaw-memory
 # whose ``nudge_vacuum`` accepts ``pages`` but does not export the constant yet.
 _MAINTENANCE_VACUUM_PAGES = 5000
 _MANUAL_REVIEW_BATCH = 20
@@ -75,7 +75,7 @@ def _review_pending_manual_documents(service: Any) -> None:
 if TYPE_CHECKING:
     from langchain.agents.middleware.types import ModelRequest, ModelResponse
     from langgraph.channels.delta import DeltaChannel
-    from octop_memory import MemoryService
+    from happyclaw_memory import MemoryService
 
 logger = logging.getLogger(__name__)
 
@@ -211,9 +211,9 @@ def _prune_checkpoints_if_configured(memory: Any, *, messages_channel: DeltaChan
         backend = getattr(memory, "backend", None)
         if backend is not None:
             try:
-                from octop_memory.storage.backends.postgres import PostgresMemoryBackend
+                from happyclaw_memory.storage.backends.postgres import PostgresMemoryBackend
             except ImportError:
-                pass  # PostgreSQL is an optional octop-memory extra.
+                pass  # PostgreSQL is an optional happyclaw-memory extra.
             else:
                 if isinstance(backend, PostgresMemoryBackend):
                     return
@@ -224,7 +224,7 @@ def _prune_checkpoints_if_configured(memory: Any, *, messages_channel: DeltaChan
         if keep_last is None and keep_days is None:
             return
 
-        from octop_memory.pipeline.lifecycle.checkpoint_gc import prune_checkpoints
+        from happyclaw_memory.pipeline.lifecycle.checkpoint_gc import prune_checkpoints
 
         options: dict[str, Any] = {"keep_last": keep_last, "keep_days": keep_days, "skip_pending": True}
         if messages_channel is not None and "messages_channel" in inspect.signature(prune_checkpoints).parameters:
@@ -553,7 +553,7 @@ class MemoryMiddleware(AgentMiddleware[Any, Any]):
                 self._service is not None
                 and self._capture_enabled
                 and visible
-                and configurable.get("octop_memory_capture_exclude") is not True
+                and configurable.get("happyclaw_memory_capture_exclude") is not True
             ):
                 if self._maintenance_blocks_io():
                     logger.info(
@@ -1107,7 +1107,7 @@ class MemoryMiddleware(AgentMiddleware[Any, Any]):
         """Run checkpoint retention, GC and incremental vacuum.
 
         Full compact/VACUUM is intentionally never scheduled by the agent;
-        operators may still invoke octop-memory's explicit compact command.
+        operators may still invoke happyclaw-memory's explicit compact command.
         """
         if not self._maintenance_running.acquire(blocking=False):
             logger.debug("memory.maintenance skip overlapping tick")
@@ -1118,7 +1118,7 @@ class MemoryMiddleware(AgentMiddleware[Any, Any]):
             # switch for the backup-before-delete step. This tick keeps the
             # newest 20 checkpoints (override with HAPPYCLAW_CHECKPOINT_KEEP_*),
             # applies the configured SQLite backup policy, then reclaims memory rows.
-            from octop_memory.pipeline.lifecycle import nudge_vacuum, run_gc
+            from happyclaw_memory.pipeline.lifecycle import nudge_vacuum, run_gc
 
             memory = getattr(service, "memory", None)
             if memory is None:

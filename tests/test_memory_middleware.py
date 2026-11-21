@@ -71,7 +71,7 @@ class TestMemoryMiddleware:
         from langchain_core.messages import AIMessage, HumanMessage
 
         runtime = _make_runtime()
-        runtime.config["configurable"]["octop_memory_capture_exclude"] = True
+        runtime.config["configurable"]["happyclaw_memory_capture_exclude"] = True
         user = HumanMessage(content="System task notification: child failed authentication (401).")
         reply = AIMessage(content="The member failed. Please update its credentials.")
         mw.before_model(_make_state([user]), runtime)
@@ -581,14 +581,14 @@ class TestIdleMaintenance:
         def _fail(*_args: object, **_kwargs: object) -> Any:
             raise AssertionError("checkpoint prune must not run from maintenance")
 
-        fake = types.ModuleType("octop_memory.pipeline.lifecycle")
+        fake = types.ModuleType("happyclaw_memory.pipeline.lifecycle")
         fake.run_gc = _fake_gc  # type: ignore[attr-defined]
         fake.nudge_vacuum = _fake_nudge  # type: ignore[attr-defined]
         fake.run_idle_maintenance = _fail  # type: ignore[attr-defined]
         fake.prune_checkpoints = _fail  # type: ignore[attr-defined]
         fake.maybe_bootstrap_incremental = _fail  # type: ignore[attr-defined]
         fake.compact_vacuum = _fail  # type: ignore[attr-defined]
-        monkeypatch.setitem(sys.modules, "octop_memory.pipeline.lifecycle", fake)
+        monkeypatch.setitem(sys.modules, "happyclaw_memory.pipeline.lifecycle", fake)
         monkeypatch.setenv("HAPPYCLAW_CHECKPOINT_RETENTION", "0")
         monkeypatch.delenv("HAPPYCLAW_CHECKPOINT_KEEP_LAST", raising=False)
         monkeypatch.delenv("HAPPYCLAW_CHECKPOINT_KEEP_DAYS", raising=False)
@@ -614,8 +614,8 @@ class TestIdleMaintenance:
         self, service: _SpyService, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
     ) -> None:
         from langgraph.checkpoint.base import create_checkpoint, empty_checkpoint
-        from octop_memory import Memory
-        from octop_memory.pipeline import lifecycle
+        from happyclaw_memory import Memory
+        from happyclaw_memory.pipeline import lifecycle
 
         for suffix in ("RETENTION", "KEEP_LAST", "KEEP_DAYS", "BACKUP_BEFORE_PRUNE", "VACUUM"):
             monkeypatch.delenv(f"HAPPYCLAW_CHECKPOINT_{suffix}", raising=False)
@@ -663,8 +663,8 @@ class TestIdleMaintenance:
         from datetime import UTC, datetime, timedelta
 
         from langgraph.checkpoint.base import empty_checkpoint
-        from octop_memory import Memory
-        from octop_memory.pipeline.lifecycle.checkpoint_gc import _cutoff_checkpoint_id
+        from happyclaw_memory import Memory
+        from happyclaw_memory.pipeline.lifecycle.checkpoint_gc import _cutoff_checkpoint_id
 
         from happyclaw_harness.middleware.memory import _prune_checkpoints_if_configured
 
@@ -701,7 +701,7 @@ class TestIdleMaintenance:
         import sys
         import types
 
-        import octop_memory.pipeline.lifecycle.checkpoint_gc as gc_mod
+        import happyclaw_memory.pipeline.lifecycle.checkpoint_gc as gc_mod
 
         service.memory = object()  # type: ignore[attr-defined]
         calls: list[dict[str, object]] = []
@@ -724,10 +724,10 @@ class TestIdleMaintenance:
             stats.auto_vacuum_enabled = True
             return stats
 
-        fake = types.ModuleType("octop_memory.pipeline.lifecycle")
+        fake = types.ModuleType("happyclaw_memory.pipeline.lifecycle")
         fake.run_gc = _fake_gc  # type: ignore[attr-defined]
         fake.nudge_vacuum = _fake_nudge  # type: ignore[attr-defined]
-        monkeypatch.setitem(sys.modules, "octop_memory.pipeline.lifecycle", fake)
+        monkeypatch.setitem(sys.modules, "happyclaw_memory.pipeline.lifecycle", fake)
         monkeypatch.setattr(gc_mod, "prune_checkpoints", _prune)
         monkeypatch.setenv("HAPPYCLAW_CHECKPOINT_KEEP_LAST", "20")
         monkeypatch.delenv("HAPPYCLAW_CHECKPOINT_KEEP_DAYS", raising=False)

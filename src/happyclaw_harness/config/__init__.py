@@ -857,7 +857,7 @@ class HarnessAgentConfig:
     # recently-active sessions. Default 6h.
     memory_extract_interval_seconds: float = 21600.0
     # Output budget for extraction / episode completions. ``None`` keeps
-    # octop-memory's built-in 2048. This is written into the memory runtime's
+    # happyclaw-memory's built-in 2048. This is written into the memory runtime's
     # ``extraction.max_tokens`` — the extractor always sends its own
     # ``max_tokens``, so a client-side fallback cannot override it.
     memory_extract_max_tokens: int | None = None

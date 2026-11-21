@@ -58,7 +58,7 @@ class TestBuildMemoryTools:
         service = _FakeService()
         save = next(t for t in build_memory_tools(service) if t.name == "memory_save")
         result = save.invoke({"content": "User prefers Chinese", "kind": "Preference"})
-        assert "upgrade octop-memory" in result
+        assert "upgrade happyclaw-memory" in result
         assert service.save_calls == []
 
     def test_memory_save_does_not_report_document_review_to_the_model(self) -> None:
@@ -68,7 +68,7 @@ class TestBuildMemoryTools:
             "manual_document_review": {"status": "partial"},
         }
         save = next(t for t in build_memory_tools(service) if t.name == "memory_save")
-        assert save.invoke({"content": "A conflicting fact"}) == "Memory saved to octop-memory."
+        assert save.invoke({"content": "A conflicting fact"}) == "Memory saved to happyclaw-memory."
 
     def test_returns_recall_tools(self) -> None:
         tools = build_memory_tools(_FakeService())  # type: ignore[arg-type]

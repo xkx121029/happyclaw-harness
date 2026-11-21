@@ -3,7 +3,7 @@
 These exercise the ``MemoryService`` plumbing:
 
 * ``HarnessAgentLLMClient`` adapts the agent's :class:`ChatModelFactory`
-  to the :class:`octop_memory.ports.llm.LLMClient` protocol and degrades to
+  to the :class:`happyclaw_memory.ports.llm.LLMClient` protocol and degrades to
   ``LLMClientError`` on failure.
 * ``MemoryMiddleware`` recalls (read path) and captures (write path)
   through ``MemoryService``.
@@ -25,8 +25,8 @@ from unittest.mock import MagicMock
 import pytest
 from langchain.agents.middleware.types import ModelRequest
 from langchain_core.messages import AIMessage, HumanMessage
-from octop_memory import Memory, MemoryService
-from octop_memory.ports.llm import LLMClient, LLMClientError
+from happyclaw_memory import Memory, MemoryService
+from happyclaw_memory.ports.llm import LLMClient, LLMClientError
 
 from happyclaw_harness.builtin.tools.memory_tools import build_memory_tools
 from happyclaw_harness.config import HarnessAgentConfig, ModelConfig, ProviderConfig
@@ -646,7 +646,7 @@ class TestMemoryMiddlewareWithService:
         assert len(spy.recall_calls) == 1
         assert spy.recall_calls[0]["query"] == "When is the deadline?"
         # The handler receives the augmented request (we don't assert the
-        # exact rendered block — that's octop-memory's job to format).
+        # exact rendered block — that's happyclaw-memory's job to format).
         assert len(captured) == 1
         assert captured[0].system_prompt == "You are helpful."
         assert "Project deadline is Friday" in captured[0].messages[0].content
@@ -721,7 +721,7 @@ class TestMemoryTools:
         save = next(t for t in build_memory_tools(service) if t.name == "memory_save")
         result = save.invoke({"content": "User prefers Chinese replies", "kind": kind})
         if kind != "Fact" and "kind" not in signature(service.save).parameters:
-            assert "upgrade octop-memory" in result
+            assert "upgrade happyclaw-memory" in result
             assert memory.list_candidates() == []
             assert memory.list_atoms() == []
             return

@@ -17,7 +17,7 @@ from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.messages import AIMessage, BaseMessage, ToolMessage, message_to_dict
 from langchain_core.outputs import ChatGeneration, ChatResult
 from langchain_core.tools import tool
-from octop_memory import Memory
+from happyclaw_memory import Memory
 from pydantic import PrivateAttr
 
 from happyclaw_harness.agent import HarnessAgent
@@ -348,11 +348,11 @@ async def test_v3_stream_flushes_checkpoint_before_output_returns(tmp_path, monk
 async def test_pruning_preserves_state_and_pending_approval(tmp_path, monkeypatch, mode):
     import inspect
 
-    from octop_memory.pipeline.lifecycle.checkpoint_gc import prune_checkpoints
+    from happyclaw_memory.pipeline.lifecycle.checkpoint_gc import prune_checkpoints
 
-    # Dependency-aware pruning with skip_pending ships in octop-memory 1.0.4.
+    # Dependency-aware pruning with skip_pending ships in happyclaw-memory 1.0.4.
     if "skip_pending" not in inspect.signature(prune_checkpoints).parameters:
-        pytest.skip("requires octop-memory>=1.0.4")
+        pytest.skip("requires happyclaw-memory>=1.0.4")
     monkeypatch.setenv("HAPPYCLAW_CHECKPOINT_DURABILITY", mode)
     async with open_probe(tmp_path / "memory.sqlite", tmp_path / "workspace", approval="parent") as (
         agent,
@@ -397,7 +397,7 @@ def retention_dsn(backend):
 
 @pytest.mark.parametrize("backend", ["postgres"])
 def test_pg_maintenance_skips_before_calling_memory_pruner(retention_dsn, monkeypatch):
-    from octop_memory.pipeline.lifecycle import checkpoint_gc
+    from happyclaw_memory.pipeline.lifecycle import checkpoint_gc
 
     from happyclaw_harness.middleware.memory import _prune_checkpoints_if_configured
 
@@ -419,12 +419,12 @@ async def test_pruning_snapshots_messages_and_preserves_approval(
 ):
     import inspect
 
-    from octop_memory.pipeline.lifecycle.checkpoint_gc import prune_checkpoints
+    from happyclaw_memory.pipeline.lifecycle.checkpoint_gc import prune_checkpoints
 
     from happyclaw_harness.middleware.memory import _prune_checkpoints_if_configured
 
     if "messages_channel" not in inspect.signature(prune_checkpoints).parameters:
-        pytest.skip("installed octop-memory does not support message snapshots")
+        pytest.skip("installed happyclaw-memory does not support message snapshots")
     monkeypatch.setenv("HAPPYCLAW_CHECKPOINT_DURABILITY", "async")
     monkeypatch.setenv("HAPPYCLAW_CHECKPOINT_RETENTION", "1")
     monkeypatch.setenv("HAPPYCLAW_CHECKPOINT_KEEP_LAST", "20")

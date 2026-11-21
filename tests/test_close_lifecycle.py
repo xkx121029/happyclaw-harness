@@ -175,7 +175,7 @@ class TestHarnessAgentClosePaths:
             gc.collect()
 
     def test_memory_runtime_close_matches_helper(self, tmp_path: Path) -> None:
-        from octop_memory import Memory
+        from happyclaw_memory import Memory
 
         mem = Memory(namespace="t", backend_config={"db_path": str(tmp_path / "m.sqlite")})
         runtime = MemoryRuntime(
@@ -193,7 +193,7 @@ class TestHarnessAgentClosePaths:
         runtime.close()
 
     def test_close_memory_helper_covers_standalone_memory(self, tmp_path: Path) -> None:
-        from octop_memory import Memory
+        from happyclaw_memory import Memory
 
         mem = Memory(namespace="t", backend_config={"db_path": str(tmp_path / "solo.sqlite")})
         with warnings.catch_warnings():

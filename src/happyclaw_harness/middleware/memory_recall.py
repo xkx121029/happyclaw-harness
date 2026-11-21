@@ -15,7 +15,7 @@ from typing import Any, cast
 from langchain_core.messages import AnyMessage, HumanMessage
 from langchain_core.messages.utils import MessageLikeRepresentation, convert_to_messages, count_tokens_approximately
 
-RECALL_SNAPSHOT_KEY = "_octop_memory_recall"
+RECALL_SNAPSHOT_KEY = "_happyclaw_memory_recall"
 
 
 def _content_hash(content: Any) -> str:

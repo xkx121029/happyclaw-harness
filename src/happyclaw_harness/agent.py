@@ -676,7 +676,7 @@ class HarnessAgent:
         ``limit=1``). That is one ``checkpoints`` row for the default SQLite
         saver — no multi-table scan.
 
-        Delta-channel checkpointers (e.g. ``octop-memory``) may leave
+        Delta-channel checkpointers (e.g. ``happyclaw-memory``) may leave
         ``channel_values["messages"]`` empty on the latest checkpoint even
         when the thread has history. Only then does this method call
         ``graph.aget_state`` to reconstruct the merged transcript.
@@ -908,7 +908,7 @@ class HarnessAgent:
     async def _read_history_from_graph_state(self, config: dict[str, Any]) -> list[BaseMessage]:
         """Reconstruct messages when the latest checkpoint omits ``messages``.
 
-        With delta-channel checkpointers (notably ``octop-memory``), the
+        With delta-channel checkpointers (notably ``happyclaw-memory``), the
         newest checkpoint's ``channel_values`` often stores only auxiliary
         channels while ``messages`` are accumulated via pending writes.
         ``CompiledStateGraph.aget_state`` applies those writes and returns
@@ -950,7 +950,7 @@ class HarnessAgent:
                     return messages if isinstance(messages, list) else []
                 return []
             except NotImplementedError:
-                # octop-memory uses sync SqliteSaver; fall through to list().
+                # happyclaw-memory uses sync SqliteSaver; fall through to list().
                 pass
             except DEFENSIVE_OP_ERRORS:
                 logger.warning(

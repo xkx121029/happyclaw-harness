@@ -6,7 +6,7 @@ from collections.abc import Iterator
 from pathlib import Path
 
 import pytest
-from octop_memory import Memory
+from happyclaw_memory import Memory
 
 
 @pytest.fixture

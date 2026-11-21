@@ -77,9 +77,9 @@ def _close_happyclaw_harnesss_created_in_test() -> Iterator[None]:
 
 @pytest.fixture(autouse=True)
 def _close_memory_instances_created_in_test() -> Iterator[None]:
-    """Close every ``octop_memory.Memory`` constructed during a test."""
+    """Close every ``happyclaw_memory.Memory`` constructed during a test."""
     try:
-        from octop_memory import Memory
+        from happyclaw_memory import Memory
     except ImportError:
         yield
         return
