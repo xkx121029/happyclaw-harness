@@ -11,7 +11,7 @@
 
 **Please do not open a public GitHub issue for security vulnerabilities.**
 
-- **GitHub Security Advisory:** [Create advisory](https://github.com/TencentCloud/octop-harness/security/advisories/new)
+- **GitHub Security Advisory:** [Create advisory](https://github.com/xkx121029/octop-harness/security/advisories/new)
 Include:
 
 - Description of the vulnerability

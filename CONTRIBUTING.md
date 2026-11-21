@@ -1,13 +1,13 @@
 # Contributing to octop-harness
 
-Thank you for your interest in contributing! This guide applies to the [Octop Harness](https://github.com/TencentCloud) ecosystem.
+Thank you for your interest in contributing! This guide applies to the [HappyClaw Harness](https://github.com/xkx121029) ecosystem.
 
 ## Getting started
 
 **Prerequisites:** Python 3.12+, [uv](https://docs.astral.sh/uv/)
 
 ```bash
-git clone https://github.com/TencentCloud/octop-harness.git
+git clone https://github.com/xkx121029/octop-harness.git
 cd octop-harness
 make install        # install dev dependencies
 make all            # lint + typecheck + test (CI ship bar)
@@ -97,14 +97,14 @@ Branch from `main` → PR into `main` (tag via the same auto-tag path if shippin
 
 # 贡献指南
 
-感谢你对 octop-harness 的关注！本指南适用于 [Octop Harness](https://github.com/TencentCloud) 生态。
+感谢你对 octop-harness 的关注！本指南适用于 [HappyClaw Harness](https://github.com/xkx121029) 生态。
 
 ## 环境搭建
 
 **前置条件：** Python 3.12+、[uv](https://docs.astral.sh/uv/)
 
 ```bash
-git clone https://github.com/TencentCloud/octop-harness.git
+git clone https://github.com/xkx121029/octop-harness.git
 cd octop-harness
 make install
 make all            # 提交 PR 前必须通过

@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="assets/images/banner.jpeg" alt="Octop Harness" width="600" />
+  <img src="assets/images/banner.jpeg" alt="octop-harness" width="600" />
   <h1>Octop Harness</h1>
 </div>
 
@@ -8,11 +8,14 @@
 </p>
 
 <p align="center">
+  Maintained by HappyClaw (<a href="https://github.com/xkx121029">xkx121029</a>).
+</p>
+
+<p align="center">
   <a href="https://www.python.org/downloads/"><img alt="Python 3.12+" src="https://img.shields.io/badge/python-3.12%2B-blue?logo=python&logoColor=white" /></a>
-  <a href="https://github.com/TencentCloud/octop-harness/blob/main/LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-green" /></a>
+  <a href="https://github.com/xkx121029/octop-harness/blob/main/LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-green" /></a>
   <a href="https://pypi.org/project/octop-harness/"><img src="https://img.shields.io/pypi/v/octop-harness" alt="PyPI" /></a>
   <a href="https://github.com/astral-sh/ruff"><img alt="Code Style: Ruff" src="https://img.shields.io/badge/code%20style-ruff-000000?logo=ruff&logoColor=white" /></a>
-  <a href="https://github.com/TencentCloud/octop-harness"><img alt="GitHub stars" src="https://img.shields.io/github/stars/TencentCloud/octop-harness?style=social" /></a>
 </p>
 
 <p align="center">
@@ -38,7 +41,7 @@
 |---|---------|-------------|
 | 🧩 | **Built on deepagents** | A faithful, production-focused facade over `deepagents.create_deep_agent` — kudos to the deepagents project |
 | 🔀 | **Model routing** | `ChatModelFactory` with OpenAI, Anthropic, AWS Bedrock, and 17 editable provider presets |
-| 🧠 | **Persistent memory** | [octop-memory](https://github.com/TencentCloud/octop-memory) middleware with tiered L0→L3 distillation |
+| 🧠 | **Persistent memory** | [octop-memory](https://github.com/xkx121029/octop-memory) middleware with tiered L0→L3 distillation |
 | 🛠️ | **Rich toolset** | Browser automation, web search, file ops, sub-agents, and MCP tools out of the box |
 | 🗂️ | **Multi-agent registry** | `AgentManager` runs many isolated agents in one process |
 | 💾 | **Pluggable backends** | Local disk, S3, COS, or PostgreSQL as the agent workspace |
@@ -61,8 +64,8 @@ octop-harness is a library (not an app) that turns deepagents into a deployable 
 | **Agent core** | [deepagents](https://github.com/langchain-ai/deepagents) (`create_deep_agent`) |
 | **Graph runtime** | LangGraph + SQLite checkpoint |
 | **Model routing** | `ChatModelFactory` (OpenAI / Anthropic / Bedrock + 17 presets) |
-| **Memory** | [octop-memory](https://github.com/TencentCloud/octop-memory) middleware |
-| **Browser / search** | [octop-browser](https://github.com/TencentCloud/octop-browser) + web search |
+| **Memory** | [octop-memory](https://github.com/xkx121029/octop-memory) middleware |
+| **Browser / search** | [octop-browser](https://github.com/xkx121029/octop-browser) + web search |
 | **Workspaces** | `BackendWorkspace`: local / S3 / COS / PostgreSQL |
 | **ACP** | agent-client-protocol |
 | **Build / quality** | hatchling · ruff · mypy · pytest |
@@ -259,13 +262,13 @@ Optional dependency extras (install only what you need; missing extras fail at u
 |-------|----------------|
 | `cli` | Terminal CLI (`octop-harness`) |
 | `bedrock` | AWS Bedrock provider |
-| `object-storage` | Tencent COS + Alibaba OSS + Huawei OBS SDKs |
+| `object-storage` | Tencent COS + Alibaba OSS + Huawei OBS SDKs (not in `all`) |
 | `desktop` | Desktop screenshot / input (`mss`, `pynput`, `pillow`) |
 | `web-search-all` | Optional web-search SDKs (Tavily / Brave / Google). DeepSeek uses core HTTP support. |
 | `remote-backends` | Postgres workspace backend (`psycopg`). S3 uses the bundled boto3 backend. |
 | `observability` | Langfuse |
 | `acp` | ACP agent runner |
-| `all` | All library feature extras above (**excludes** `cli`; use `[cli,all]` for both) |
+| `all` | All library feature extras above (**excludes** `cli` and the cloud object-storage SDKs; use `[cli,all]` for the CLI, add `object-storage` or `web-search-all` for those SDKs) |
 
 ### 2. Initialize & configure
 
@@ -451,10 +454,10 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for branching, PR, and release details (`
 | Project | Description |
 |---------|-------------|
 | [deepagents](https://github.com/langchain-ai/deepagents) | The agentic foundation Harness Agent wraps — ❤️ tribute |
-| [octop-memory](https://github.com/TencentCloud/octop-memory) | Memory system behind the tiered recall |
-| [octop-browser](https://github.com/TencentCloud/octop-browser) | CDP browser automation used by the agent |
-| [octop-gateway](https://github.com/TencentCloud/octop-gateway) | Multi-platform IM channel bridge |
-| [Octop](https://github.com/TencentCloud/Octop) | The self-hosted assistant that composes the Harness stack |
+| [octop-memory](https://github.com/xkx121029/octop-memory) | Memory system behind the tiered recall |
+| [octop-browser](https://github.com/xkx121029/octop-browser) | CDP browser automation used by the agent |
+| [octop-gateway](https://github.com/xkx121029/octop-gateway) | Multi-platform IM channel bridge |
+| [Octop](https://github.com/xkx121029/HappyClaw) | The self-hosted assistant that composes the Harness stack |
 
 ## 📄 License
 
@@ -464,8 +467,8 @@ This project is licensed under the [MIT License](LICENSE).
 
 Thanks to all contributors:
 
-<a href="https://github.com/TencentCloud/octop-harness/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=TencentCloud/octop-harness" />
+<a href="https://github.com/xkx121029/octop-harness/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=xkx121029/octop-harness" />
 </a>
 
 ### Channel plugins

@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="assets/images/banner.jpeg" alt="Octop Harness" width="600" />
+  <img src="assets/images/banner.jpeg" alt="octop-harness" width="600" />
   <h1>Octop Harness</h1>
 </div>
 
@@ -8,11 +8,14 @@
 </p>
 
 <p align="center">
+  由 HappyClaw 维护（<a href="https://github.com/xkx121029">xkx121029</a>）。
+</p>
+
+<p align="center">
   <a href="https://www.python.org/downloads/"><img alt="Python 3.12+" src="https://img.shields.io/badge/python-3.12%2B-blue?logo=python&logoColor=white" /></a>
-  <a href="https://github.com/TencentCloud/octop-harness/blob/main/LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-green" /></a>
+  <a href="https://github.com/xkx121029/octop-harness/blob/main/LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-green" /></a>
   <a href="https://pypi.org/project/octop-harness/"><img src="https://img.shields.io/pypi/v/octop-harness" alt="PyPI" /></a>
   <a href="https://github.com/astral-sh/ruff"><img alt="Code Style: Ruff" src="https://img.shields.io/badge/code%20style-ruff-000000?logo=ruff&logoColor=white" /></a>
-  <a href="https://github.com/TencentCloud/octop-harness"><img alt="GitHub stars" src="https://img.shields.io/github/stars/TencentCloud/octop-harness?style=social" /></a>
 </p>
 
 <p align="center">
@@ -45,7 +48,7 @@
 | --- | ---------------------- | ------------------------------------------------------------------------------------- |
 | 🧩  | **构建于 deepagents 之上** | 对 `deepagents.create_deep_agent` 的忠实、生产级封装 —— 致敬 deepagents 项目                       |
 | 🔀  | **模型路由**               | `ChatModelFactory` 支持 OpenAI、Anthropic、AWS Bedrock，以及 17 个可编辑的供应商预设                   |
-| 🧠  | **持久化记忆**              | 内置 [octop-memory](https://github.com/TencentCloud/octop-memory) 中间件，支持 L0→L3 分层蒸馏 |
+| 🧠  | **持久化记忆**              | 内置 [octop-memory](https://github.com/xkx121029/octop-memory) 中间件，支持 L0→L3 分层蒸馏 |
 | 🛠️ | **丰富工具集**              | 开箱即用的浏览器自动化、网页搜索、文件操作、子 Agent 与 MCP 工具                                                |
 | 🗂️ | **多 Agent 注册表**        | `AgentManager` 可在单个进程中托管多个彼此隔离的 Agent                                                 |
 | 💾  | **可插拔后端**              | 本地目录、S3、COS 或 PostgreSQL 均可作为 Agent 工作区                                               |
@@ -66,8 +69,8 @@
 | **Agent 内核** | [deepagents](https://github.com/langchain-ai/deepagents)（`create_deep_agent`） |
 | **图运行时**     | LangGraph + SQLite 检查点                                                         |
 | **模型路由**     | `ChatModelFactory`（OpenAI / Anthropic / Bedrock + 17 个预设）                      |
-| **记忆**       | [octop-memory](https://github.com/TencentCloud/octop-memory) 中间件           |
-| **浏览器 / 搜索** | [octop-browser](https://github.com/TencentCloud/octop-browser) + 网页搜索      |
+| **记忆**       | [octop-memory](https://github.com/xkx121029/octop-memory) 中间件           |
+| **浏览器 / 搜索** | [octop-browser](https://github.com/xkx121029/octop-browser) + 网页搜索      |
 | **工作区**      | `BackendWorkspace`：本地 / S3 / COS / PostgreSQL                                  |
 | **ACP**      | agent-client-protocol                                                          |
 | **构建 / 质量**  | hatchling · ruff · mypy · pytest                                               |
@@ -291,10 +294,10 @@ make all              # 格式化 + 类型检查 + 测试
 | 项目                                                                 | 说明                               |
 | ------------------------------------------------------------------ | -------------------------------- |
 | [deepagents](https://github.com/langchain-ai/deepagents)           | Harness Agent 所封装的智能体根基 —— ❤️ 致敬 |
-| [octop-memory](https://github.com/TencentCloud/octop-memory)   | 支撑分层记忆的记忆系统                      |
-| [octop-browser](https://github.com/TencentCloud/octop-browser) | Agent 使用的 CDP 浏览器自动化             |
-| [octop-gateway](https://github.com/TencentCloud/octop-gateway) | 多平台 IM 通道桥接                      |
-| [Octop](https://github.com/TencentCloud/Octop)                     | 组合 Harness 技术栈的自托管助手             |
+| [octop-memory](https://github.com/xkx121029/octop-memory)   | 支撑分层记忆的记忆系统                      |
+| [octop-browser](https://github.com/xkx121029/octop-browser) | Agent 使用的 CDP 浏览器自动化             |
+| [octop-gateway](https://github.com/xkx121029/octop-gateway) | 多平台 IM 通道桥接                      |
+| [Octop](https://github.com/xkx121029/HappyClaw)                     | 组合 Harness 技术栈的自托管助手             |
 
 
 
@@ -307,6 +310,6 @@ make all              # 格式化 + 类型检查 + 测试
 
 感谢所有贡献者：
 
-<a href="https://github.com/TencentCloud/octop-harness/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=TencentCloud/octop-harness" />
+<a href="https://github.com/xkx121029/octop-harness/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=xkx121029/octop-harness" />
 </a>

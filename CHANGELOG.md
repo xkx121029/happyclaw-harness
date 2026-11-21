@@ -7,6 +7,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.12] - 2026-11-21
+
+1.0.12 是 HappyClaw 收编本库后的第一个版本。分发名与导入名仍是
+`octop-harness` / `octop_harness`，公开 API 未改。
+
+### 优化
+
+- `import octop_harness` 不再加载 LangChain / LangGraph / deepagents。
+  `octop_harness.acp` 的 `ACPService` 改为按需解析，`SubAgent` 只在类型注解里
+  引用。冷启动从 12.6 秒、1406 个模块降到百毫秒级。
+- `octop-harness --help` 只导入 click，子命令模块在真正执行时才导入。
+- deepagents 的私有 `_messages_delta_reducer` 改为首次使用时解析：上游改私有
+  符号时，checkpoint 保留窗口退化为不携带重放消息，而不是整个包导入失败。
+
+### 修复
+
+- 技能与子 agent 的 YAML frontmatter 现在接受 CRLF/CR 换行。此前 Windows
+  工作区（或 `core.autocrlf` 检出的树）里所有 `SKILL.md` 与 `.md` 定义都会
+  静默丢失元数据。
+- Windows 上补装 `tzdata`，`zoneinfo` 才能解析 `Asia/Shanghai` 等时区，
+  `current_time` 工具不再退化到 UTC。
+- 新增 `.gitattributes`（`* text=auto eol=lf`），避免 Windows 检出与打出的
+  wheel 里出现 CRLF。
+
+### 依赖
+
+- `[all]` 不再包含 COS / OSS / OBS 对象存储 SDK 与 `google-api-python-client`：
+  它们分别由 `[object-storage]` 与 `[web-search-all]` 提供，需要时显式加装。
+- 最低依赖 `octop-memory>=1.0.5`。
+
+### 归属
+
+- 分发元数据、README、贡献指南与安全策略统一到 HappyClaw / xkx121029 口径；
+  `OCTOP_*` 环境变量与 `~/.octop-harness/` 配置目录保持不变以兼容既有安装。
+
 ## [1.0.11] - 2026-11-17
 
 ### 新增
@@ -60,9 +95,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - 每轮模式提示、队友名单和决策短名单放在用户消息之后，系统提示和核心工具列表保持可缓存。以 `[turn note]` 或 `[本轮说明]` 开头的用户消息仍视为用户原文。
 - OpenAI 兼容请求去掉内联的 office 和 PDF 文件块，图片保留。
-- 召回追加在用户原文和附件之后，以带来源和角色标记的历史引用隔离旧问题和指令；冻结每轮快照，保留已有 checkpoint 的精确重放和请求公共前缀（TencentCloud/Octop#2043）。
-- 召回 DEBUG 日志附完整查询长度和 SHA-256 指纹，长查询可检索、对账，无需输出查询原文（TencentCloud/Octop#811）。
-- 记忆运行时关闭后，等待已提交的后台采集、提炼和维护任务完成再释放数据库，避免数据库已关闭错误和对话记忆丢失；同时覆盖配置变更前的旧中间件及图构建前的会话提炼（TencentCloud/Octop#484）。
+- 召回追加在用户原文和附件之后，以带来源和角色标记的历史引用隔离旧问题和指令；冻结每轮快照，保留已有 checkpoint 的精确重放和请求公共前缀（Octop#2043）。
+- 召回 DEBUG 日志附完整查询长度和 SHA-256 指纹，长查询可检索、对账，无需输出查询原文（Octop#811）。
+- 记忆运行时关闭后，等待已提交的后台采集、提炼和维护任务完成再释放数据库，避免数据库已关闭错误和对话记忆丢失；同时覆盖配置变更前的旧中间件及图构建前的会话提炼（Octop#484）。
 
 ### 变更
 
@@ -89,7 +124,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 修复
 
 - 经 `call_deferred_tool` 调用的可用核心工具会直接执行；已禁用的工具仍然不可用。
-- 记忆模型因 temperature 被拒绝时，省略 temperature 再试一次（TencentCloud/Octop#835）。
+- 记忆模型因 temperature 被拒绝时，省略 temperature 再试一次（Octop#835）。
 - 压缩摘要只发送更短的历史；仍然放不下时才用占位内容。
 - 只有文件名的 glob 必须带路径。
 - LLM HTTP 调用带有显式超时，上游挂起不会一直卡住本轮。
@@ -142,7 +177,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 新增
 
 - `MemoryMiddleware.pause_background` 支持宿主按专家暂停并排空后台记忆任务，供备份恢复使用。
-- 记忆辅助调用使用独立 SDK 实例控制重试次数与退避；回退时重新计算目标模型参数，不携带首选模型的厂商扩展，避免影响主聊天（TencentCloud/Octop#1360）。
+- 记忆辅助调用使用独立 SDK 实例控制重试次数与退避；回退时重新计算目标模型参数，不携带首选模型的厂商扩展，避免影响主聊天（Octop#1360）。
 - 记忆辅助调用可配置客户端兜底 `memory_aux_max_tokens`（提炼预算仍走 `memory_extract_max_tokens`），以及 OpenAI 兼容端点的 `memory_aux_extra_body`。显式 `extra_body` 覆盖 `memory_aux_thinking` 生成的同名键。
 - OpenAI 兼容模型支持按模型选择 Chat Completions 或 Responses API，并可显式开启受限的 Responses → Chat Completions 回退。
 
@@ -156,7 +191,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 修复
 
 - 将 `deepagents` 下限提高到 `>=0.7.16`，接入上游同路径并行 `edit_file` / `write_file` 防护（langchain-ai/deepagents#6446）。
-- 记忆辅助调用可单独配置读取超时。提炼输出预算写入 memory runtime 的 `extraction.max_tokens`（提取器总会自带预算，客户端兜底覆盖不到）。OpenAI 兼容端点在 `auto` 下对 Qwen3 / QwQ / DeepSeek-R / reasoner 默认关闭深度思考（TencentCloud/Octop#1360）。
+- 记忆辅助调用可单独配置读取超时。提炼输出预算写入 memory runtime 的 `extraction.max_tokens`（提取器总会自带预算，客户端兜底覆盖不到）。OpenAI 兼容端点在 `auto` 下对 Qwen3 / QwQ / DeepSeek-R / reasoner 默认关闭深度思考（Octop#1360）。
 - 小时增量 vacuum 预算提高到 5000 页，大批删除后的 freelist 可在数小时内回收，而不是数周。
 
 ## [1.0.1] - 2026-10-03

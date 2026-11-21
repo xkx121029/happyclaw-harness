@@ -226,7 +226,7 @@ git push -u {REMOTE} {RELEASE_BRANCH_PREFIX}{version}
 
 ```bash
 gh pr create \
-  --repo TencentCloud/octop-harness \
+  --repo xkx121029/octop-harness \
   --base {TARGET_BRANCH} \
   --head {RELEASE_BRANCH_PREFIX}{version} \
   --title "chore: release {version}" \

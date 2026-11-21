@@ -68,7 +68,7 @@ jobs:
       # pinned and replace it with a released minimum after memory adoption.
       - uses: actions/checkout@v7
         with:
-          repository: TencentCloud/octop-memory
+          repository: xkx121029/octop-memory
           ref: be59cd2b969a57d2dbfa5bbd79254626a2899843
           path: .ci/octop-memory
       - name: Install companion memory source
