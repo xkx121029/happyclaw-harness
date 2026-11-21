@@ -8,9 +8,8 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
 
-import yaml
-
 from octop_harness.backends.workspace import BackendWorkspace
+from octop_harness.frontmatter import split_frontmatter
 
 logger = logging.getLogger(__name__)
 
@@ -53,20 +52,7 @@ def is_skill_enabled(
 
 
 def _parse_skill_frontmatter(text: str) -> tuple[dict[str, Any], str]:
-    if not text.startswith("---\n"):
-        return {}, text
-    end = text.find("\n---", 4)
-    if end == -1:
-        return {}, text
-    raw = text[4:end]
-    body = text[end + 4 :].lstrip("\n")
-    try:
-        meta = yaml.safe_load(raw) or {}
-        if not isinstance(meta, dict):
-            return {}, text
-        return meta, body
-    except yaml.YAMLError:
-        return {}, text
+    return split_frontmatter(text)
 
 
 def _summary_dict(

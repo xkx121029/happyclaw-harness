@@ -8,10 +8,10 @@ from collections.abc import Sequence
 from pathlib import Path
 from typing import Any
 
-import yaml
 from deepagents import SubAgent
 
 from octop_harness.backends.workspace import DEFAULT_AGENTS_DIR, BackendWorkspace
+from octop_harness.frontmatter import split_frontmatter
 
 logger = logging.getLogger(__name__)
 
@@ -20,20 +20,7 @@ _SLUG_RE = re.compile(r"[^a-z0-9]+")
 
 
 def parse_agent_frontmatter(text: str) -> tuple[dict[str, Any], str]:
-    if not text.startswith("---\n"):
-        return {}, text
-    end = text.find("\n---", 4)
-    if end == -1:
-        return {}, text
-    raw = text[4:end]
-    body = text[end + 4 :].lstrip("\n")
-    try:
-        meta = yaml.safe_load(raw) or {}
-        if not isinstance(meta, dict):
-            return {}, text
-        return meta, body
-    except yaml.YAMLError:
-        return {}, text
+    return split_frontmatter(text)
 
 
 def slug_from_agent_path(path_fragment: str) -> str:
