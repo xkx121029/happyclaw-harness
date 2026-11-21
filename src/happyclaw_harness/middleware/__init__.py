@@ -16,6 +16,7 @@ from happyclaw_harness.middleware.model_settings import (
 from happyclaw_harness.middleware.native_tool_search import NativeToolSearchMiddleware
 from happyclaw_harness.middleware.peer import PeerAgentMiddleware
 from happyclaw_harness.middleware.pii import detect_pii
+from happyclaw_harness.middleware.tool_call_repair import ToolCallRepairMiddleware
 from happyclaw_harness.middleware.tool_search import ToolSearchMiddleware
 
 __all__ = [
@@ -30,6 +31,7 @@ __all__ = [
     "ModelSettingsMiddleware",
     "NativeToolSearchMiddleware",
     "PeerAgentMiddleware",
+    "ToolCallRepairMiddleware",
     "ToolSearchMiddleware",
     "detect_pii",
 ]

@@ -671,6 +671,20 @@ class HarnessAgentConfig:
     model_retry_initial_delay: float = 1.0
     model_retry_max_delay: float = 60.0
 
+    # —— Tool-call JSON repair (default ON) ——
+    # A truncated or corrupted tool-call delta leaves the message with
+    # ``invalid_tool_calls`` and the turn does nothing. One repair model call
+    # re-asks for the same calls as JSON; a second failure ends the turn with a
+    # structured error message instead of an exception.
+    tool_call_repair_enabled: bool = True
+    tool_call_repair_max_attempts: int = 1
+
+    # —— Session budget ——
+    # Per ``thread_id`` token and cost ceilings. The turn stops between model
+    # calls and reports why, instead of running until the provider bill says so.
+    # ``SessionBudget(price_per_million=...)`` is required for a cost ceiling.
+    session_budget: Any = None
+
     # —— PII redaction (default ON: secrets in inputs/outputs/tool results
     # are masked with stars before reaching the model or session log).
     # The built-in detector covers LLM provider API keys; see
@@ -1106,6 +1120,11 @@ class HarnessAgentConfig:
             "model_retry_max_retries": self.model_retry_max_retries,
             "model_retry_initial_delay": self.model_retry_initial_delay,
             "model_retry_max_delay": self.model_retry_max_delay,
+            "tool_call_repair_enabled": self.tool_call_repair_enabled,
+            "tool_call_repair_max_attempts": self.tool_call_repair_max_attempts,
+            "session_budget": self.session_budget.to_dict()
+            if hasattr(self.session_budget, "to_dict")
+            else self.session_budget,
             "pii_enabled": self.pii_enabled,
             "pii_strategy": self.pii_strategy,
             "pii_surfaces": list(self.pii_surfaces),

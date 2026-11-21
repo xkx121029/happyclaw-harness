@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from collections.abc import Mapping
+from collections.abc import Mapping, Sequence
 from typing import Any
 
 
@@ -43,11 +43,20 @@ def normalize_usage_metadata(raw: Mapping[str, Any]) -> dict[str, int]:
         "cache_read",
         "cached_tokens",
     )
-    cache_read = cache_read or _nonnegative_int(raw.get("prompt_cache_hit_tokens"))
-    cache_write = _nonnegative_int(raw.get("cache_write_tokens")) or _detail_total(
-        input_details,
-        "cache_creation",
-        "cache_write",
+    cache_read = (
+        cache_read
+        or _nonnegative_int(raw.get("prompt_cache_hit_tokens"))
+        # Anthropic's wire field; langchain-anthropic moves it into the details.
+        or _nonnegative_int(raw.get("cache_read_input_tokens"))
+    )
+    cache_write = (
+        _nonnegative_int(raw.get("cache_write_tokens"))
+        or _detail_total(
+            input_details,
+            "cache_creation",
+            "cache_write",
+        )
+        or _nonnegative_int(raw.get("cache_creation_input_tokens"))
     )
     reasoning = _nonnegative_int(raw.get("reasoning_tokens")) or _detail_total(
         output_details,
@@ -76,4 +85,58 @@ def normalize_usage_metadata(raw: Mapping[str, Any]) -> dict[str, int]:
     }
 
 
-__all__ = ["normalize_usage_metadata"]
+_MERGED_BUCKETS = ("input_tokens", "cache_read_tokens", "cache_write_tokens", "output_tokens", "reasoning_tokens")
+
+
+def merge_usage_reports(reports: Sequence[Mapping[str, Any]]) -> dict[str, int]:
+    """Merge several reports of one model call into that call's usage.
+
+    Providers spread one call's usage over stream chunks differently:
+    OpenAI-compatible gateways repeat the cumulative total on every chunk,
+    Anthropic sends input on ``message_start`` and output on
+    ``message_delta``, and some local servers report once at the end. A bucket
+    of one call never decreases, so the per-bucket maximum is the call's usage
+    under all three shapes, while adding the reports would double count the
+    first. ``uncached_input_tokens`` is derived afterwards, because each report
+    carries its own cache detail. Reports may be raw provider metadata or
+    already normalized.
+    """
+    merged = dict.fromkeys(_MERGED_BUCKETS, 0)
+    for report in reports:
+        normalized = normalize_usage_metadata(report)
+        for bucket in _MERGED_BUCKETS:
+            merged[bucket] = max(merged[bucket], _nonnegative_int(normalized.get(bucket)))
+    merged["uncached_input_tokens"] = max(
+        0, merged["input_tokens"] - merged["cache_read_tokens"] - merged["cache_write_tokens"]
+    )
+    merged["total_tokens"] = merged["input_tokens"] + merged["output_tokens"]
+    return merged
+
+
+def estimate_usage(messages: Sequence[Any], output_text: str) -> dict[str, int]:
+    """Estimate a call's usage when the provider reported none.
+
+    The result carries ``estimated: 1`` so a ledger can tell guessed tokens from
+    measured ones. Content-based and therefore approximate (see
+    :mod:`happyclaw_harness.context_usage`), but good enough to stop a runaway
+    turn instead of letting an unreported provider bill silently.
+    """
+    from happyclaw_harness.context_usage import _MESSAGE_FRAMING_TOKENS, content_tokens, estimate_tokens
+
+    input_tokens = sum(
+        content_tokens(getattr(message, "content", message)) + _MESSAGE_FRAMING_TOKENS for message in messages
+    )
+    output_tokens = estimate_tokens(output_text)
+    return {
+        "input_tokens": input_tokens,
+        "uncached_input_tokens": input_tokens,
+        "cache_read_tokens": 0,
+        "cache_write_tokens": 0,
+        "output_tokens": output_tokens,
+        "reasoning_tokens": 0,
+        "total_tokens": input_tokens + output_tokens,
+        "estimated": 1,
+    }
+
+
+__all__ = ["estimate_usage", "merge_usage_reports", "normalize_usage_metadata"]

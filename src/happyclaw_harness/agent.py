@@ -22,6 +22,7 @@ from langchain.agents.middleware import PIIMiddleware
 from happyclaw_harness.backends import resolve_backend, spec_supports_execution
 from happyclaw_harness.backends.utils import DEFENSIVE_OP_ERRORS
 from happyclaw_harness.backends.workspace import DEFAULT_MEMORY_FILES, BackendWorkspace
+from happyclaw_harness.budget import BUDGET_EXCEEDED, SessionBudget, SessionUsage, budget_exceeded_event
 from happyclaw_harness.builtin.tools import browser_use, web_fetch
 from happyclaw_harness.builtin.tools.ask_user import ASK_USER_TOOL_NAME, ask_user_question
 from happyclaw_harness.builtin.tools.current_time import CurrentTimeTool
@@ -60,6 +61,8 @@ from happyclaw_harness.middleware.tool_search import ToolSearchMiddleware
 from happyclaw_harness.middleware.tools_filter import ToolsFilterMiddleware
 from happyclaw_harness.protocols import resolve_protocol
 from happyclaw_harness.request import ChatRequest
+from happyclaw_harness.tool_cancel import ToolCancellationMiddleware, ToolCancelScope, current_tool_cancel_scope
+from happyclaw_harness.usage import estimate_usage, normalize_usage_metadata
 
 # ``langgraph-checkpoint-sqlite`` is a declared dependency, but we still guard
 # the import so missing wheels surface as a single warning at construction
@@ -84,6 +87,16 @@ if TYPE_CHECKING:
     from happyclaw_harness.teams.team_manager import TeamManager
 
 logger = logging.getLogger(__name__)
+
+_MAX_TRACKED_SESSIONS = 1024
+
+
+def _usage_payload(chunk: Any) -> dict[str, Any] | None:
+    """Return the usage a protocol stream chunk reports, if any."""
+    if not isinstance(chunk, dict) or chunk.get("type") != "usage":
+        return None
+    usage = chunk.get("usage")
+    return dict(usage) if isinstance(usage, dict) and usage else None
 
 
 def _tool_name_of(tool: Any) -> str:
@@ -229,6 +242,9 @@ class HarnessAgent:
         self._bind_plugin_model_factory()
         self._thread_models: dict[str, str] = {}
         self._cancel_events: dict[str, asyncio.Event] = {}
+        self._cancel_scopes: dict[str, ToolCancelScope] = {}
+        self._session_budget: SessionBudget | None = self._config.session_budget
+        self._session_usage: dict[str, SessionUsage] = {}
         # Guards the resources released by close() against a host that
         # hot-reloads while an invocation is still running. Locked rather than
         # loop-local because close() may arrive from a worker thread.
@@ -425,9 +441,121 @@ class HarnessAgent:
     # ----- Invocation -----
 
     def cancel(self, thread_id: str) -> None:
-        """Signal an in-flight :meth:`stream` for *thread_id* to stop."""
+        """Signal an in-flight :meth:`stream` for *thread_id* to stop.
+
+        The running tool call is cancelled too, so a tool awaiting a subprocess
+        or a slow remote call cannot outlive the turn.
+        """
         if event := self._cancel_events.get(thread_id):
             event.set()
+        if scope := self._cancel_scopes.get(thread_id):
+            scope.cancel()
+
+    def set_session_budget(self, budget: SessionBudget | None) -> None:
+        """Replace the per-session ceiling; ``None`` turns the ceiling off."""
+        self._session_budget = budget
+
+    def get_session_usage(self, thread_id: str) -> dict[str, Any]:
+        """Accumulated usage of one thread, in the shape the budget event reports."""
+        return self._session_usage.get(thread_id, SessionUsage()).to_dict()
+
+    def reset_session_usage(self, thread_id: str) -> None:
+        """Forget what *thread_id* has spent, starting a fresh budget window."""
+        self._session_usage.pop(thread_id, None)
+
+    def _usage_window(self, thread_id: str) -> tuple[SessionBudget | None, SessionUsage] | None:
+        """Return the session ledger, with the live budget when one is set."""
+        if not thread_id:
+            return None
+        usage = self._session_usage.get(thread_id)
+        if usage is None:
+            if len(self._session_usage) >= _MAX_TRACKED_SESSIONS:
+                self._session_usage.pop(next(iter(self._session_usage)))
+            usage = self._session_usage[thread_id] = SessionUsage()
+        return self._session_budget, usage
+
+    @staticmethod
+    def _ceiling_reached(
+        window: tuple[SessionBudget | None, SessionUsage],
+    ) -> tuple[SessionBudget, SessionUsage, str] | None:
+        """Return ``(budget, usage, reason)`` once a ceiling is crossed."""
+        budget, usage = window
+        if budget is None:
+            return None
+        reason = usage.exceeded(budget)
+        return (budget, usage, reason) if reason is not None else None
+
+    def _record_result_usage(self, usage: SessionUsage, budget: SessionBudget | None, result: dict[str, Any]) -> None:
+        """Add the usage a non-streamed call reported to the session ledger."""
+        measured = 0
+        for message in result.get("messages") or []:
+            raw = getattr(message, "usage_metadata", None)
+            if isinstance(raw, dict) and raw:
+                usage.record(normalize_usage_metadata(raw), budget)
+                measured += 1
+        if measured == 0 and result.get("messages"):
+            usage.record(estimate_usage(result["messages"], ""), budget)
+
+    @staticmethod
+    async def _track_usage(
+        chunks: AsyncIterator[Any],
+        window: tuple[SessionBudget | None, SessionUsage] | None,
+        output_parts: list[str],
+    ) -> AsyncGenerator[tuple[Any, bool], None]:
+        """Yield each chunk with whether the session ceiling stopped the turn.
+
+        Counting output text here keeps the estimated-usage fallback cheap: the
+        turn already streams that text, so the fallback never re-reads messages.
+        """
+        async for chunk in chunks:
+            if isinstance(chunk, dict) and chunk.get("type") in ("token", "reasoning"):
+                output_parts.append(str(chunk.get("content") or ""))
+            payload = _usage_payload(chunk)
+            if payload is not None and window is not None:
+                window[1].record(payload, window[0])
+                hit = HarnessAgent._ceiling_reached(window)
+                if hit is not None:
+                    yield chunk, False
+                    yield budget_exceeded_event(hit[2], hit[0], hit[1]), True
+                    return
+            yield chunk, False
+
+    @staticmethod
+    def _fallback_usage(
+        messages: Sequence[Any],
+        output_parts: list[str],
+        saw_usage: bool,
+        cancel_event: asyncio.Event,
+        window: tuple[SessionBudget | None, SessionUsage] | None,
+    ) -> list[dict[str, Any]]:
+        """Estimated usage for a finished turn whose provider reported none.
+
+        Only a session that tracks usage (a budget is configured) gets this
+        event: hosts that never asked for accounting keep receiving exactly the
+        protocol's own chunks.
+        """
+        if window is None or window[0] is None or saw_usage or cancel_event.is_set():
+            return []
+        return HarnessAgent._estimated_usage_events(messages, output_parts, window)
+
+    @staticmethod
+    def _estimated_usage_events(
+        messages: Sequence[Any],
+        output_parts: list[str],
+        window: tuple[SessionBudget | None, SessionUsage] | None,
+    ) -> list[dict[str, Any]]:
+        """Report usage for a turn whose provider never reported any.
+
+        Marked ``estimated`` so a ledger and the host can tell it apart from a
+        provider number, and recorded so the session ceiling still applies.
+        """
+        estimate = estimate_usage(messages, "".join(output_parts))
+        events: list[dict[str, Any]] = [{"type": "usage", "usage": estimate, "estimated": True, "node": "estimate"}]
+        if window is not None:
+            window[1].record(estimate, window[0])
+            if (hit := HarnessAgent._ceiling_reached(window)) is not None:
+                events.append(budget_exceeded_event(hit[2], hit[0], hit[1]))
+        return events
 
     def get_thread_model(self, thread_id: str) -> str | None:
         return self._thread_models.get(thread_id)
@@ -506,6 +634,10 @@ class HarnessAgent:
 
         req = ChatRequest.coerce(request)
         ctx = build_runtime_ctx(self, req)
+        window = self._usage_window(req.thread_id or "")
+        if window is not None and (hit := self._ceiling_reached(window)) is not None:
+            budget, usage, reason = hit
+            return {"messages": [], BUDGET_EXCEEDED: budget_exceeded_event(reason, budget, usage)}
 
         async def _call(prepared: ChatRequest) -> dict[str, Any]:
             messages, config, proto = self._prepare_call(prepared, protocol)
@@ -518,7 +650,16 @@ class HarnessAgent:
 
         async with self._invocation():
             with logging_scope(self._agent_id):
-                return await call_with_runtime_slash(req, ctx=ctx, call=_call)
+                result = await call_with_runtime_slash(req, ctx=ctx, call=_call)
+        window = self._usage_window(req.thread_id or "")
+        if window is None:
+            return result
+        session_budget, ledger = window
+        self._record_result_usage(ledger, session_budget, result)
+        hit = self._ceiling_reached(window)
+        if hit is None:
+            return result
+        return {**result, BUDGET_EXCEEDED: budget_exceeded_event(hit[2], hit[0], hit[1])}
 
     async def stream(
         self,
@@ -542,9 +683,18 @@ class HarnessAgent:
         async def _stream(prepared: ChatRequest) -> AsyncGenerator[Any, None]:
             messages, config, proto = self._prepare_call(prepared, protocol)
             thread_id = prepared.thread_id or ""
+            window = self._usage_window(thread_id)
+            if window is not None and (hit := self._ceiling_reached(window)) is not None:
+                yield budget_exceeded_event(hit[2], hit[0], hit[1])
+                return
             cancel_event = asyncio.Event()
+            cancel_scope = ToolCancelScope()
+            scope_token = current_tool_cancel_scope.set(cancel_scope)
+            output_parts: list[str] = []
+            saw_usage = False
             if thread_id:
                 self._cancel_events[thread_id] = cancel_event
+                self._cancel_scopes[thread_id] = cancel_scope
                 self._hitl_resume_configs.pop(thread_id, None)
             try:
                 with session_header_scope(prepared.thread_id):
@@ -554,16 +704,24 @@ class HarnessAgent:
                             cancel_event,
                         )
                     ) as chunks:
-                        async for chunk in chunks:
+                        async for chunk, stopped in self._track_usage(chunks, window, output_parts):
+                            saw_usage = saw_usage or _usage_payload(chunk) is not None
                             if isinstance(chunk, dict) and chunk.get("type") == "hitl_required":
                                 self._hitl_resume_configs[thread_id] = {
                                     **config,
                                     "configurable": deepcopy(config["configurable"]),
                                 }
                             yield chunk
+                            if stopped:
+                                return
+                for event in self._fallback_usage(messages, output_parts, saw_usage, cancel_event, window):
+                    yield event
+
             finally:
+                current_tool_cancel_scope.reset(scope_token)
                 if thread_id:
                     self._cancel_events.pop(thread_id, None)
+                    self._cancel_scopes.pop(thread_id, None)
 
         from happyclaw_harness.observability.logging import logging_scope
 
@@ -1632,6 +1790,8 @@ class HarnessAgent:
                 )
             )
 
+        chain.extend(self._corrective_middleware())
+
         if cfg.pii_enabled:
             surfaces = set(cfg.pii_surfaces)
             chain.append(
@@ -1724,6 +1884,20 @@ class HarnessAgent:
         if bootstrap is not None:
             chain.insert(0, bootstrap)
 
+        return chain
+
+    def _corrective_middleware(self) -> list[Any]:
+        """Guards that keep one bad model turn or a cancel from ending the session.
+
+        Registered right after model retry, so retries wrap the repair. The
+        cancel scope rides the tool-call path: ``cancel`` must reach a tool that
+        is already awaiting a subprocess, not only the graph stream above it.
+        """
+        chain: list[Any] = [ToolCancellationMiddleware()]
+        if self._config.tool_call_repair_enabled:
+            from happyclaw_harness.middleware.tool_call_repair import ToolCallRepairMiddleware
+
+            chain.append(ToolCallRepairMiddleware(max_attempts=self._config.tool_call_repair_max_attempts))
         return chain
 
     def _build_tool_search_middleware(self) -> Any | None:
