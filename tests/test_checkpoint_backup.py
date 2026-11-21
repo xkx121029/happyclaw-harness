@@ -14,8 +14,8 @@ from types import SimpleNamespace
 from typing import Any
 
 import pytest
-from langgraph.checkpoint.base import create_checkpoint, empty_checkpoint
 from happyclaw_memory import Memory
+from langgraph.checkpoint.base import create_checkpoint, empty_checkpoint
 
 from happyclaw_harness.middleware import checkpoint_backup
 from happyclaw_harness.middleware.memory import _prune_checkpoints_if_configured, checkpoint_retention_policy

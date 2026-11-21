@@ -73,9 +73,9 @@ def _review_pending_manual_documents(service: Any) -> None:
 
 
 if TYPE_CHECKING:
+    from happyclaw_memory import MemoryService
     from langchain.agents.middleware.types import ModelRequest, ModelResponse
     from langgraph.channels.delta import DeltaChannel
-    from happyclaw_memory import MemoryService
 
 logger = logging.getLogger(__name__)
 

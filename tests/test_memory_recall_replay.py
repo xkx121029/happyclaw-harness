@@ -14,6 +14,7 @@ from typing import Any
 from unittest.mock import MagicMock
 
 import pytest
+from happyclaw_memory import Memory, MemoryService
 from langchain.agents import create_agent
 from langchain.agents.middleware.types import ModelRequest
 from langchain_core.language_models.fake_chat_models import FakeMessagesListChatModel
@@ -30,7 +31,6 @@ from langchain_core.tools import StructuredTool
 from langchain_openai.chat_models.base import _convert_message_to_dict
 from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.graph.message import add_messages
-from happyclaw_memory import Memory, MemoryService
 
 from happyclaw_harness.middleware.memory import MemoryMiddleware
 from happyclaw_harness.middleware.memory_recall import RECALL_SNAPSHOT_KEY, count_tokens_with_recall

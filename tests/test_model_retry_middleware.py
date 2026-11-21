@@ -98,11 +98,11 @@ async def test_graph_records_failure_without_error_memory_and_can_resume(tmp_pat
 
     from deepagents import create_deep_agent
     from deepagents.backends import FilesystemBackend
+    from happyclaw_memory import Memory, MemoryService
     from langchain_core.exceptions import ModelAuthenticationError
     from langchain_core.language_models.fake_chat_models import FakeMessagesListChatModel
     from langchain_core.messages import HumanMessage
     from langgraph.checkpoint.memory import InMemorySaver
-    from happyclaw_memory import Memory, MemoryService
 
     from happyclaw_harness.middleware.memory import MemoryMiddleware
 

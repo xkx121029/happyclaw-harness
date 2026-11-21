@@ -13,11 +13,11 @@ from unittest.mock import patch
 from uuid import uuid4
 
 import pytest
+from happyclaw_memory import Memory
 from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.messages import AIMessage, BaseMessage, ToolMessage, message_to_dict
 from langchain_core.outputs import ChatGeneration, ChatResult
 from langchain_core.tools import tool
-from happyclaw_memory import Memory
 from pydantic import PrivateAttr
 
 from happyclaw_harness.agent import HarnessAgent

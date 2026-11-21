@@ -12,11 +12,11 @@ import pytest
 from deepagents import create_deep_agent
 from deepagents.backends import FilesystemBackend
 from deepagents.middleware.memory import MemoryMiddleware
+from happyclaw_memory import Memory, MemoryService
 from langchain.agents.middleware import ModelRequest
 from langchain_core.language_models.fake_chat_models import FakeMessagesListChatModel
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage, ToolMessage
 from langgraph.checkpoint.memory import InMemorySaver
-from happyclaw_memory import Memory, MemoryService
 
 from happyclaw_harness.backends.workspace import DEFAULT_MEMORY_FILES, BackendWorkspace
 from happyclaw_harness.builtin.templates import iter_md_template_files

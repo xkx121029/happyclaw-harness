@@ -23,10 +23,10 @@ from typing import Any
 from unittest.mock import MagicMock
 
 import pytest
-from langchain.agents.middleware.types import ModelRequest
-from langchain_core.messages import AIMessage, HumanMessage
 from happyclaw_memory import Memory, MemoryService
 from happyclaw_memory.ports.llm import LLMClient, LLMClientError
+from langchain.agents.middleware.types import ModelRequest
+from langchain_core.messages import AIMessage, HumanMessage
 
 from happyclaw_harness.builtin.tools.memory_tools import build_memory_tools
 from happyclaw_harness.config import HarnessAgentConfig, ModelConfig, ProviderConfig

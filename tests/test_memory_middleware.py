@@ -613,9 +613,9 @@ class TestIdleMaintenance:
     def test_maintenance_prunes_completed_sqlite_threads_on_timer(
         self, service: _SpyService, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
     ) -> None:
-        from langgraph.checkpoint.base import create_checkpoint, empty_checkpoint
         from happyclaw_memory import Memory
         from happyclaw_memory.pipeline import lifecycle
+        from langgraph.checkpoint.base import create_checkpoint, empty_checkpoint
 
         for suffix in ("RETENTION", "KEEP_LAST", "KEEP_DAYS", "BACKUP_BEFORE_PRUNE", "VACUUM"):
             monkeypatch.delenv(f"HAPPYCLAW_CHECKPOINT_{suffix}", raising=False)
@@ -662,9 +662,9 @@ class TestIdleMaintenance:
     ) -> None:
         from datetime import UTC, datetime, timedelta
 
-        from langgraph.checkpoint.base import empty_checkpoint
         from happyclaw_memory import Memory
         from happyclaw_memory.pipeline.lifecycle.checkpoint_gc import _cutoff_checkpoint_id
+        from langgraph.checkpoint.base import empty_checkpoint
 
         from happyclaw_harness.middleware.memory import _prune_checkpoints_if_configured
 
