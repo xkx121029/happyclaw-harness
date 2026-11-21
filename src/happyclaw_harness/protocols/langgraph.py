@@ -15,6 +15,7 @@ from langgraph.types import Command, Durability, Overwrite
 from happyclaw_harness import env_compat
 from happyclaw_harness.memory.checkpoint_activity import _guarded_checkpoint_stream, checkpoint_activity
 from happyclaw_harness.protocols.base import ChatProtocol
+from happyclaw_harness.protocols.langgraph_stream_compat import attach_checkpoint_guard, warn_unguarded
 from happyclaw_harness.protocols.think_splitter import ThinkSplitter
 from happyclaw_harness.usage import normalize_usage_metadata
 
@@ -382,11 +383,14 @@ class LangGraphProtocol(ChatProtocol):
             # LangGraph v3 projections all pump this iterator. Wrapping it keeps
             # the native stream API and holds the lease through final flush and
             # abort, even when consumers use output() or subgraph projections.
-            # This experimental adapter is covered by real LangGraph v3 tests.
-            source = getattr(stream, "_graph_aiter", None)
-            if source is None:
-                raise RuntimeError("checkpoint activity requires a compatible LangGraph v3 stream")
-            stream._graph_aiter = _guarded_checkpoint_stream(
-                source, checkpointer, str((config.get("configurable") or {}).get("thread_id") or "")
+            # The seam is internal, so the adapter probes it and degrades to the
+            # unguarded public stream instead of failing on a v3 change.
+            guarded = attach_checkpoint_guard(
+                stream,
+                lambda source: _guarded_checkpoint_stream(
+                    source, checkpointer, str((config.get("configurable") or {}).get("thread_id") or "")
+                ),
             )
+            if not guarded.guarded:
+                warn_unguarded(guarded)
         return stream
